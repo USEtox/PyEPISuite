@@ -1,0 +1,1923 @@
+{
+    "parameters": {
+        "cas": "000050-00-0",
+        "smiles": null,
+        "caseNumber": null,
+        "userLogKow": {
+            "value": -999.0,
+            "units": "",
+            "valueType": "USER_PROVIDED"
+        },
+        "userMeltingPoint": {
+            "value": -999.0,
+            "units": "celsius",
+            "valueType": "USER_PROVIDED"
+        },
+        "userBoilingPoint": {
+            "value": -999.0,
+            "units": "celsius",
+            "valueType": "USER_PROVIDED"
+        },
+        "userWaterSolubility": {
+            "value": -999.0,
+            "units": "mg/L",
+            "valueType": "USER_PROVIDED"
+        },
+        "userVaporPressure": {
+            "value": -999.0,
+            "units": "mmHg",
+            "valueType": "USER_PROVIDED"
+        },
+        "userHenrysLawConstant": {
+            "value": -999.0,
+            "units": "atm-m3/mol",
+            "valueType": "USER_PROVIDED"
+        },
+        "userLogKoa": {
+            "value": -999.0,
+            "units": "",
+            "valueType": "USER_PROVIDED"
+        },
+        "userLogKoc": {
+            "value": -999.0,
+            "units": "L/kg",
+            "valueType": "USER_PROVIDED"
+        },
+        "userHydroxylReactionRateConstant": {
+            "value": -999.0,
+            "units": "cm3/molecule-sec",
+            "valueType": "USER_PROVIDED"
+        },
+        "userDermalPermeabilityCoefficient": {
+            "value": -999.0,
+            "units": "cm/hr",
+            "valueType": "USER_PROVIDED"
+        },
+        "userBiodegradationRateRemoveMetals": {
+            "value": true,
+            "units": "boolean",
+            "valueType": "USER_PROVIDED"
+        },
+        "userAtmosphericHydroxylRadicalConcentration": {
+            "value": 1500000.0,
+            "units": "radicals/cm3",
+            "valueType": "USER_PROVIDED"
+        },
+        "userAtmosphericOzoneConcentration": {
+            "value": 700000000000.0,
+            "units": "molecules/cm3",
+            "valueType": "USER_PROVIDED"
+        },
+        "userAtmosphericDaylightHours": {
+            "value": 12.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userStpHalfLifePrimaryClarifier": {
+            "value": 10000.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userStpHalfLifeAerationVessel": {
+            "value": 10000.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userStpHalfLifeSettlingTank": {
+            "value": 10000.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityHalfLifeAir": {
+            "value": 0.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityHalfLifeWater": {
+            "value": 0.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityHalfLifeSoil": {
+            "value": 0.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityHalfLifeSediment": {
+            "value": 0.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityEmissionRateAir": {
+            "value": 1000.0,
+            "units": "kg/hour",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityEmissionRateWater": {
+            "value": 1000.0,
+            "units": "kg/hour",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityEmissionRateSoil": {
+            "value": 1000.0,
+            "units": "kg/hour",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityEmissionRateSediment": {
+            "value": 0.0,
+            "units": "kg/hour",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityAdvectionTimeAir": {
+            "value": 100.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityAdvectionTimeWater": {
+            "value": 1000.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityAdvectionTimeSoil": {
+            "value": 0.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "userFugacityAdvectionTimeSediment": {
+            "value": 50000.0,
+            "units": "hours",
+            "valueType": "USER_PROVIDED"
+        },
+        "modules": []
+    },
+    "chemicalProperties": {
+        "name": "FORMALDEHYDE",
+        "systematicName": "Formaldehyde",
+        "cas": "000050-00-0",
+        "smiles": "O=C",
+        "molecularWeight": 30.026022332008978,
+        "molecularFormula": "CH2O",
+        "molecularFormulaHtml": "CH<sub>2</sub>O",
+        "organic": true,
+        "organicAcid": false,
+        "aminoAcid": false,
+        "nonStandardMetal": false,
+        "flags": null
+    },
+    "logKow": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0"
+        },
+        "estimatedValue": {
+            "model": {
+                "logKow": 0.3500000014901161,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Formaldehyde experimental value - constant",
+                        "fragmentCount": 1,
+                        "coefficient": 0.12099999934434891,
+                        "contribution": 0.12099999934434891,
+                        "trainingCount": 1,
+                        "validationCount": 0
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "contribution": 0.2290000021457672,
+                        "trainingCount": 0,
+                        "validationCount": 0
+                    }
+                ],
+                "output": "-------+-----+--------------------------------------------+---------+--------\n TYPE  | NUM |        LOGKOW FRAGMENT DESCRIPTION         |  COEFF  |  VALUE \n-------+-----+--------------------------------------------+---------+--------\n Frag  |  1  |  Formaldehyde experimental value - constant| 0.1210  |  0.1210\n Const |     |  Equation Constant                         |         |  0.2290\n-------+-----+--------------------------------------------+---------+--------\n                                                         Log Kow   =   0.3500\n",
+                "notes": "",
+                "flags": {
+                    "isOrganicAcid": false,
+                    "isAminoAcid": false
+                }
+            },
+            "value": 0.3500000014901161,
+            "units": "",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [
+            {
+                "author": "HANSCH,C ET AL.",
+                "year": 1995,
+                "order": 1,
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "selectedValue": {
+            "value": 0.35,
+            "units": null,
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "meltingPoint": {
+        "estimatedValue": {
+            "model": {
+                "factors": [
+                    {
+                        "type": "Group",
+                        "description": "-CHO (aldehyde)",
+                        "fragmentCount": 1,
+                        "coefficient": 36.900001525878906,
+                        "totalCoefficient": 36.900001525878906
+                    },
+                    {
+                        "type": "*",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 122.5,
+                        "totalCoefficient": 122.5
+                    }
+                ],
+                "meltingPointKelvins": 159.39999389648438,
+                "meltingPointLimitKelvins": 159.39999389648438,
+                "meltingPointCelsius": -113.760009765625,
+                "meltingPointAdaptedJoback": -113.760009765625,
+                "meltingPointGoldOgle": -108.11260986328125,
+                "meltingPointMean": -110.93630981445312,
+                "meltingPointSelected": -110.93630981445312
+            },
+            "value": -110.93630981445312,
+            "units": "celsius",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [
+            {
+                "author": "ZHOU,X & MOPPER,K",
+                "year": 1990,
+                "order": 1,
+                "value": -92.0,
+                "units": "celsius",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "selectedValue": {
+            "value": -92.0,
+            "units": "celsius",
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "boilingPoint": {
+        "estimatedValue": {
+            "model": {
+                "factors": [
+                    {
+                        "type": "Group",
+                        "description": "-CHO (aldehyde)",
+                        "fragmentCount": 1,
+                        "coefficient": 83.37999725341797,
+                        "totalCoefficient": 83.37999725341797
+                    },
+                    {
+                        "type": "*",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 198.17999267578125
+                    }
+                ],
+                "boilingPointKelvinsUncorrected": 281.55999755859375,
+                "boilingPointKelvinsCorrected": 282.663818359375,
+                "boilingPointCelsius": 9.503814697265625
+            },
+            "value": 9.503814697265625,
+            "units": "celsius",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [
+            {
+                "author": null,
+                "year": 0,
+                "order": 1,
+                "value": -19.5,
+                "units": "celsius",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "selectedValue": {
+            "value": -19.5,
+            "units": "celsius",
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "vaporPressure": {
+        "estimatedValue": {
+            "model": [
+                {
+                    "type": "Antoine",
+                    "mmHg": 3723.386962890625,
+                    "pa": 496409.3966665039
+                },
+                {
+                    "type": "Grain",
+                    "mmHg": 3347.14019704179,
+                    "pa": 446247.42535000556
+                },
+                {
+                    "type": "Mackay",
+                    "mmHg": 3033.353870111578,
+                    "pa": 404412.8046710158
+                },
+                {
+                    "type": "Selected",
+                    "mmHg": 3535.2635799662075,
+                    "pa": 471328.41100825474
+                },
+                {
+                    "type": "SubCooled",
+                    "mmHg": 3347.14013671875,
+                    "pa": 446247.4173076172
+                }
+            ],
+            "value": 3535.2635799662075,
+            "units": "mmHg",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [
+            {
+                "author": "BOUBLIK,T ET AL.",
+                "year": 1984,
+                "order": 1,
+                "value": 3890.0,
+                "units": "mmHg",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "selectedValue": {
+            "value": 3890.0,
+            "units": "mmHg",
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "waterSolubilityFromLogKow": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            },
+            "meltingPoint": {
+                "value": -92.0,
+                "units": "celsius",
+                "valueType": "EXPERIMENTAL"
+            }
+        },
+        "estimatedValue": {
+            "model": {
+                "waterSolubility": 54982.12109375,
+                "factors": [
+                    {
+                        "type": "No Applicable Correction Factors",
+                        "description": null,
+                        "fragmentCount": 1,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 0.0,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ],
+                "equation": "Log S (mol/L) = 0.693-0.96 log Kow-0.0092(Tm-25)-0.00314 MW + Correction\n Melting Pt (Tm) = -92.0 deg C (Use Tm = 25 for all liquids)\nUser Entered Melting Point: -92.0",
+                "notes": "",
+                "output": "MOL FOR: C1 H2 O1 \nMOL WT : 30.03\nLog Kow (experimental):  0.35\nLog Kow used by Water solubility estimates:  0.35 (user entered)\n\nEquation Used to Make Water Sol estimate:\n   Log S (mol/L) = 0.693-0.96 log Kow-0.0092(Tm-25)-0.00314 MW + Correction\n\n      Melting Pt (Tm) = -92.00 deg C (Use Tm = 25 for all liquids)\n\n      Correction(s):         Value\n      --------------------   -----\n       No Applicable Correction Factors\n\n   Log Water Solubility  (in moles/L) :  0.263\n   Water Solubility at 25 deg C (mg/L):  5.498e+04\n"
+            },
+            "value": 54982.12109375,
+            "units": "mg/L",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [],
+        "selectedValue": {
+            "value": 54982.12109375,
+            "units": "mg/L",
+            "valueType": "ESTIMATED"
+        }
+    },
+    "waterSolubilityFromWaterNt": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0"
+        },
+        "estimatedValue": {
+            "model": {
+                "waterSolubility": 396938.21875,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Formaldehyde experimental value - constant",
+                        "fragmentCount": 1,
+                        "coefficient": 0.871999979019165,
+                        "totalCoefficient": 0.871999979019165,
+                        "trainingCount": 2,
+                        "maxFragmentCount": 2
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 1,
+                        "coefficient": 0.24921822547912598,
+                        "totalCoefficient": 0.24921822547912598,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ],
+                "equation": "",
+                "notes": "",
+                "output": "MOL FOR: C1 H2 O1 \nMOL WT : 30.03\n-------+-----+--------------------------------------------+----------+---------\n TYPE  | NUM |    WATER SOLUBILITY FRAGMENT DESCRIPTION   |  COEFF   |  VALUE  \n-------+-----+--------------------------------------------+----------+---------\n Frag  |  1  |  Formaldehyde experimental value - constant| 0.8720   |  0.8720\n Const |     |  Equation Constant                         |          |  0.2492\n-------+-----+--------------------------------------------+----------+---------\n                              Log Water Sol (moles/L) at 25 dec C  =    1.1212\n                              Water Solubility (mg/L) at 25 dec C  =3.9694e+05\n"
+            },
+            "value": 396938.21875,
+            "units": "mg/L",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [],
+        "selectedValue": {
+            "value": 396938.21875,
+            "units": "mg/L",
+            "valueType": "ESTIMATED"
+        }
+    },
+    "henrysLawConstant": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "waterSolubility": {
+                "value": 54982.12109375,
+                "units": "mg/L",
+                "valueType": "ESTIMATED"
+            },
+            "vaporPressure": {
+                "value": 760.0,
+                "units": "mmHg",
+                "valueType": "EXPERIMENTAL"
+            },
+            "molecularWeight": {
+                "value": 30.026022332008978,
+                "units": "g/mol",
+                "valueType": "NONE"
+            }
+        },
+        "estimatedValue": {
+            "model": [
+                {
+                    "name": "VP/WSOL",
+                    "value": 0.0005461925785725243,
+                    "factors": null,
+                    "hlcAtm": 0.0005461925785725243,
+                    "hlcUnitless": 0.022325099775020223,
+                    "hlcPaMol": 55.342963023861074,
+                    "notes": ""
+                },
+                {
+                    "name": "Bond",
+                    "value": 2.4205780029296875,
+                    "factors": [
+                        {
+                            "type": "Hydrogen",
+                            "description": "Hydrogen to Carbonyl (C=O) Bonds",
+                            "fragmentCount": 2,
+                            "totalCoefficient": 2.4205780029296875,
+                            "trainingCount": 25,
+                            "maxFragmentCount": 1
+                        }
+                    ],
+                    "hlcAtm": 9.287064312957227e-05,
+                    "hlcUnitless": 0.003796837292611599,
+                    "hlcPaMol": 9.410118103027344,
+                    "notes": ""
+                },
+                {
+                    "name": "Group",
+                    "value": 2.5999999046325684,
+                    "factors": [
+                        {
+                            "type": "NONE    ",
+                            "description": "H2CO",
+                            "fragmentCount": 1,
+                            "totalCoefficient": 2.5999999046325684,
+                            "trainingCount": 0,
+                            "maxFragmentCount": 0
+                        }
+                    ],
+                    "hlcAtm": 6.144075450720266e-05,
+                    "hlcUnitless": 0.00251188687980175,
+                    "hlcPaMol": 6.225484371185303,
+                    "notes": ""
+                }
+            ],
+            "value": 6.144075450720266e-05,
+            "units": "atm-m3/mol",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [
+            {
+                "author": "BETTERTON,EA & HOFFMAN,MR",
+                "year": 1988,
+                "order": 1,
+                "value": 3.37e-07,
+                "units": "atm-m3/mol",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "selectedValue": {
+            "value": 3.37e-07,
+            "units": "atm-m3/mol",
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "logKoa": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            },
+            "henrysLawConstant": {
+                "value": 3.37e-07,
+                "units": "atm-m3/mol",
+                "valueType": "EXPERIMENTAL"
+            }
+        },
+        "estimatedValue": {
+            "model": {
+                "kow": 2.2387211385683394,
+                "kaw": 1.3774553004445097e-05,
+                "koa": 162525.86474827142,
+                "logKoa": 5.210922485460039
+            },
+            "value": 5.210922485460039,
+            "units": "",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalValues": [],
+        "selectedValue": {
+            "value": 5.210922485460039,
+            "units": "",
+            "valueType": "ESTIMATED"
+        }
+    },
+    "biodegradationRate": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "removeMetals": true
+        },
+        "models": [
+            {
+                "name": "Linear Model Prediction",
+                "value": 1.0178809966892004,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 0.2846300005912781,
+                        "totalCoefficient": 0.2846300005912781,
+                        "trainingCount": 4,
+                        "maxFragmentCount": 1
+                    },
+                    {
+                        "type": "Molecular Weight",
+                        "description": "Molecular Weight Parameter",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": -0.014294842258095741,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 0.7475458383560181,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            },
+            {
+                "name": "Non-Linear Model Prediction",
+                "value": 0.9999424456671815,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 7.1803998947143555,
+                        "totalCoefficient": 7.1803998947143555,
+                        "trainingCount": 4,
+                        "maxFragmentCount": 1
+                    },
+                    {
+                        "type": "Molecular Weight",
+                        "description": "Molecular Weight Parameter",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": -0.4263763129711151,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            },
+            {
+                "name": "Ultimate Biodegradation Timeframe",
+                "value": 3.1551359500736,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 0.02232000045478344,
+                        "totalCoefficient": 0.02232000045478344,
+                        "trainingCount": 5,
+                        "maxFragmentCount": 1
+                    },
+                    {
+                        "type": "Molecular Weight",
+                        "description": "Molecular Weight Parameter",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": -0.06635463982820511,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 3.1991705894470215,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            },
+            {
+                "name": "Primary Biodegradation Timeframe",
+                "value": 4.001056153327227,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 0.1966399997472763,
+                        "totalCoefficient": 0.1966399997472763,
+                        "trainingCount": 5,
+                        "maxFragmentCount": 1
+                    },
+                    {
+                        "type": "Molecular Weight",
+                        "description": "Molecular Weight Parameter",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": -0.0433209203183651,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 3.8477370738983154,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            },
+            {
+                "name": "MITI Linear Model Prediction",
+                "value": 0.7393221855163574,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 0.23229999840259552,
+                        "totalCoefficient": 0.23229999840259552,
+                        "trainingCount": 23,
+                        "maxFragmentCount": 2
+                    },
+                    {
+                        "type": "Molecular Weight",
+                        "description": "Molecular Weight Parameter",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": -0.04735179245471954,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 0.5543739795684814,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            },
+            {
+                "name": "MITI Non-Linear Model Prediction",
+                "value": 0.8870785940134347,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 0.9184100031852722,
+                        "totalCoefficient": 0.9184100031852722,
+                        "trainingCount": 23,
+                        "maxFragmentCount": 2
+                    },
+                    {
+                        "type": "Molecular Weight",
+                        "description": "Molecular Weight Parameter",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": -0.5194584727287292,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            },
+            {
+                "name": "Anaerobic Model Prediction",
+                "value": 0.9586509242653847,
+                "factors": [
+                    {
+                        "type": "Fragment",
+                        "description": "Aldehyde   [-CHO]",
+                        "fragmentCount": 1,
+                        "coefficient": 0.12256655842065811,
+                        "totalCoefficient": 0.12256655842065811,
+                        "trainingCount": 5,
+                        "maxFragmentCount": 1
+                    },
+                    {
+                        "type": "Constant",
+                        "description": "Equation Constant",
+                        "fragmentCount": 0,
+                        "coefficient": 0.0,
+                        "totalCoefficient": 0.8360843658447266,
+                        "trainingCount": 0,
+                        "maxFragmentCount": 0
+                    }
+                ]
+            }
+        ],
+        "notes": "",
+        "output": "SMILES : O=C\nMOL FOR: C1 H2 O1 \nMOL WT : 30.03\n--------------------------- BIOWIN v4.10 Results ----------------------------\n\n   Biowin1 (Linear Model Prediction)    :  Biodegrades Fast\n   Biowin2 (Non-Linear Model Prediction):  Biodegrades Fast\n   Biowin3 (Ultimate Biodegradation Timeframe):  Weeks\n   Biowin4 (Primary  Biodegradation Timeframe):  Days\n   Biowin5 (MITI Linear Model Prediction)    :  Readily Degradable\n   Biowin6 (MITI Non-Linear Model Prediction):  Readily Degradable\n   Biowin7 (Anaerobic Model Prediction):  Biodegrades Fast\n   Ready Biodegradability Prediction:  YES\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin1 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.2846 |  0.2846\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.0143\n Const|  *  |  Equation Constant                         |         |  0.7475\n============+============================================+=========+=========\n   RESULT   |    Biowin1 (Linear Biodeg Probability)     |         |  1.0179\n============+============================================+=========+=========\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin2 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  7.1804 |  7.1804\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.4264\n============+============================================+=========+=========\n   RESULT   |  Biowin2 (Non-Linear Biodeg Probability)   |         |  0.9999\n============+============================================+=========+=========\n\n A Probability Greater Than or Equal to 0.5 indicates --> Biodegrades Fast\n A Probability Less Than 0.5 indicates --> Does NOT Biodegrade Fast\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin3 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.0223 |  0.0223\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.0664\n Const|  *  |  Equation Constant                         |         |  3.1992\n============+============================================+=========+=========\n   RESULT   |  Biowin3 (Survey Model - Ultimate Biodeg)  |         |  3.1551\n============+============================================+=========+=========\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin4 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.1966 |  0.1966\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.0433\n Const|  *  |  Equation Constant                         |         |  3.8477\n============+============================================+=========+=========\n   RESULT   |   Biowin4 (Survey Model - Primary Biodeg)  |         |  4.0011\n============+============================================+=========+=========\n\n Result Classification:   5.00 -> hours     4.00 -> days    3.00 -> weeks\n  (Primary & Ultimate)    2.00 -> months    1.00 -> longer\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin5 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.2323 |  0.2323\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.0474\n Const|  *  |  Equation Constant                         |         |  0.5544\n============+============================================+=========+=========\n   RESULT   |  Biowin5 (MITI Linear Biodeg Probability)  |         |  0.7393\n============+============================================+=========+=========\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin6 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.9184 |  0.9184\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.5195\n============+============================================+=========+=========\n   RESULT   |Biowin6 (MITI Non-Linear Biodeg Probability)|         |  0.8871\n============+============================================+=========+=========\n\n A Probability Greater Than or Equal to 0.5 indicates --> Readily Degradable\n A Probability Less Than 0.5 indicates --> NOT Readily Degradable\n\n\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM |       Biowin7 FRAGMENT DESCRIPTION         |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.1226 |  0.1226\n Const|  *  |  Equation Constant                         |         |  0.8361\n============+============================================+=========+=========\n   RESULT   |   Biowin7 (Anaerobic Linear Biodeg Prob)   |         |  0.9587\n============+============================================+=========+=========\n\n A Probability Greater Than or Equal to 0.5 indicates --> Biodegrades Fast\n A Probability Less Than 0.5 indicates --> Does NOT Biodegrade Fast\n\nReady Biodegradability Prediction: (YES or NO)\n----------------------------------------------\n Criteria for the YES or NO prediction:  If the Biowin3 (ultimate survey\n model) result is \"weeks\" or faster (i.e. \"days\", \"days to weeks\", or\n \"weeks\" AND the Biowin5 (MITI linear model) probability is >= 0.5, then\n the prediction is YES (readily biodegradable).  If this condition is not\n satisfied, the prediction is NO (not readily biodegradable).  This method\n is based on application of Bayesian analysis to ready biodegradation data\n (see Help).  Biowin5 and 6 also predict ready biodegradability, but for\n degradation in the OECD301C test only; using data from the Chemicals\n Evaluation and Research Institute Japan (CERIJ) database.\n\n"
+    },
+    "hydrocarbonBiodegradationRate": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0"
+        },
+        "estimatedValue": {
+            "model": {
+                "halfLifeDays": null,
+                "logHalfLifeDays": null,
+                "factors": [],
+                "notes": "  NO Estimate Possible ... Structure NOT a Hydrocarbon\n    (Contains atoms other than C, H or S (-S-))\n",
+                "output": "SMILES : O=C\nMOL FOR: C1 H2 O1 \nMOL WT : 30.03\n-------------------------- BioHCwin v1.01 Results ---------------------------\n\n  NO Estimate Possible ... Structure NOT a Hydrocarbon\n    (Contains atoms other than C, H or S (-S-))\n"
+            },
+            "value": null,
+            "units": "days",
+            "valueType": "ESTIMATED"
+        },
+        "selectedValue": {
+            "value": null,
+            "units": "days",
+            "valueType": "ESTIMATED"
+        }
+    },
+    "aerosolAdsorptionFraction": {
+        "parameters": {
+            "logKoa": {
+                "value": 5.210922485460039,
+                "units": "",
+                "valueType": "ESTIMATED"
+            },
+            "subcooledVaporPressure": {
+                "value": 3347.14013671875,
+                "units": "",
+                "valueType": "ESTIMATED"
+            }
+        },
+        "estimatedValue": {
+            "model": {
+                "mackayParticleGasPartitionCoefficient": 6.7221565518487904e-12,
+                "koaParticleGasPartitionCoefficient": 3.9895368922700186e-08,
+                "mackayAdsorptionFraction": 5.377725238587039e-10,
+                "koaAdsorptionFraction": 3.191619327349573e-06,
+                "jungePankowAdsorptionFraction": 2.4280429459382437e-10
+            },
+            "value": 5.377725238587039e-10,
+            "units": "",
+            "valueType": "ESTIMATED"
+        },
+        "selectedValue": {
+            "value": 5.377725238587039e-10,
+            "units": "",
+            "valueType": "ESTIMATED"
+        }
+    },
+    "atmosphericHalfLife": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "hydroxylRadicalConcentration": 1500000.0,
+            "ozoneConcentration": 700000000000.0,
+            "twelveHourDay": true
+        },
+        "estimatedValue": {
+            "model": {
+                "models": [
+                    {
+                        "type": "Hydroxyl Radical Reaction",
+                        "rateConstant": 8.130000114440918e-12,
+                        "halfLifeHours": 15.787435531616211,
+                        "factors": [
+                            {
+                                "type": "Hydrogen Abstraction",
+                                "value": 8.130000114440918,
+                                "unit": "E-12 cm3/molecule-sec"
+                            },
+                            {
+                                "type": "Reaction with N, S and -OH",
+                                "value": 0.0,
+                                "unit": "E-12 cm3/molecule-sec"
+                            },
+                            {
+                                "type": "Addition to Triple Bonds",
+                                "value": 0.0,
+                                "unit": "E-12 cm3/molecule-sec"
+                            },
+                            {
+                                "type": "Addition to Olefinic Bonds",
+                                "value": 0.0,
+                                "unit": "E-12 cm3/molecule-sec"
+                            },
+                            {
+                                "type": "Addition to Aromatic Rings",
+                                "value": 0.0,
+                                "unit": "E-12 cm3/molecule-sec"
+                            },
+                            {
+                                "type": "Addition to Fused Rings",
+                                "value": 0.0,
+                                "unit": "E-12 cm3/molecule-sec"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Ozone Reaction",
+                        "rateConstant": 0.0,
+                        "halfLifeHours": 0.0,
+                        "factors": null
+                    },
+                    {
+                        "type": "Overall Reaction",
+                        "rateConstant": 8.130000114440918,
+                        "halfLifeHours": 15.787435531616211,
+                        "factors": null
+                    }
+                ],
+                "notes": "               ******  NO OZONE REACTION ESTIMATION ******\n               (ONLY Olefins and Acetylenes are Estimated)",
+                "output": "SMILES : O=C\nMOL FOR: C1 H2 O1 \nMOL WT : 30.03\n------------------- SUMMARY (AOP v1.93): HYDROXYL RADICALS (25 deg C) --------\nHydrogen Abstraction       =   8.1300 E-12 cm3/molecule-sec\nReaction with N, S and -OH =   0.0000 E-12 cm3/molecule-sec\nAddition to Triple Bonds   =   0.0000 E-12 cm3/molecule-sec\nAddition to Olefinic Bonds =   0.0000 E-12 cm3/molecule-sec\nAddition to Aromatic Rings =   0.0000 E-12 cm3/molecule-sec\nAddition to Fused Rings    =   0.0000 E-12 cm3/molecule-sec\n\n   OVERALL OH Rate Constant =   8.1300 E-12 cm3/molecule-sec\n   HALF-LIFE =     1.316 Days (12-hr day; 1.500E6 OH/cm3)\n   HALF-LIFE =    15.787 Hrs\n------------------- SUMMARY (AOP v1.93): OZONE REACTION (25 deg C) -----------\n\n               ******  NO OZONE REACTION ESTIMATION ******\n               (ONLY Olefins and Acetylenes are Estimated)\n\n\nHydrogen Abstraction Calculation:\n K(HCHO) : Ksec = 0.934 F(=O) = 0.934(8.7) = 8.13\n H Abstraction TOTAL = 8.130 E-12 cm3/molecule-sec\n"
+            },
+            "value": 15.787435531616211,
+            "units": "hours",
+            "valueType": "ESTIMATED"
+        },
+        "estimatedHydroxylRadicalReactionRateConstant": {
+            "model": {
+                "type": "Hydroxyl Radical Reaction",
+                "rateConstant": 8.130000114440918e-12,
+                "halfLifeHours": 15.787435531616211,
+                "factors": [
+                    {
+                        "type": "Hydrogen Abstraction",
+                        "value": 8.130000114440918,
+                        "unit": "E-12 cm3/molecule-sec"
+                    },
+                    {
+                        "type": "Reaction with N, S and -OH",
+                        "value": 0.0,
+                        "unit": "E-12 cm3/molecule-sec"
+                    },
+                    {
+                        "type": "Addition to Triple Bonds",
+                        "value": 0.0,
+                        "unit": "E-12 cm3/molecule-sec"
+                    },
+                    {
+                        "type": "Addition to Olefinic Bonds",
+                        "value": 0.0,
+                        "unit": "E-12 cm3/molecule-sec"
+                    },
+                    {
+                        "type": "Addition to Aromatic Rings",
+                        "value": 0.0,
+                        "unit": "E-12 cm3/molecule-sec"
+                    },
+                    {
+                        "type": "Addition to Fused Rings",
+                        "value": 0.0,
+                        "unit": "E-12 cm3/molecule-sec"
+                    }
+                ]
+            },
+            "value": 8.130000114440918e-12,
+            "units": "cm3/molecule-sec",
+            "valueType": "ESTIMATED"
+        },
+        "estimatedOzoneReactionRateConstant": {
+            "model": {
+                "type": "Ozone Reaction",
+                "rateConstant": 0.0,
+                "halfLifeHours": 0.0,
+                "factors": null
+            },
+            "value": 0.0,
+            "units": "cm3/molecule-sec",
+            "valueType": "ESTIMATED"
+        },
+        "experimentalHydroxylRadicalReactionRateConstantValues": [
+            {
+                "author": "ATKINSON,R ET AL.",
+                "year": 2006,
+                "order": 1,
+                "value": 8.5e-12,
+                "units": "cm3/molecule-sec",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "experimentalOzoneReactionRateConstantValues": [
+            {
+                "author": null,
+                "year": 0,
+                "order": 1,
+                "value": 2.09e-24,
+                "units": "cm3/molecule-sec",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "experimentalNitrateReactionRateConstantValues": [
+            {
+                "author": null,
+                "year": 0,
+                "order": 1,
+                "value": 5.6e-16,
+                "units": "cm3/molecule-sec",
+                "valueType": "EXPERIMENTAL"
+            }
+        ],
+        "selectedHydroxylRadicalReactionRateConstant": {
+            "value": 8.5e-12,
+            "units": "cm3/molecule-sec",
+            "valueType": "EXPERIMENTAL"
+        },
+        "selectedOzoneReactionRateConstantValues": {
+            "value": 2.09e-24,
+            "units": "cm3/molecule-sec",
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "logKoc": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            }
+        },
+        "experimentalValues": [],
+        "estimatedValue": {
+            "model": {
+                "logKoc": 0.0,
+                "models": [
+                    {
+                        "firstOrderMCI": 1.0,
+                        "name": "MCI",
+                        "factors": [
+                            {
+                                "fragmentCount": 1,
+                                "trainingCount": 20,
+                                "maxFragmentCount": 1,
+                                "description": "Misc (C=O) Group (aliphatic attach)....",
+                                "coefficient": -1.6046719551086426,
+                                "totalCoefficient": -1.6046719551086426
+                            }
+                        ],
+                        "nonCorrectedLogKoc": 1.1210999488830566,
+                        "correctedLogKoc": 0.0,
+                        "koc": 1.0
+                    },
+                    {
+                        "logKow": 0.3499999940395355,
+                        "name": "Kow",
+                        "factors": [
+                            {
+                                "fragmentCount": 1,
+                                "trainingCount": 0,
+                                "maxFragmentCount": 0,
+                                "description": "Misc (C=O) Group (aliphatic attach)....",
+                                "coefficient": -0.2292809933423996,
+                                "totalCoefficient": -0.2292809933423996
+                            }
+                        ],
+                        "nonCorrectedLogKoc": 1.1186954975128174,
+                        "correctedLogKoc": 0.8894144892692566,
+                        "koc": 7.752012729644775
+                    }
+                ],
+                "notes": "",
+                "output": "MOL FOR: C1 H2 O1 \nMOL WT : 30.03\n---------------------------  KOCWIN v2.01 Results  ---------------------------\n\n  Koc Estimate from MCI:\n  ---------------------\n         First Order Molecular Connectivity Index  ........... :  1.000\n         Non-Corrected Log Koc (0.5213 MCI + 0.60)  .......... :  1.1211\n         Fragment Correction(s):\n                  1   Misc (C=O) Group (aliphatic attach)....  : -1.6047\n         Corrected Log Koc  .................................. : -0.4836\n         Over Correction Adjustment to Lower Limit Log Koc ... :  0.0000\n\n                         Estimated Koc:  1.000  L/kg   <===========\n\n  Koc Estimate from Log Kow:\n  -------------------------\n         Log Kow  (User entered   )  ......................... :  0.35\n         Non-Corrected Log Koc (0.55313 logKow + 0.9251)  .... :  1.1187\n         Fragment Correction(s):\n                  1   Misc (C=O) Group (aliphatic attach)....  : -0.2293\n         Corrected Log Koc  .................................. :  0.8894\n\n                         Estimated Koc:  7.752  L/kg   <===========\n\n"
+            },
+            "value": 0.0,
+            "units": "L/kg",
+            "valueType": "ESTIMATED"
+        },
+        "selectedValue": {
+            "value": 0.0,
+            "units": "L/kg",
+            "valueType": "ESTIMATED"
+        }
+    },
+    "hydrolysis": {
+        "halfLives": [
+            {
+                "ph": 7.0,
+                "value": 0.0,
+                "unit": null,
+                "baseCatalyzed": true,
+                "acidCatalyzed": false,
+                "phosphorusEster": false,
+                "isomer": null
+            },
+            {
+                "ph": 7.0,
+                "value": 0.0,
+                "unit": null,
+                "baseCatalyzed": false,
+                "acidCatalyzed": true,
+                "phosphorusEster": false,
+                "isomer": null
+            },
+            {
+                "ph": 7.0,
+                "value": 0.0,
+                "unit": null,
+                "baseCatalyzed": false,
+                "acidCatalyzed": false,
+                "phosphorusEster": false,
+                "isomer": null
+            },
+            {
+                "ph": 7.0,
+                "value": 0.0,
+                "unit": null,
+                "baseCatalyzed": false,
+                "acidCatalyzed": true,
+                "phosphorusEster": true,
+                "isomer": null
+            },
+            {
+                "ph": 7.0,
+                "value": 0.0,
+                "unit": null,
+                "baseCatalyzed": false,
+                "acidCatalyzed": true,
+                "phosphorusEster": false,
+                "isomer": null
+            },
+            {
+                "ph": 8.0,
+                "value": 0.0,
+                "unit": null,
+                "baseCatalyzed": true,
+                "acidCatalyzed": false,
+                "phosphorusEster": false,
+                "isomer": null
+            }
+        ],
+        "phosphorusEsterHalfLives": [],
+        "fragments": [],
+        "baseCatalyzedRateConstant": 0.0,
+        "acidCatalyzedRateConstant": 0.0,
+        "acidCatalyzedRateConstantForTransIsomer": 0.0,
+        "neutralRateConstant": 0.0,
+        "output": "SMILES : O=C\nMOL FOR: C1 H2 O1 \nMOL WT : 30.03\n--------------------------- HYDROWIN v2.00 Results ---------------------------\n\n\n Currently, this program can NOT estimate a hydrolysis rate constant for\n                the type of chemical structure entered!!\n\n ONLY Esters, Carbamates, Epoxides, Halomethanes (containing 1-3 halogens),\n      Specific Alkyl Halides & Phosphorus Esters can be estimated!!\n\n   When present, various hydrolyzable compound-types will be identified.\n  For more information, (Click OVERVIEW in Help  or  see the User's Guide)\n\n              *****   CALCULATION NOT PERFORMED   *****\n"
+    },
+    "bioconcentration": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            }
+        },
+        "bioconcentrationFactor": 3.16,
+        "experimentalBioconcentrationFactor": null,
+        "experimentalBioTransformationRate": -999.0,
+        "logBioconcentrationFactor": 0.5,
+        "biotransformationHalfLife": 0.05,
+        "bioaccumulationFactor": 1.06,
+        "logBioaccumulationFactor": 0.02,
+        "biotransformationFactors": [
+            {
+                "type": "Fragmant",
+                "description": "Aldehyde   [-CHO]",
+                "fragmentCount": 1,
+                "coefficient": 0.24648748338222504,
+                "totalCoefficient": 0.24648748338222504,
+                "trainingCount": 1,
+                "maxFragmentCount": 1
+            },
+            {
+                "type": "LogKow",
+                "description": "Log Kow = 0.35  used for calc",
+                "fragmentCount": 0,
+                "coefficient": 0.30734214186668396,
+                "totalCoefficient": 0.10756974667310715,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            },
+            {
+                "type": "MolWt",
+                "description": "Molecular Weight Parameter",
+                "fragmentCount": 0,
+                "coefficient": 0.0,
+                "totalCoefficient": -0.07699791342020035,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            },
+            {
+                "type": "Constant",
+                "description": "Equation Constant",
+                "fragmentCount": 0,
+                "coefficient": 0.0,
+                "totalCoefficient": -1.537068486213684,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            },
+            {
+                "type": "Result",
+                "description": "LOG Bio Half-Life (days)",
+                "fragmentCount": 0,
+                "coefficient": 0.0,
+                "totalCoefficient": -1.2600091695785522,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            },
+            {
+                "type": "Result",
+                "description": "Bio Half-Life (days)",
+                "fragmentCount": 0,
+                "coefficient": 0.0,
+                "totalCoefficient": 0.05495292693376541,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            },
+            {
+                "type": "Note",
+                "description": "Bio Half-Life Normalized to 10 g fish at 15 deg C",
+                "fragmentCount": 0,
+                "coefficient": 0.0,
+                "totalCoefficient": 0.0,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            }
+        ],
+        "biotransformationRateConstants": [
+            {
+                "type": "KMRateConstant",
+                "value": 12.613471984863281,
+                "unit": "/day (10 gram fish)"
+            },
+            {
+                "type": "KMRateConstant",
+                "value": 7.093076705932617,
+                "unit": "/day (100 gram fish)"
+            },
+            {
+                "type": "KMRateConstant",
+                "value": 3.988729953765869,
+                "unit": "/day (1 kg fish)"
+            },
+            {
+                "type": "KMRateConstant",
+                "value": 2.243027687072754,
+                "unit": "/day (10 kg fish)"
+            }
+        ],
+        "bioconcentrationFactors": [
+            {
+                "type": "Correction",
+                "description": "Correction Factors Not Used for Log Kow < 1",
+                "fragmentCount": 1,
+                "coefficient": 0.0,
+                "totalCoefficient": 0.0,
+                "trainingCount": 0,
+                "maxFragmentCount": 0
+            }
+        ],
+        "biocontrationFactorEquation": "Log BCF = 0.50",
+        "biocontrationFactorEquationSum": 0.5,
+        "arnotGobasBcfBafEstimates": [
+            {
+                "trophicLevel": "Upper Trophic",
+                "trophicLevelNote": null,
+                "bioconcentrationFactor": 1.0564629108622166,
+                "logBioconcentrationFactor": 0.023854254923004505,
+                "bioaccumulationFactor": 1.0564629136752755,
+                "logBioaccumulationFactor": 0.023854256079406628,
+                "unit": "L/kg wet-wt"
+            },
+            {
+                "trophicLevel": "Mid Trophic",
+                "trophicLevelNote": null,
+                "bioconcentrationFactor": 1.0575259076521877,
+                "logBioconcentrationFactor": 0.02429101568070716,
+                "bioaccumulationFactor": 1.0575263900614347,
+                "logBioaccumulationFactor": 0.02429121379181223,
+                "unit": "L/kg wet-wt"
+            },
+            {
+                "trophicLevel": "Lower Trophic",
+                "trophicLevelNote": null,
+                "bioconcentrationFactor": 1.054458750039513,
+                "logBioconcentrationFactor": 0.02302959499952621,
+                "bioaccumulationFactor": 1.054466798281089,
+                "logBioaccumulationFactor": 0.02303290977458616,
+                "unit": "L/kg wet-wt"
+            },
+            {
+                "trophicLevel": "Upper Trophic",
+                "trophicLevelNote": "where Km = 0",
+                "bioconcentrationFactor": 1.1324623669564298,
+                "logBioconcentrationFactor": 0.054023778813153005,
+                "bioaccumulationFactor": 1.135573150140556,
+                "logBioaccumulationFactor": 0.05521511537578985,
+                "unit": "L/kg wet-wt"
+            }
+        ],
+        "notes": "",
+        "output": "MOL FOR: C1 H2 O1 \nMOL WT : 30.03\n--------------------------------- BCFBAF v3.02 --------------------------------\nSummary Results:\n  Log BCF (regression-based estimate):  0.50  (BCF = 3.16 L/kg wet-wt)\n  Biotransformation Half-Life (days) :  0.0550  (normalized to 10 g fish)\n  Log BAF (Arnot-Gobas upper trophic):  0.02  (BAF = 1.06 L/kg wet-wt)\n\n=============================\nBCF (Bioconcentration Factor):\n=============================\nLog Kow  (estimated)  :  0.35\nLog Kow used by BCF estimates:  0.35\n\nEquation Used to Make BCF estimate:\n   Log BCF = 0.50\n\n      Correction(s):                    Value\n       Correction Factors Not Used for Log Kow < 1\n\n   Estimated Log BCF =  0.500  (BCF = 3.162 L/kg wet-wt)\n\n===========================================================\nWhole Body Primary Biotransformation Rate Estimate for Fish:\n===========================================================\n------+-----+--------------------------------------------+---------+---------\n TYPE | NUM | LOG BIOTRANSFORMATION FRAGMENT DESCRIPTION |  COEFF  |  VALUE  \n------+-----+--------------------------------------------+---------+---------\n Frag |  1  |  Aldehyde   [-CHO]                         |  0.2465 |  0.2465\n L Kow|  *  |  Log Kow =   0.35 ( used for calc )        |  0.3073 |  0.1076\n MolWt|  *  |  Molecular Weight Parameter                |         | -0.0770\n Const|  *  |  Equation Constant                         |         | -1.5371\n============+============================================+=========+=========\n   RESULT   |        LOG Bio Half-Life (days)            |         | -1.2600\n   RESULT   |            Bio Half-Life (days)            |         | 0.05495\n   NOTE     |  Bio Half-Life Normalized to 10 g fish at 15 deg C   |\n============+============================================+=========+=========\n\nBiotransformation Rate Constant:\n kM (Rate Constant):  12.61 /day (10 gram fish)   \n kM (Rate Constant):  7.093 /day (100 gram fish)   \n kM (Rate Constant):  3.989 /day (1 kg fish)   \n kM (Rate Constant):  2.243 /day (10 kg fish)   \n\nArnot-Gobas BCF & BAF Methods (including biotransformation rate estimates):\n   Estimated Log BCF (upper trophic) =  0.024  (BCF = 1.056 L/kg wet-wt)\n   Estimated Log BAF (upper trophic) =  0.024  (BAF = 1.056 L/kg wet-wt)\n   Estimated Log BCF (mid trophic)   =  0.024  (BCF = 1.058 L/kg wet-wt)\n   Estimated Log BAF (mid trophic)   =  0.024  (BAF = 1.058 L/kg wet-wt)\n   Estimated Log BCF (lower trophic) =  0.023  (BCF = 1.054 L/kg wet-wt)\n   Estimated Log BAF (lower trophic) =  0.023  (BAF = 1.054 L/kg wet-wt)\n\n Arnot-Gobas BCF & BAF Methods (assuming a biotransformation rate of zero):\n   Estimated Log BCF (upper trophic) =  0.054  (BCF = 1.132 L/kg wet-wt)\n   Estimated Log BAF (upper trophic) =  0.055  (BAF = 1.136 L/kg wet-wt)\n\n "
+    },
+    "waterVolatilization": {
+        "parameters": {
+            "molecularWeight": 30.026022332008978,
+            "henrysLawConstant": {
+                "value": 3.37e-07,
+                "units": "atm-m3/mol",
+                "valueType": "EXPERIMENTAL"
+            },
+            "riverWaterDepthMeters": 1.0,
+            "riverWindVelocityMetersPerSecond": 5.0,
+            "riverCurrentVelocityMetersPerSecond": 1.0,
+            "lakeWindVelocityMetersPerSecond": 0.5,
+            "lakeCurrentVelocityMetersPerSecond": 0.05000000074505806,
+            "lakeWaterDepthMeters": 1.0
+        },
+        "riverHalfLifeHours": 952.8244821446641,
+        "lakeHalfLifeHours": 10440.401136398748
+    },
+    "sewageTreatmentModel": {
+        "parameters": {
+            "molecularWeight": {
+                "value": 30.026022332008978,
+                "units": "g/mol",
+                "valueType": "NONE"
+            },
+            "henrysLawConstant": {
+                "value": 3.37e-07,
+                "units": "atm-m3/mol",
+                "valueType": "EXPERIMENTAL"
+            },
+            "waterSolubility": {
+                "value": 54982.12109375,
+                "units": "mg/L",
+                "valueType": "ESTIMATED"
+            },
+            "vaporPressure": {
+                "value": 3890.0,
+                "units": "mmHg",
+                "valueType": "EXPERIMENTAL"
+            },
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            },
+            "biowin3": {
+                "value": 3.1551359500736,
+                "units": "",
+                "valueType": "NONE"
+            },
+            "biowin5": {
+                "value": 0.7393221855163574,
+                "units": "",
+                "valueType": "NONE"
+            },
+            "halfLifeHoursPrimaryClarifier": {
+                "value": 10000.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "halfLifeHoursAerationVessel": {
+                "value": 10000.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "halfLifeHoursSettlingTank": {
+                "value": 10000.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            }
+        },
+        "model": {
+            "Influent": {
+                "MassPerHour": 10.0,
+                "MolPerHour": 0.3330444395542145,
+                "Percent": 100.0
+            },
+            "PrimarySludge": {
+                "MassPerHour": 0.02548598105480249,
+                "MolPerHour": 0.0008487964569853235,
+                "Percent": 0.2548598193446651
+            },
+            "WasteSludge": {
+                "MassPerHour": 0.1508191430534572,
+                "MolPerHour": 0.005022947870598627,
+                "Percent": 1.5081914825907095
+            },
+            "TotalSludge": {
+                "MassPerHour": 0.1763051241082597,
+                "MolPerHour": 0.00587174432758395,
+                "Percent": 1.7630513019353746
+            },
+            "PrimVloitilization": {
+                "MassPerHour": 0.000183429636301717,
+                "MolPerHour": 6.109022252830457e-06,
+                "Percent": 0.00183429636301717
+            },
+            "SettlingVloitilization": {
+                "MassPerHour": 0.0004997904536773821,
+                "MolPerHour": 1.6645243728473646e-05,
+                "Percent": 0.004997904536773821
+            },
+            "AerationOffGas": {
+                "MassPerHour": 0.00123325135741045,
+                "MolPerHour": 4.107275213347454e-05,
+                "Percent": 0.01233251399976865
+            },
+            "TotalAir": {
+                "MassPerHour": 0.0019164714473895491,
+                "MolPerHour": 6.382701811477865e-05,
+                "Percent": 0.01916471489955964
+            },
+            "PrimBiodeg": {
+                "MassPerHour": 0.00175920009021307,
+                "MolPerHour": 5.8589182833114484e-05,
+                "Percent": 0.0175920009021307
+            },
+            "SettlingBiodeg": {
+                "MassPerHour": 0.0005268808643572535,
+                "MolPerHour": 1.7547474823831824e-05,
+                "Percent": 0.0052688086435725345
+            },
+            "AerationBiodeg": {
+                "MassPerHour": 0.006938053585300231,
+                "MolPerHour": 0.00023106802476679445,
+                "Percent": 0.0693805358530023
+            },
+            "TotalBiodeg": {
+                "MassPerHour": 0.009224134539870555,
+                "MolPerHour": 0.0003072046824237408,
+                "Percent": 0.09224134539870553
+            },
+            "FinalEffluent": {
+                "MassPerHour": 9.812553863376403,
+                "MolPerHour": 0.32680166148212986,
+                "Percent": 98.12554202062623
+            },
+            "TotalRemoval": {
+                "MassPerHour": 0.18744613662359733,
+                "MolPerHour": 0.00624277807208462,
+                "Percent": 1.8744613662359733
+            },
+            "PrimaryRateConstant": {
+                "MassPerHour": 0.0278394166380167,
+                "MolPerHour": 24.892763137817383,
+                "Percent": 10000.0
+            },
+            "AerationRateConstant": {
+                "MassPerHour": 0.0278394166380167,
+                "MolPerHour": 24.892763137817383,
+                "Percent": 10000.0
+            },
+            "SettlingRateConstant": {
+                "MassPerHour": 0.0278394166380167,
+                "MolPerHour": 24.892763137817383,
+                "Percent": 10000.0
+            },
+            "CalculationVariables": [
+                30.02602195739746,
+                54982.12109375,
+                518624.03125,
+                5.1184210777282715,
+                3890.0,
+                3.369999871611595e-07,
+                1.3782298992737196e-05,
+                2.2387211322784424,
+                0.3499999940395355,
+                1.2477442026138306,
+                25.0,
+                0.0
+            ]
+        }
+    },
+    "fugacityModel": {
+        "parameters": {
+            "henrysLawConstant": {
+                "value": 3.37e-07,
+                "units": "atm-m3/mol",
+                "valueType": "EXPERIMENTAL"
+            },
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            },
+            "logKoc": {
+                "value": 0.0,
+                "units": "L/kg",
+                "valueType": "ESTIMATED"
+            },
+            "molecularWeight": {
+                "value": 30.026022332008978,
+                "units": "g/mol",
+                "valueType": "NONE"
+            },
+            "meltingPoint": {
+                "value": -92.0,
+                "units": "celsius",
+                "valueType": "EXPERIMENTAL"
+            },
+            "vaporPressure": {
+                "value": 3890.0,
+                "units": "mmHg",
+                "valueType": "EXPERIMENTAL"
+            },
+            "waterSolubility": {
+                "value": 54982.12109375,
+                "units": "mg/L",
+                "valueType": "ESTIMATED"
+            },
+            "atmosphericHydroxylRateConstant": {
+                "value": 8.5e-12,
+                "units": "cm3/molecule-sec",
+                "valueType": "EXPERIMENTAL"
+            },
+            "ultimateBiodegradation": {
+                "value": 3.1551359500736,
+                "units": "",
+                "valueType": "NONE"
+            },
+            "halfLifeAir": {
+                "value": 0.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "halfLifeWater": {
+                "value": 0.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "halfLifeSoil": {
+                "value": 0.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "halfLifeSediment": {
+                "value": 0.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "emissionRateAir": {
+                "value": 1000.0,
+                "units": "kg/hour",
+                "valueType": "USER_PROVIDED"
+            },
+            "emissionRateWater": {
+                "value": 1000.0,
+                "units": "kg/hour",
+                "valueType": "USER_PROVIDED"
+            },
+            "emissionRateSoil": {
+                "value": 1000.0,
+                "units": "kg/hour",
+                "valueType": "USER_PROVIDED"
+            },
+            "emissionRateSediment": {
+                "value": 0.0,
+                "units": "kg/hour",
+                "valueType": "USER_PROVIDED"
+            },
+            "advectionTimeAir": {
+                "value": 100.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "advectionTimeWater": {
+                "value": 1000.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "advectionTimeSoil": {
+                "value": 0.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            },
+            "advectionTimeSediment": {
+                "value": 50000.0,
+                "units": "hours",
+                "valueType": "USER_PROVIDED"
+            }
+        },
+        "model": {
+            "Air": [
+                {
+                    "MassAmount": 2.233786776016747,
+                    "HalfLife": 30.19607843137255,
+                    "Emissions": 1000.0
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "Water": [
+                {
+                    "MassAmount": 43.984004147073726,
+                    "HalfLife": 360.0,
+                    "Emissions": 1000.0
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "Soil": [
+                {
+                    "MassAmount": 53.699896296079984,
+                    "HalfLife": 720.0,
+                    "Emissions": 1000.0
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "Sediment": [
+                {
+                    "MassAmount": 0.08231278082955706,
+                    "HalfLife": 3240.0,
+                    "Emissions": 0.0
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "Persistence": 393.75986900846414,
+            "aEmissionArray": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "aAdvectionTimeArray": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "aFugacities": [
+                6.446925885538182e-12,
+                8.754809816698657e-13,
+                3.665513652434738e-11,
+                7.99999901487736e-13
+            ],
+            "aReaction": [
+                605.5877925563879,
+                1000.1800873344757,
+                610.5579517916501,
+                0.20797359786516656
+            ],
+            "aAdvection": [
+                263.87267649515815,
+                519.5740713425847,
+                0.0,
+                0.019446881878301285
+            ],
+            "aReactionPercent": [
+                20.186259751879597,
+                33.339336244482524,
+                20.351931726388337,
+                0.006932453262172219
+            ],
+            "aAdvectionPercent": [
+                8.79575588317194,
+                17.31913571141949,
+                0.0,
+                0.0006482293959433763
+            ],
+            "aSums": [
+                90.07806699602692,
+                73.88446017601262,
+                26.115539823987376
+            ],
+            "aTimes": [
+                393.75986900846414,
+                532.9400364710284,
+                1507.7607878769252
+            ],
+            "HalfLifeArray": [
+                30.19607843137255,
+                360.0,
+                720.0,
+                3240.0
+            ],
+            "HalfLifeFactorArray": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Emission": [
+                1000.0,
+                1000.0,
+                1000.0,
+                0.0
+            ],
+            "AdvectionTimesArray": [
+                100.0,
+                1000.0,
+                0.0,
+                50000.0
+            ],
+            "aNotes": []
+        }
+    },
+    "dermalPermeability": {
+        "parameters": {
+            "smiles": "O=C",
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            },
+            "molecularWeight": {
+                "value": 30.026022332008978,
+                "units": "g/mol",
+                "valueType": "NONE"
+            },
+            "dermalPermeabilityCoefficient": {
+                "value": -999.0,
+                "units": "cm/hr",
+                "valueType": "USER_PROVIDED"
+            },
+            "waterConcentrationMgPerLiter": {
+                "value": 54982.12109375,
+                "units": "mg/L",
+                "valueType": "ESTIMATED"
+            },
+            "eventDurationHours": 0.58,
+            "fractionAbsorbedWater": 1.0,
+            "skinSurfaceAreaCm2": 18000.0,
+            "exposureEventsPerDay": 1.0,
+            "exposureDurationYears": 30.0,
+            "exposureDaysPerYear": 350.0,
+            "bodyWeightKg": 70.0,
+            "averagingTimeDays": 25550.0
+        },
+        "dermalPermeabilityCoefficient": 0.0018156810226975285,
+        "dermalAbsorbedDose": 9416935.020945203,
+        "dermalAbsorbedDosePerEvent": 89112.1073278333,
+        "lagTimePerEventHours": 0.15682470030145923,
+        "timeToReachSteadyStateHours": 0.37637928072350213,
+        "output": "MOL FOR: C1 H2 O1 \nMOL WT : 30.03\n------------------------------ Dermwin v2.02 ----------------------------------\nLog Kow  (estimated)  :  0.35\nLog Kow (User) :  0.35   (used in Kp calculations)\n\nGENERAL Equation:   log Kp = -2.80 + 0.66 log Kow - 0.0056 MW\n    Kp (predicted): 0.00182  cm/hr\n\nDermally Absorbed Dose per Event for Organic Compounds - Water Contact:\n   Water Conc (mg/cm3): 5.50e+07  (entered by user)\n   Event Duration (hr): 0.580\n   Fraction Absorbed  : 1.0000\n\n   DA(event):  8.91e+04 mg/cm2-event (using eqn 3.2 & 3.3)\n                   (tau = 0.157 hr,  t* = 0.376 hr)\n\nDermally Absorbed Dose (70.00 kg Human) - Water Contact:\n   DAD:  9.42e+06 mg/kg-day (using eqn 3.1)\n      using:\n        SA: 18000.0 cm2  (skin surface area)\n        EV: 1.00 event/day  (event freq)\n        ED: 30.0 years  (exposure duration)\n        EF: 350.0 day/year  (exposure freq)\n        BW: 70.00 kg  (body weight)\n        AT: 25550.00 days  (averaging time)\n\n"
+    },
+    "ecosar": {
+        "parameters": {
+            "smiles": "O=C",
+            "cas": "000050-00-0",
+            "logKow": {
+                "value": 0.35,
+                "units": null,
+                "valueType": "EXPERIMENTAL"
+            },
+            "waterSolubility": {
+                "value": 54982.12109375,
+                "units": "mg/L",
+                "valueType": "ESTIMATED"
+            },
+            "meltingPoint": {
+                "value": -92.0,
+                "units": "celsius",
+                "valueType": "EXPERIMENTAL"
+            }
+        },
+        "modelResults": [
+            {
+                "qsarClass": "Aldehydes (Mono)",
+                "organism": "Fish",
+                "duration": "96-hr",
+                "endpoint": "LC50",
+                "concentration": 11.226508140563965,
+                "maxLogKow": 5.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Aldehydes (Mono)",
+                "organism": "Daphnid",
+                "duration": "48-hr",
+                "endpoint": "LC50",
+                "concentration": 11.985322952270508,
+                "maxLogKow": 5.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Aldehydes (Mono)",
+                "organism": "Green Algae",
+                "duration": "96-hr",
+                "endpoint": "EC50",
+                "concentration": 5.865765571594238,
+                "maxLogKow": 6.400000095367432,
+                "flags": []
+            },
+            {
+                "qsarClass": "Aldehydes (Mono)",
+                "organism": "Fish",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 3.619093179702759,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Aldehydes (Mono)",
+                "organism": "Daphnid",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 0.09811598062515259,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Aldehydes (Mono)",
+                "organism": "Green Algae",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 1.7776434421539307,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Fish",
+                "duration": "96-hr",
+                "endpoint": "LC50",
+                "concentration": 748.117431640625,
+                "maxLogKow": 5.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Daphnid",
+                "duration": "48-hr",
+                "endpoint": "LC50",
+                "concentration": 364.75787353515625,
+                "maxLogKow": 5.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Green Algae",
+                "duration": "96-hr",
+                "endpoint": "EC50",
+                "concentration": 144.72206115722656,
+                "maxLogKow": 6.400000095367432,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Fish",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 61.09768295288086,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Daphnid",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 23.279020309448242,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Green Algae",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 26.995397567749023,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Fish (SW)",
+                "duration": "96-hr",
+                "endpoint": "LC50",
+                "concentration": 932.5665283203125,
+                "maxLogKow": 5.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Mysid",
+                "duration": "96-hr",
+                "endpoint": "LC50",
+                "concentration": 2119.384521484375,
+                "maxLogKow": 5.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Fish (SW)",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 36.95725631713867,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Mysid (SW)",
+                "duration": "",
+                "endpoint": "ChV",
+                "concentration": 298.7203369140625,
+                "maxLogKow": 8.0,
+                "flags": []
+            },
+            {
+                "qsarClass": "Neutral Organics",
+                "organism": "Earthworm",
+                "duration": "14-day",
+                "endpoint": "LC50",
+                "concentration": 77.41226196289062,
+                "maxLogKow": 6.0,
+                "flags": []
+            }
+        ],
+        "output": "SMILES : O=C\nMOL FOR: C1 H2 O1 \nMOL WT : 30.03\nLog Kow: 0.350      (EPISuite Kowwin v1.68 Estimate)\nLog Kow: 0.350      (User Entered)\nLog Kow: 0.35       (PhysProp DB exp value - for comparison only)\nMelt Pt: -92.00     (deg C, User Entered for Wat Sol estimate)\nMelt Pt: -92.00     (deg C, PhysProp DB exp value for Wat Sol est)\nWat Sol: 5.498E+04  (mg/L, EPISuite WSKowwin v1.43 Estimate)\nWat Sol: 5.498E+04  (mg/L, User Entered)\nWat Sol: 4.000E+05  (mg/L, PhysProp DB exp value)\n\n--------------------------------------\nValues used to Generate ECOSAR Profile\n--------------------------------------\nLog Kow: 0.350      (User Entered)\nWat Sol: 5.498E+04  (mg/L, User Entered)\n\n\n------------------------------------------------\nAvailable Measured Data from ECOSAR Training Set\n------------------------------------------------\n\n                                           Measured\nCAS No       Organism    Duration   End Pt mg/L (ppm) Ecosar Class                Reference\n===========  ==========  ========== ====== ========== =========================== =========================\n50000        Fish        96h         LC50  24.1       Aldehydes (Mono)            DUL\n\n---------------------------------------\nECOSAR v1.11 Class-specific Estimations\n---------------------------------------\nAldehydes (Mono)\n\n ******************************************************************************\n | Not Related to an Existing ECOSAR Class Definition                         |\n |                                                                            |\n | Estimates provided below use the Neutral Organics QSAR equations which     |\n | represent baseline toxicity potential (minimum toxicity) assuming a simple |\n | non-polar narcosis model.  Without empirical data on structurally similar  |\n | chemicals, it is uncertain if this substance will present significantly    |\n | higher toxicity above baseline estimates.                                  |\n ******************************************************************************\n\n                                                                    Predicted\nECOSAR Class                 Organism            Duration  End Pt   mg/L (ppm)\n===========================  ==================  ========  ======   ==========\nAldehydes (Mono)           : Fish                96-hr     LC50       11.227\nAldehydes (Mono)           : Daphnid             48-hr     LC50       11.985\nAldehydes (Mono)           : Green Algae         96-hr     EC50        5.866\nAldehydes (Mono)           : Fish                          ChV         3.619\nAldehydes (Mono)           : Daphnid                       ChV         0.098\nAldehydes (Mono)           : Green Algae                   ChV         1.778\n\nNeutral Organics           : Fish                96-hr     LC50      748.117\nNeutral Organics           : Daphnid             48-hr     LC50      364.758\nNeutral Organics           : Green Algae         96-hr     EC50      144.722\nNeutral Organics           : Fish                          ChV        61.098\nNeutral Organics           : Daphnid                       ChV        23.279\nNeutral Organics           : Green Algae                   ChV        26.995\nNeutral Organics           : Fish (SW)           96-hr     LC50      932.567\nNeutral Organics           : Mysid               96-hr     LC50     2119.385\nNeutral Organics           : Fish (SW)                     ChV        36.957\nNeutral Organics           : Mysid (SW)                    ChV       298.720\nNeutral Organics           : Earthworm           14-day    LC50       77.412\n\n Note:  * = asterisk designates: Chemical may not be soluble enough to\n        measure this predicted effect. If the effect level exceeds the\n        water solubility by 10X, typically no effects at saturation (NES)\n        are reported.\n\n\n------------------------------\nClass Specific LogKow Cut-Offs\n------------------------------\nIf the log Kow of the chemical is greater than the endpoint specific cut-offs\npresented below, then no effects at saturation are expected for those endpoints.\n\nAldehydes (Mono):\n----------------\nMaximum LogKow: 5.0 (LC50)\nMaximum LogKow: 6.4 (EC50)\nMaximum LogKow: 8.0 (ChV)\n\nNeutral Organics:\n----------------\nMaximum LogKow: 5.0 (Fish 96-hr LC50; Daphnid LC50, Mysid LC50)\nMaximum LogKow: 6.0 (Earthworm LC50)\nMaximum LogKow: 6.4 (Green Algae EC50)\nMaximum LogKow: 8.0 (ChV)\n\n\n",
+        "alerts": [
+            "Not Related to an existing ECOSAR class definition. Provided estimates use the neutral organics QSAR equations which represent baseline toxicity potential (minimum toxicity) assuming a simple non-polar narcosis model. Without empirical data on structurally similar chemicals, it is uncertain if this substance will present significantly higher toxicity above baseline estimates."
+        ]
+    },
+    "logKowAnalogs": [],
+    "analogs": [
+        "000050-00-0"
+    ]
+}

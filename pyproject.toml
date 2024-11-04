@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyepisuite"
+version = "0.1.0"
+description = "A Python client for the EPISuite API."
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+
+authors = [
+    {name = "Ali A. Eftekhari", email = "e.eftekhari@gmail.com"},
+]
+
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "requests",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/simulkade/pyepisuite"
+
+[tool.setuptools.packages.find]
+where = ["src"]

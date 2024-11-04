@@ -1,0 +1,180 @@
+{
+    "parameters": {
+        "smiles": "O=C",
+        "cas": "000050-00-0",
+        "logKow": {
+            "value": 0.35,
+            "units": null,
+            "valueType": "EXPERIMENTAL"
+        },
+        "waterSolubility": {
+            "value": 54982.12109375,
+            "units": "mg/L",
+            "valueType": "ESTIMATED"
+        },
+        "meltingPoint": {
+            "value": -92.0,
+            "units": "celsius",
+            "valueType": "EXPERIMENTAL"
+        }
+    },
+    "modelResults": [
+        {
+            "qsarClass": "Aldehydes (Mono)",
+            "organism": "Fish",
+            "duration": "96-hr",
+            "endpoint": "LC50",
+            "concentration": 11.226508140563965,
+            "maxLogKow": 5.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Aldehydes (Mono)",
+            "organism": "Daphnid",
+            "duration": "48-hr",
+            "endpoint": "LC50",
+            "concentration": 11.985322952270508,
+            "maxLogKow": 5.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Aldehydes (Mono)",
+            "organism": "Green Algae",
+            "duration": "96-hr",
+            "endpoint": "EC50",
+            "concentration": 5.865765571594238,
+            "maxLogKow": 6.400000095367432,
+            "flags": []
+        },
+        {
+            "qsarClass": "Aldehydes (Mono)",
+            "organism": "Fish",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 3.619093179702759,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Aldehydes (Mono)",
+            "organism": "Daphnid",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 0.09811598062515259,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Aldehydes (Mono)",
+            "organism": "Green Algae",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 1.7776434421539307,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Fish",
+            "duration": "96-hr",
+            "endpoint": "LC50",
+            "concentration": 748.117431640625,
+            "maxLogKow": 5.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Daphnid",
+            "duration": "48-hr",
+            "endpoint": "LC50",
+            "concentration": 364.75787353515625,
+            "maxLogKow": 5.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Green Algae",
+            "duration": "96-hr",
+            "endpoint": "EC50",
+            "concentration": 144.72206115722656,
+            "maxLogKow": 6.400000095367432,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Fish",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 61.09768295288086,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Daphnid",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 23.279020309448242,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Green Algae",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 26.995397567749023,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Fish (SW)",
+            "duration": "96-hr",
+            "endpoint": "LC50",
+            "concentration": 932.5665283203125,
+            "maxLogKow": 5.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Mysid",
+            "duration": "96-hr",
+            "endpoint": "LC50",
+            "concentration": 2119.384521484375,
+            "maxLogKow": 5.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Fish (SW)",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 36.95725631713867,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Mysid (SW)",
+            "duration": "",
+            "endpoint": "ChV",
+            "concentration": 298.7203369140625,
+            "maxLogKow": 8.0,
+            "flags": []
+        },
+        {
+            "qsarClass": "Neutral Organics",
+            "organism": "Earthworm",
+            "duration": "14-day",
+            "endpoint": "LC50",
+            "concentration": 77.41226196289062,
+            "maxLogKow": 6.0,
+            "flags": []
+        }
+    ],
+    "output": "SMILES : O=C\nMOL FOR: C1 H2 O1 \nMOL WT : 30.03\nLog Kow: 0.350      (EPISuite Kowwin v1.68 Estimate)\nLog Kow: 0.350      (User Entered)\nLog Kow: 0.35       (PhysProp DB exp value - for comparison only)\nMelt Pt: -92.00     (deg C, User Entered for Wat Sol estimate)\nMelt Pt: -92.00     (deg C, PhysProp DB exp value for Wat Sol est)\nWat Sol: 5.498E+04  (mg/L, EPISuite WSKowwin v1.43 Estimate)\nWat Sol: 5.498E+04  (mg/L, User Entered)\nWat Sol: 4.000E+05  (mg/L, PhysProp DB exp value)\n\n--------------------------------------\nValues used to Generate ECOSAR Profile\n--------------------------------------\nLog Kow: 0.350      (User Entered)\nWat Sol: 5.498E+04  (mg/L, User Entered)\n\n\n------------------------------------------------\nAvailable Measured Data from ECOSAR Training Set\n------------------------------------------------\n\n                                           Measured\nCAS No       Organism    Duration   End Pt mg/L (ppm) Ecosar Class                Reference\n===========  ==========  ========== ====== ========== =========================== =========================\n50000        Fish        96h         LC50  24.1       Aldehydes (Mono)            DUL\n\n---------------------------------------\nECOSAR v1.11 Class-specific Estimations\n---------------------------------------\nAldehydes (Mono)\n\n ******************************************************************************\n | Not Related to an Existing ECOSAR Class Definition                         |\n |                                                                            |\n | Estimates provided below use the Neutral Organics QSAR equations which     |\n | represent baseline toxicity potential (minimum toxicity) assuming a simple |\n | non-polar narcosis model.  Without empirical data on structurally similar  |\n | chemicals, it is uncertain if this substance will present significantly    |\n | higher toxicity above baseline estimates.                                  |\n ******************************************************************************\n\n                                                                    Predicted\nECOSAR Class                 Organism            Duration  End Pt   mg/L (ppm)\n===========================  ==================  ========  ======   ==========\nAldehydes (Mono)           : Fish                96-hr     LC50       11.227\nAldehydes (Mono)           : Daphnid             48-hr     LC50       11.985\nAldehydes (Mono)           : Green Algae         96-hr     EC50        5.866\nAldehydes (Mono)           : Fish                          ChV         3.619\nAldehydes (Mono)           : Daphnid                       ChV         0.098\nAldehydes (Mono)           : Green Algae                   ChV         1.778\n\nNeutral Organics           : Fish                96-hr     LC50      748.117\nNeutral Organics           : Daphnid             48-hr     LC50      364.758\nNeutral Organics           : Green Algae         96-hr     EC50      144.722\nNeutral Organics           : Fish                          ChV        61.098\nNeutral Organics           : Daphnid                       ChV        23.279\nNeutral Organics           : Green Algae                   ChV        26.995\nNeutral Organics           : Fish (SW)           96-hr     LC50      932.567\nNeutral Organics           : Mysid               96-hr     LC50     2119.385\nNeutral Organics           : Fish (SW)                     ChV        36.957\nNeutral Organics           : Mysid (SW)                    ChV       298.720\nNeutral Organics           : Earthworm           14-day    LC50       77.412\n\n Note:  * = asterisk designates: Chemical may not be soluble enough to\n        measure this predicted effect. If the effect level exceeds the\n        water solubility by 10X, typically no effects at saturation (NES)\n        are reported.\n\n\n------------------------------\nClass Specific LogKow Cut-Offs\n------------------------------\nIf the log Kow of the chemical is greater than the endpoint specific cut-offs\npresented below, then no effects at saturation are expected for those endpoints.\n\nAldehydes (Mono):\n----------------\nMaximum LogKow: 5.0 (LC50)\nMaximum LogKow: 6.4 (EC50)\nMaximum LogKow: 8.0 (ChV)\n\nNeutral Organics:\n----------------\nMaximum LogKow: 5.0 (Fish 96-hr LC50; Daphnid LC50, Mysid LC50)\nMaximum LogKow: 6.0 (Earthworm LC50)\nMaximum LogKow: 6.4 (Green Algae EC50)\nMaximum LogKow: 8.0 (ChV)\n\n\n",
+    "alerts": [
+        "Not Related to an existing ECOSAR class definition. Provided estimates use the neutral organics QSAR equations which represent baseline toxicity potential (minimum toxicity) assuming a simple non-polar narcosis model. Without empirical data on structurally similar chemicals, it is uncertain if this substance will present significantly higher toxicity above baseline estimates."
+    ]
+}

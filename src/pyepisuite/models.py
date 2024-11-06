@@ -26,16 +26,6 @@ class Parameters:
     cas: str
     smiles: Optional[str]
     caseNumber: Optional[str]
-    removeMetals: Optional[bool]
-    waterSolubility: Optional[Parameter]
-    vaporPressure: Optional[Parameter]
-    molecularWeight: Optional[Parameter]
-    henrysLawConstant: Optional[Parameter]
-    logKow: Optional[Parameter]
-    subcooledVaporPressure: Optional[Parameter]
-    hydroxylRadicalConcentration: Optional[float]
-    ozoneConcentration: Optional[float]
-    twelveHourDay: Optional[bool]
     userLogKow: Optional[Parameter]
     userMeltingPoint: Optional[Parameter]
     userBoilingPoint: Optional[Parameter]
@@ -67,6 +57,57 @@ class Parameters:
     userFugacityAdvectionTimeSediment: Optional[Parameter]
     modules: Optional[List[str]] = None
 
+    # def __init__(self, data: dict):
+    #     """
+    #     data is a Dict that comes from the response JSON of submit request
+    #     use data["parameters"] to get the parameters Dict if data is the response JSON
+    #     """
+
+    #     self.cas = data.get('cas', '')
+    #     self.smiles = data.get('smiles')
+    #     self.caseNumber = data.get('caseNumber')
+    #     self.userLogKow = Parameter(**data.get('userLogKow', {}))
+    #     self.userMeltingPoint = Parameter(**data.get('userMeltingPoint', {}))
+    #     self.userBoilingPoint = Parameter(**data.get('userBoilingPoint', {}))
+    #     self.userWaterSolubility = Parameter(**data.get('userWaterSolubility', {}))
+    #     self.userVaporPressure = Parameter(**data.get('userVaporPressure', {}))
+    #     self.userHenrysLawConstant = Parameter(**data.get('userHenrysLawConstant', {}))
+    #     self.userLogKoa = Parameter(**data.get('userLogKoa', {}))
+    #     self.userLogKoc = Parameter(**data.get('userLogKoc', {}))
+    #     self.userHydroxylReactionRateConstant = Parameter(**data.get('userHydroxylReactionRateConstant', {}))
+    #     self.userDermalPermeabilityCoefficient = Parameter(**data.get('userDermalPermeabilityCoefficient', {}))
+    #     self.userBiodegradationRateRemoveMetals = Parameter(**data.get('userBiodegradationRateRemoveMetals', {}))
+    #     self.userAtmosphericHydroxylRadicalConcentration = Parameter(**data.get('userAtmosphericHydroxylRadicalConcentration', {}))
+    #     self.userAtmosphericOzoneConcentration = Parameter(**data.get('userAtmosphericOzoneConcentration', {}))
+    #     self.userAtmosphericDaylightHours = Parameter(**data.get('userAtmosphericDaylightHours', {}))
+    #     self.userStpHalfLifePrimaryClarifier = Parameter(**data.get('userStpHalfLifePrimaryClarifier', {}))
+    #     self.userStpHalfLifeAerationVessel = Parameter(**data.get('userStpHalfLifeAerationVessel', {}))
+    #     self.userStpHalfLifeSettlingTank = Parameter(**data.get('userStpHalfLifeSettlingTank', {}))
+    #     self.userFugacityHalfLifeAir = Parameter(**data.get('userFugacityHalfLifeAir', {}))
+    #     self.userFugacityHalfLifeWater = Parameter(**data.get('userFugacityHalfLifeWater', {}))
+    #     self.userFugacityHalfLifeSoil = Parameter(**data.get('userFugacityHalfLifeSoil', {}))
+    #     self.userFugacityHalfLifeSediment = Parameter(**data.get('userFugacityHalfLifeSediment', {}))
+    #     self.userFugacityEmissionRateAir = Parameter(**data.get('userFugacityEmissionRateAir', {}))
+    #     self.userFugacityEmissionRateWater = Parameter(**data.get('userFugacityEmissionRateWater', {}))
+    #     self.userFugacityEmissionRateSoil = Parameter(**data.get('userFugacityEmissionRateSoil', {}))
+    #     self.userFugacityEmissionRateSediment = Parameter(**data.get('userFugacityEmissionRateSediment', {}))
+    #     self.userFugacityAdvectionTimeAir = Parameter(**data.get('userFugacityAdvectionTimeAir', {}))
+    #     self.userFugacityAdvectionTimeWater = Parameter(**data.get('userFugacityAdvectionTimeWater', {}))
+    #     self.userFugacityAdvectionTimeSoil = Parameter(**data.get('userFugacityAdvectionTimeSoil', {}))
+    #     self.userFugacityAdvectionTimeSediment = Parameter(**data.get('userFugacityAdvectionTimeSediment', {}))
+    #     self.modules = data.get('modules', [])
+
+    # removeMetals: Optional[bool]
+    # waterSolubility: Optional[Parameter]
+    # vaporPressure: Optional[Parameter]
+    # molecularWeight: Optional[Parameter]
+    # henrysLawConstant: Optional[Parameter]
+    # logKow: Optional[Parameter]
+    # subcooledVaporPressure: Optional[Parameter]
+    # hydroxylRadicalConcentration: Optional[float]
+    # ozoneConcentration: Optional[float]
+    # twelveHourDay: Optional[bool]
+
 @dataclass
 class ChemicalProperties:
     name: str
@@ -82,151 +123,693 @@ class ChemicalProperties:
     nonStandardMetal: bool
     flags: Optional[Dict[str, bool]]
 
+    # def __init__(self, data: dict):
+    #     """
+    #     data is a Dict that comes from the response JSON of submit request
+    #     use data["chemicalProperties"] to get the chemicalProperties Dict if data is the response JSON
+    #     """
+
+    #     self.name = data.get('name', '')
+    #     self.systematicName = data.get('systematicName', '')
+    #     self.cas = data.get('cas', '')
+    #     self.smiles = data.get('smiles')
+    #     self.molecularWeight = data.get('molecularWeight', 0.0)
+    #     self.molecularFormula = data.get('molecularFormula', '')
+    #     self.molecularFormulaHtml = data.get('molecularFormulaHtml', '')
+    #     self.organic = data.get('organic', False)
+    #     self.organicAcid = data.get('organicAcid', False)
+    #     self.aminoAcid = data.get('aminoAcid', False)
+    #     self.nonStandardMetal = data.get('nonStandardMetal', False)
+    #     self.flags = data.get('flags')
+
 # Common Response Classes
 @dataclass
 class Flag:
     isOrganicAcid: bool
     isAminoAcid: bool
 
+    # def __init__(self, data: dict):
+    #     self.isOrganicAcid = data.get('isOrganicAcid', False)
+    #     self.isAminoAcid = data.get('isAminoAcid', False)
+
 @dataclass
-class Factor:
+class KowFactor:
     type: str
     description: str
     fragmentCount: int
     coefficient: float
-    totalCoefficient: Optional[float] = None
     contribution: Optional[float] = None
     trainingCount: Optional[int] = None
     validationCount: Optional[int] = None
-    totalCoefficient: Optional[float] = None
-    maxFragmentCount: Optional[int] = None
+
+    # def __init__(self, data: dict):
+    #     self.type = data.get('type', '')
+    #     self.description = data.get('description', '')
+    #     self.fragmentCount = data.get('fragmentCount', 0)
+    #     self.coefficient = data.get('coefficient', 0.0)
+    #     self.contribution = data.get('contribution', 0.0)
+    #     self.trainingCount = data.get('trainingCount', 0)
+    #     self.validationCount = data.get('validationCount', 0)
 
 @dataclass
-class Model:
+class KowModel:
     logKow: Optional[float] = None
-    factors: List[Factor] = None
+    factors: List[KowFactor] = None
     output: Optional[str] = None
     notes: Optional[str] = None
     flags: Optional[Flag] = None
 
+    # def __init__(self, data: dict):
+    #     self.logKow = data.get('logKow', 0.0)
+    #     self.factors = [KowFactor(f) for f in data.get('factors', [])]
+    #     self.output = data.get('output')
+    #     self.notes = data.get('notes')
+    #     self.flags = Flag(data.get('flags', {}))
+
 @dataclass
-class EstimatedValue:
-    model: Model
+class logKowEstimatedValue:
+    model: KowModel
     value: float
     units: Optional[str]
     valueType: str
 
+    # def __init__(self, data: dict):
+    #     self.model = KowModel(data.get('model', {}))
+    #     self.value = data.get('value', 0.0)
+    #     self.units = data.get('units')
+    #     self.valueType = data.get('valueType', '')
+
 @dataclass
 class ExperimentalValue:
-    author: str
+    author: Optional[str]
     year: int
     order: int
     value: float
     units: Optional[str]
     valueType: str
 
+    # def __init__(self, data: dict):
+    #     self.author = data.get('author', '')
+    #     self.year = data.get('year', 0)
+    #     self.order = data.get('order', 0)
+    #     self.value = data.get('value', 0.0)
+    #     self.units = data.get('units')
+    #     self.valueType = data.get('valueType', '')
+
 @dataclass
 class SelectedValue:
-    value: float
+    value: Optional[float]
     units: Optional[str]
     valueType: str
+
+    # def __init__(self, data: dict):
+    #     self.value = data.get('value', 0.0)
+    #     self.units = data.get('units')
+    #     self.valueType = data.get('valueType', '')
 
 # Specific Response Classes
 @dataclass
 class LogKowResponse:
-    estimatedValue: EstimatedValue
+    estimatedValue: logKowEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# def __init__(self, data: dict):
+#         self.estimatedValue = logKowEstimatedValue(data.get('estimatedValue', {}))
+#         self.experimentalValues = [ExperimentalValue(ev) for ev in data.get('experimentalValues', [])]
+#         self.selectedValue = SelectedValue(data.get('selectedValue', {}))
+
+# MeltingPointFactor dataclass
+@dataclass
+class MeltingPointFactor:
+    type: str
+    description: str
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+
+# MeltingPointModel dataclass
+@dataclass
+class MeltingPointModel:
+    factors: List[MeltingPointFactor]
+    meltingPointKelvins: float
+    meltingPointLimitKelvins: float
+    meltingPointCelsius: float
+    meltingPointAdaptedJoback: float
+    meltingPointGoldOgle: float
+    meltingPointMean: float
+    meltingPointSelected: float
+
+# MeltingPointEstimatedValue dataclass
+@dataclass
+class MeltingPointEstimatedValue:
+    model: MeltingPointModel
+    value: float
+    units: str
+    valueType: str
+
+# MeltingPointResponse dataclass
 @dataclass
 class MeltingPointResponse:
-    estimatedValue: EstimatedValue
+    estimatedValue: MeltingPointEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# BoilingPointFactor dataclass
+@dataclass
+class BoilingPointFactor:
+    type: str
+    description: str
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+
+# BoilingPointModel dataclass
+@dataclass
+class BoilingPointModel:
+    factors: List[BoilingPointFactor]
+    boilingPointKelvinsUncorrected: float
+    boilingPointKelvinsCorrected: float
+    boilingPointCelsius: float
+
+# BoilingPointEstimatedValue dataclass
+@dataclass
+class BoilingPointEstimatedValue:
+    model: BoilingPointModel
+    value: float
+    units: str
+    valueType: str
+
+# BoilingPointResponse dataclass
 @dataclass
 class BoilingPointResponse:
-    estimatedValue: EstimatedValue
+    estimatedValue: BoilingPointEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# VaporPressureModelItem dataclass
+@dataclass
+class VaporPressureModelItem:
+    type: str
+    mmHg: float
+    pa: float
+
+# VaporPressureEstimatedValue dataclass
+@dataclass
+class VaporPressureEstimatedValue:
+    model: List[VaporPressureModelItem]
+    value: float
+    units: str
+    valueType: str
+
+# VaporPressureResponse dataclass
 @dataclass
 class VaporPressureResponse:
-    estimatedValue: EstimatedValue
+    estimatedValue: VaporPressureEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+@dataclass
+class WaterSolubilityFromLogKowFactor:
+    type: str
+    description: Optional[str]
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+    trainingCount: Optional[int] = None
+    maxFragmentCount: Optional[int] = None
+
+# WaterSolubilityModel dataclass
+@dataclass
+class WaterSolubilityModel:
+    waterSolubility: float
+    factors: List[WaterSolubilityFromLogKowFactor]
+    equation: str
+    notes: str
+    output: str
+
+# WaterSolubilityEstimatedValue dataclass
+@dataclass
+class WaterSolubilityEstimatedValue:
+    model: WaterSolubilityModel
+    value: float
+    units: str
+    valueType: str
+
+# WaterSolubilityFromLogKowParameters dataclass
+@dataclass
+class WaterSolubilityFromLogKowParameters:
+    smiles: str
+    cas: str
+    logKow: Parameter
+    meltingPoint: Parameter
+
+# WaterSolubilityFromLogKowResponse dataclass
 @dataclass
 class WaterSolubilityFromLogKowResponse:
-    estimatedValue: EstimatedValue
+    parameters: WaterSolubilityFromLogKowParameters
+    estimatedValue: WaterSolubilityEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# WaterSolubilityFromWaterNtFactor dataclass
+@dataclass
+class WaterSolubilityFromWaterNtFactor:
+    type: str
+    description: Optional[str]
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+    trainingCount: int
+    maxFragmentCount: int
+
+# WaterSolubilityFromWaterNtModel dataclass
+@dataclass
+class WaterSolubilityFromWaterNtModel:
+    waterSolubility: float
+    factors: List[WaterSolubilityFromWaterNtFactor]
+    equation: str
+    notes: str
+    output: str
+
+# WaterSolubilityFromWaterNtEstimatedValue dataclass
+@dataclass
+class WaterSolubilityFromWaterNtEstimatedValue:
+    model: WaterSolubilityFromWaterNtModel
+    value: float
+    units: str
+    valueType: str
+
+# WaterSolubilityFromWaterNtParameters dataclass
+@dataclass
+class WaterSolubilityFromWaterNtParameters:
+    smiles: str
+    cas: str
+
+# WaterSolubilityFromWaterNtResponse dataclass
 @dataclass
 class WaterSolubilityFromWaterNtResponse:
-    estimatedValue: EstimatedValue
+    parameters: WaterSolubilityFromWaterNtParameters
+    estimatedValue: WaterSolubilityFromWaterNtEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# HenrysLawConstantFactor dataclass
+@dataclass
+class HenrysLawConstantFactor:
+    type: str
+    description: Optional[str]
+    fragmentCount: int
+    totalCoefficient: float
+    trainingCount: int
+    maxFragmentCount: int
+
+# HenrysLawConstantModelItem dataclass
+@dataclass
+class HenrysLawConstantModelItem:
+    name: str
+    value: float
+    factors: Optional[List[HenrysLawConstantFactor]]
+    hlcAtm: float
+    hlcUnitless: float
+    hlcPaMol: float
+    notes: str
+
+# HenrysLawConstantEstimatedValue dataclass
+@dataclass
+class HenrysLawConstantEstimatedValue:
+    model: List[HenrysLawConstantModelItem]
+    value: float
+    units: str
+    valueType: str
+
+# HenrysLawConstantParameters dataclass
+@dataclass
+class HenrysLawConstantParameters:
+    smiles: str
+    cas: str
+    waterSolubility: Parameter
+    vaporPressure: Parameter
+    molecularWeight: Parameter
+
+# HenrysLawConstantResponse dataclass
 @dataclass
 class HenrysLawConstantResponse:
-    estimatedValue: EstimatedValue
+    parameters: HenrysLawConstantParameters
+    estimatedValue: HenrysLawConstantEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# LogKoaModel dataclass
+@dataclass
+class LogKoaModel:
+    kow: float
+    kaw: float
+    koa: float
+    logKoa: float
+
+# LogKoaEstimatedValue dataclass
+@dataclass
+class LogKoaEstimatedValue:
+    model: LogKoaModel
+    value: float
+    units: str
+    valueType: str
+
+# LogKoaParameters dataclass
+@dataclass
+class LogKoaParameters:
+    smiles: str
+    cas: str
+    logKow: Parameter
+    henrysLawConstant: Parameter
+
+# LogKoaResponse dataclass
 @dataclass
 class LogKoaResponse:
-    estimatedValue: EstimatedValue
+    parameters: LogKoaParameters
+    estimatedValue: LogKoaEstimatedValue
     experimentalValues: List[ExperimentalValue]
     selectedValue: SelectedValue
 
+# BiodegradationRateFactor dataclass
+@dataclass
+class BiodegradationRateFactor:
+    type: str
+    description: str
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+    trainingCount: int
+    maxFragmentCount: int
+
+# BiodegradationRateModel dataclass
+@dataclass
+class BiodegradationRateModel:
+    name: str
+    value: float
+    factors: List[BiodegradationRateFactor]
+
+# BiodegradationRateParameters dataclass
+@dataclass
+class BiodegradationRateParameters:
+    smiles: str
+    cas: str
+    removeMetals: bool
+
+# BiodegradationRateResponse dataclass
 @dataclass
 class BiodegradationRateResponse:
-    estimatedValue: EstimatedValue
-    experimentalValues: List[ExperimentalValue]
-    selectedValue: SelectedValue
+    parameters: BiodegradationRateParameters
+    models: List[BiodegradationRateModel]
+    notes: str
+    output: str
 
+# HydrocarbonBiodegradationRateModelFactor dataclass
+@dataclass
+class HydrocarbonBiodegradationRateModelFactor:
+    type: str
+    description: Optional[str]
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+    trainingCount: int
+    maxFragmentCount: int
+
+# HydrocarbonBiodegradationRateModel dataclass
+@dataclass
+class HydrocarbonBiodegradationRateModel:
+    halfLifeDays: Optional[float]
+    logHalfLifeDays: Optional[float]
+    factors: List[HydrocarbonBiodegradationRateModelFactor]
+    notes: str
+    output: str
+
+# HydrocarbonBiodegradationRateEstimatedValue dataclass
+@dataclass
+class HydrocarbonBiodegradationRateEstimatedValue:
+    model: HydrocarbonBiodegradationRateModel
+    value: Optional[float]
+    units: str
+    valueType: str
+
+# HydrocarbonBiodegradationRateParameters dataclass
+@dataclass
+class HydrocarbonBiodegradationRateParameters:
+    smiles: str
+    cas: str
+
+# HydrocarbonBiodegradationRateResponse dataclass
 @dataclass
 class HydrocarbonBiodegradationRateResponse:
-    estimatedValue: EstimatedValue
-    experimentalValues: List[ExperimentalValue]
+    parameters: HydrocarbonBiodegradationRateParameters
+    estimatedValue: HydrocarbonBiodegradationRateEstimatedValue
     selectedValue: SelectedValue
 
+# AerosolAdsorptionFractionModel dataclass
+@dataclass
+class AerosolAdsorptionFractionModel:
+    mackayParticleGasPartitionCoefficient: float
+    koaParticleGasPartitionCoefficient: float
+    mackayAdsorptionFraction: float
+    koaAdsorptionFraction: float
+    jungePankowAdsorptionFraction: float
+
+# AerosolAdsorptionFractionEstimatedValue dataclass
+@dataclass
+class AerosolAdsorptionFractionEstimatedValue:
+    model: AerosolAdsorptionFractionModel
+    value: float
+    units: str
+    valueType: str
+
+# AerosolAdsorptionFractionParameters dataclass
+@dataclass
+class AerosolAdsorptionFractionParameters:
+    logKoa: Parameter
+    subcooledVaporPressure: Parameter
+
+# AerosolAdsorptionFractionResponse dataclass
 @dataclass
 class AerosolAdsorptionFractionResponse:
-    estimatedValue: EstimatedValue
-    experimentalValues: List[ExperimentalValue]
+    parameters: AerosolAdsorptionFractionParameters
+    estimatedValue: AerosolAdsorptionFractionEstimatedValue
     selectedValue: SelectedValue
 
+# ReactionFactor dataclass
+@dataclass
+class ReactionFactor:
+    type: str
+    value: float
+    unit: str
+
+# ReactionModel dataclass
+@dataclass
+class ReactionModel:
+    type: str
+    rateConstant: float
+    halfLifeHours: float
+    factors: Optional[List[ReactionFactor]] = None
+
+# EstimatedValueModel dataclass
+@dataclass
+class EstimatedValueModel:
+    models: List[ReactionModel]
+    notes: str
+    output: str
+
+# EstimatedValue dataclass
+@dataclass
+class EstimatedValue:
+    model: EstimatedValueModel
+    value: Optional[float]
+    units: str
+    valueType: str
+
+# EstimatedHydroxylRadicalReactionRateConstantModel dataclass
+@dataclass
+class EstimatedHydroxylRadicalReactionRateConstantModel:
+    type: str
+    rateConstant: float
+    halfLifeHours: float
+    factors: Optional[List[ReactionFactor]] = None
+
+# EstimatedHydroxylRadicalReactionRateConstant dataclass
+@dataclass
+class EstimatedHydroxylRadicalReactionRateConstant:
+    model: EstimatedHydroxylRadicalReactionRateConstantModel
+    value: float
+    units: str
+    valueType: str
+
+# EstimatedOzoneReactionRateConstantModel dataclass
+@dataclass
+class EstimatedOzoneReactionRateConstantModel:
+    type: str
+    rateConstant: float
+    halfLifeHours: float
+    factors: Optional[List[ReactionFactor]] = None
+
+# EstimatedOzoneReactionRateConstant dataclass
+@dataclass
+class EstimatedOzoneReactionRateConstant:
+    model: EstimatedOzoneReactionRateConstantModel
+    value: float
+    units: str
+    valueType: str
+
+# ExperimentalReactionRateConstant dataclass
+@dataclass
+class ExperimentalReactionRateConstant:
+    author: Optional[str]
+    year: int
+    order: int
+    value: float
+    units: str
+    valueType: str
+
+# AtmosphericHalfLifeParameters dataclass
+@dataclass
+class AtmosphericHalfLifeParameters:
+    smiles: str
+    cas: str
+    hydroxylRadicalConcentration: float
+    ozoneConcentration: float
+    twelveHourDay: bool
+
+# AtmosphericHalfLifeResponse dataclass
 @dataclass
 class AtmosphericHalfLifeResponse:
+    parameters: AtmosphericHalfLifeParameters
     estimatedValue: EstimatedValue
-    experimentalValues: List[ExperimentalValue]
-    selectedValue: SelectedValue
+    estimatedHydroxylRadicalReactionRateConstant: EstimatedHydroxylRadicalReactionRateConstant
+    estimatedOzoneReactionRateConstant: EstimatedOzoneReactionRateConstant
+    experimentalHydroxylRadicalReactionRateConstantValues: List[ExperimentalReactionRateConstant]
+    experimentalOzoneReactionRateConstantValues: List[ExperimentalReactionRateConstant]
+    experimentalNitrateReactionRateConstantValues: List[ExperimentalReactionRateConstant]
+    selectedHydroxylRadicalReactionRateConstant: SelectedValue
+    selectedOzoneReactionRateConstantValues: SelectedValue
 
+# LogKocFactor dataclass
+@dataclass
+class LogKocFactor:
+    fragmentCount: int
+    trainingCount: int
+    maxFragmentCount: int
+    description: str
+    coefficient: float
+    totalCoefficient: float
+
+# LogKocModelItem dataclass
+@dataclass
+class LogKocModelItem:
+    firstOrderMCI: Optional[float]
+    name: str
+    factors: List[LogKocFactor]
+    nonCorrectedLogKoc: float
+    correctedLogKoc: float
+    koc: float
+    logKow: Optional[float] = None
+
+# LogKocModel dataclass
+@dataclass
+class LogKocModel:
+    logKoc: float
+    models: List[LogKocModelItem]
+    notes: str
+    output: str
+
+# LogKocEstimatedValue dataclass
+@dataclass
+class LogKocEstimatedValue:
+    model: LogKocModel
+    value: Optional[float]
+    units: str
+    valueType: str
+
+# LogKocParameters dataclass
+@dataclass
+class LogKocParameters:
+    smiles: str
+    cas: str
+    logKow: Parameter
+
+# LogKocResponse dataclass
 @dataclass
 class LogKocResponse:
-    estimatedValue: EstimatedValue
+    parameters: LogKocParameters
     experimentalValues: List[ExperimentalValue]
+    estimatedValue: LogKocEstimatedValue
     selectedValue: SelectedValue
 
+# HydrolysisHalfLife dataclass
+@dataclass
+class HydrolysisHalfLife:
+    ph: float
+    value: float
+    unit: Optional[str]
+    baseCatalyzed: bool
+    acidCatalyzed: bool
+    phosphorusEster: bool
+    isomer: Optional[str]
+
+# HydrolysisFragment dataclass
+@dataclass
+class HydrolysisFragment:
+    # Define fields if available
+    pass
+
+# HydrolysisResponse dataclass
 @dataclass
 class HydrolysisResponse:
-    estimatedValue: EstimatedValue
-    experimentalValues: List[ExperimentalValue]
-    selectedValue: SelectedValue
+    halfLives: List[HydrolysisHalfLife]
+    phosphorusEsterHalfLives: List[HydrolysisHalfLife]
+    fragments: List[HydrolysisFragment]
+    baseCatalyzedRateConstant: float
+    acidCatalyzedRateConstant: float
+    acidCatalyzedRateConstantForTransIsomer: float
+    neutralRateConstant: float
+    output: str
 
+# BioconcentrationParameters dataclass
 @dataclass
-class ArnotGobatBcfBaf:
-    """
-    "trophicLevel": "Upper Trophic",
-    "trophicLevelNote": null,
-    "bioconcentrationFactor": 1.0564629108622166,
-    "logBioconcentrationFactor": 0.023854254923004505,
-    "bioaccumulationFactor": 1.0564629136752755,
-    "logBioaccumulationFactor": 0.023854256079406628,
-    "unit": "L/kg wet-wt"
-    """
+class BioconcentrationParameters:
+    smiles: str
+    cas: str
+    logKow: Parameter
+
+# BiotransformationFactor dataclass
+@dataclass
+class BiotransformationFactor:
+    type: str
+    description: str
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+    trainingCount: int
+    maxFragmentCount: int
+
+# BiotransformationRateConstant dataclass
+@dataclass
+class BiotransformationRateConstant:
+    type: str
+    value: float
+    unit: str
+
+# BioconcentrationFactor dataclass
+@dataclass
+class BioconcentrationFactor:
+    type: str
+    description: str
+    fragmentCount: int
+    coefficient: float
+    totalCoefficient: float
+    trainingCount: int
+    maxFragmentCount: int
+
+# ArnotGobasBcfBafEstimate dataclass
+@dataclass
+class ArnotGobasBcfBafEstimate:
     trophicLevel: str
     trophicLevelNote: Optional[str]
     bioconcentrationFactor: float
@@ -235,8 +818,10 @@ class ArnotGobatBcfBaf:
     logBioaccumulationFactor: float
     unit: str
 
+# BioconcentrationResponse dataclass
 @dataclass
 class BioconcentrationResponse:
+    parameters: BioconcentrationParameters
     bioconcentrationFactor: float
     experimentalBioconcentrationFactor: Optional[float]
     experimentalBioTransformationRate: float
@@ -244,15 +829,14 @@ class BioconcentrationResponse:
     biotransformationHalfLife: float
     bioaccumulationFactor: float
     logBioaccumulationFactor: float
-    biotransformationFactors: List[Factor]
-    biotransformationRateConstants: List[Coefficient]
-    bioconcentrationFactors: List[Factor]
+    biotransformationFactors: List[BiotransformationFactor]
+    biotransformationRateConstants: List[BiotransformationRateConstant]
+    bioconcentrationFactors: List[BioconcentrationFactor]
     biocontrationFactorEquation: str
     biocontrationFactorEquationSum: float
-    arnotGobasBcfBafEstimates: list[ArnotGobatBcfBaf]
-    estimatedValue: EstimatedValue
-    experimentalValues: List[ExperimentalValue]
-    selectedValue: SelectedValue
+    arnotGobasBcfBafEstimates: List[ArnotGobasBcfBafEstimate]
+    notes: str
+    output: str
 
 @dataclass
 class WaterVolatilizationParameters:
@@ -430,7 +1014,7 @@ class ResultEPISuite:
     sewageTreatmentModel: SewageTreatmentModelResponse
     fugacityModel: FugacityModelResponse
     dermalPermeability: DermalPermeabilityResponse
-    analogs: Optional[List[Dict[str, Any]]] = None
+    analogs: Optional[List[str]] = None
     logKowAnalogs: Optional[List[Parameter]] = None
 
 @dataclass

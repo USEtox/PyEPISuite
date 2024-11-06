@@ -1,6 +1,8 @@
 import requests
 from .models import ResultEPISuite, Identifiers
 from typing import Optional
+import dacite
+import json
 
 class EpiSuiteAPIClient:
     def __init__(self, base_url='https://episuite.dev/EpiWebSuite/api', api_key=None):

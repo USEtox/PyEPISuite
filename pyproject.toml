@@ -23,6 +23,8 @@ classifiers = [
 
 dependencies = [
     "requests",
+    "dacite",
+    "pandas"
 ]
 
 [project.urls]

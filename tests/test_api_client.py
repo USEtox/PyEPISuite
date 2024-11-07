@@ -1,18 +1,17 @@
 # tests/test_api_client.py
-import unittest
+
+import pytest
 from pyepisuite.api_client import EpiSuiteAPIClient
 from pyepisuite.models import Identifiers
 
-class TestEpiSuiteAPIClient(unittest.TestCase):
-    def setUp(self):
-        self.client = EpiSuiteAPIClient()
+@pytest.fixture
+def client():
+    return EpiSuiteAPIClient()
 
-    def test_search(self):
-        identifiers = self.client.search('formaldehyde')
-        self.assertIsInstance(identifiers, list)
-        self.assertGreater(len(identifiers), 0)
-        self.assertIsInstance(identifiers[0], Identifiers)
-        self.assertEqual(identifiers[0].name, 'FORMALDEHYDE')
-
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.network
+def test_search(client):
+    identifiers = client.search('formaldehyde')
+    assert isinstance(identifiers, list), "Identifiers should be a list."
+    assert len(identifiers) > 0, "Identifiers list should not be empty."
+    assert isinstance(identifiers[0], Identifiers), "First item should be an instance of Identifiers."
+    assert identifiers[0].name == 'FORMALDEHYDE', "First identifier name should be 'FORMALDEHYDE'."

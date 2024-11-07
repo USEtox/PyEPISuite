@@ -9,12 +9,13 @@ class EpiSuiteAPIClient:
         self.base_url = base_url
         self.api_key = api_key
 
-    def search(self, query_term):
+    def search(self, query_term, time_out=10):
         """
         Search the EPISuite API with a query term (SMILES, CAS, or chemical name).
 
         Parameters:
             query_term (str): The term to search for.
+            time_out (int): The time out for the request.
 
         Returns:
             List[Chemical]: A list of Chemical instances.
@@ -26,13 +27,13 @@ class EpiSuiteAPIClient:
         if self.api_key:
             headers['Authorization'] = f'Bearer {self.api_key}'
 
-        response = requests.get(url, params=params, headers=headers)
+        response = requests.get(url, params=params, headers=headers, timeout=time_out)
         response.raise_for_status()
         data = response.json()
 
         # Convert each dictionary in the response to a Chemical instance
-        chemicals = [Identifiers(**item) for item in data]
-        return chemicals
+        ids = [Identifiers(**item) for item in data]
+        return ids
     
     def submit(self, cas=None, smiles=None):
         """
@@ -65,8 +66,6 @@ class EpiSuiteAPIClient:
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         data = response.json()
-        # remove output from the response
-        data.pop('output', None)
         return data
     
 def from_dict(data_class, data):

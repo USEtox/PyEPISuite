@@ -1,0 +1,45 @@
+1,Alkanes
+2,Haloalkanes
+3,Alkenes
+4,Haloalkenes
+5,Alkynes
+6,Ethers, aliphatic
+7,Nitroso
+8,Pesticides
+9,Biphenyls
+10,PAHs
+11,Alkyl Benzenes
+12,Halobenzenes
+13,Misc. Benzenes
+14,Amines, aliphatic
+15,Anilines
+16,Phenols
+17,Acids, aliphatic
+18,Acids, aromatic
+19,Alcohols, aliphatic
+20,Aldehydes
+21,Esters
+22,Ketones
+23,Epoxides
+24,Haloalcohols, aliphatic
+25,Nitriles
+26,Misc Nitrogens
+27,Pyridines
+30,Drugs
+31,Dyes
+32,Steroids
+34,Amino acids
+35,Misc Aromatics
+37,Thioureas
+38,Multiply aliphatic -OH
+40,Misc. Sulfur
+41,Phosphorus
+42,Naphthalenes
+43,Cholic acids
+44,Dioxins & Benzofurans
+45,Nitrobenzenes
+47,Amides
+48,Ureas
+49,Nitro, aliphatic
+50,Aromatic sulfonamides
+51,Glycolamide esters

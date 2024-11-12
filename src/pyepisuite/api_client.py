@@ -1,7 +1,6 @@
 import requests
 from .models import ResultEPISuite, Identifiers
 from typing import Optional
-import dacite
 import json
 
 class EpiSuiteAPIClient:

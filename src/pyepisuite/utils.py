@@ -71,7 +71,9 @@ def submit_to_episuite(identifiers: List[Identifiers]) -> tuple[List[ResultEPISu
     Submit an identifier to the EPISuite API.
 
     Parameters:
-        identifiers List of Identifiers: the identifiers obtained by calling search_episuite_by_cas or .
+        identifiers: List of identifiers; the identifiers obtained by calling search_episuite_by_cas. 
+        It can be a list of CAS numbers or SMILES strings. Note that the CAS numbers are preferred, 
+        and they must be in the correct format, i.e. with leading zeros and hyphens.
 
     Returns:
         List[ResultEPISuite, ResultEcoSAR]: A list of ResultEPISuite and ResultEcoSAR instances.

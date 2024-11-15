@@ -901,7 +901,7 @@ class ResultEPISuite:
     fugacityModel: FugacityModelResponse
     dermalPermeability: DermalPermeabilityResponse
     analogs: Optional[List[str]] = None
-    logKowAnalogs: Optional[List[Parameter]] = None
+    logKowAnalogs: Optional[List[str]] = None # possibly a bug in the web app
 
 @dataclass
 class EcosarParameters:

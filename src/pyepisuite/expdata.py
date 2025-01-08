@@ -20,6 +20,12 @@ def vapor_pressure_data_file():
 def solubility_data_file():
     return os.path.join(data_folder(), 'wskowwin', 'solubility_data_clean.csv')
 
+def kow_data_files():
+    param_file = os.path.join(data_folder(), 'kowwin', 'params.csv')
+    kow_file = os.path.join(data_folder(), 'kowwin', 'kow.csv')
+    kow_zwitterionic_file = os.path.join(data_folder(), 'kowwin', 'kow_zwitterionic.csv')
+    return param_file, kow_file, kow_zwitterionic_file
+
 class HenryData:
     def __init__(self) -> None:
         self.data = pd.read_csv(os.path.join(henry_data_file()))
@@ -126,3 +132,26 @@ class SolubilityData:
                 'logKow': logKow, 
                 'water_solubility_mg_per_L': water_solubility_mg_per_L, 
                 'log_mol_per_L': log_mol_per_L}
+    
+class logKowData:
+    def __init__(self) -> None:
+        params, kow, kow_zwitterionic = kow_data_files()
+        self.params = pd.read_csv(params)
+        self.data = pd.read_csv(kow)
+        self.zwitterionic_data = pd.read_csv(kow_zwitterionic)
+
+    def logKow(self, cas: str) -> float:
+        """
+        Returns the logKow for a given CAS number
+        """
+
+        logKow = self.data[self.data['CASRN'] == cas]['logKow_exp'].values[0]
+        return {'CASRN': cas, 'logKow': logKow}
+    
+    def logKow_zwitterionic(self, cas: str) -> float:
+        """
+        Returns the logKow for a given CAS number
+        """
+
+        logKow = self.zwitterionic_data[self.zwitterionic_data['CASRN'] == cas]['logKow_exp'].values[0]
+        return {'CASRN': cas, 'logKow': logKow}

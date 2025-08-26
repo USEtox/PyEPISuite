@@ -30,19 +30,19 @@ def json_to_ecosar(json_data):
     """
     return dacite.from_dict(data_class=ResultEcoSAR, data=json_data)
 
-def search_episuite_by_cas(query_term: List[str]) -> List[Identifiers]:
+def search_episuite_by_cas(CASRN: List[str]) -> List[Identifiers]:
     """
-    Search the EPISuite API with a query term (SMILES, CAS, or chemical name).
+    Search the EPISuite API with a CAS number.
 
     Parameters:
-        query_term (str): The term to search for.
+        CASRN (List[str]): The CAS numbers to search for.
 
     Returns:
         List[Identifiers]: A list of Identifiers instances.
     """
     client = EpiSuiteAPIClient()
     identifiers = []
-    for term in query_term:
+    for term in CASRN:
         # check if term is a CAS number
         if is_valid_cas(term):
             identifiers += client.search(term)

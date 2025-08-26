@@ -6,6 +6,7 @@
 .virtual_documents/
 vscode/
 build/
+site/
 
 # Git is case-sensitive on some operating systems
 PyFVTool.egg-info/
@@ -14,3 +15,33 @@ pyfvtool.egg-info/
 local/
 /pyepisuite.egg-info
 /src/pyepisuite.egg-info
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+
+# Documentation build
+site/
+.mkdocs_build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

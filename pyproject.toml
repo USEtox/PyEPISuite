@@ -24,11 +24,27 @@ classifiers = [
 dependencies = [
     "requests",
     "dacite",
-    "pandas"
+    "pandas>=1.5.0",
+    "openpyxl>=3.0.0"
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/simulkade/pyepisuite"
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.20.0"
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0"
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

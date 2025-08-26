@@ -20,3 +20,11 @@ from .expdata import HenryData, BoilingPointData, MeltingPointData, \
     VaporPressureData, SolubilityData
 from .api_client import EpiSuiteAPIClient
 from .models import Identifiers, ResultEPISuite, ResultEcoSAR
+from .dataframe_utils import (
+    episuite_to_dataframe, 
+    episuite_experimental_to_dataframe,
+    ecosar_to_dataframe,
+    combine_episuite_ecosar_dataframes,
+    export_to_excel,
+    create_summary_statistics
+)

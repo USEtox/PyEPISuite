@@ -1,0 +1,2 @@
+# USEtox3
+Template file for the USEtox input parameters; this file serves as an empty template. The user can call EPISuite web app for a list of chemicals (identified by CAS number, SMILES, or name) and populate the template with the required parameters for running USEtox (the excel version). We write the obtained data and estimation in the sheet "Substance inputs" from row 6 onwards.

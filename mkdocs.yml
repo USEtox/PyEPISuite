@@ -79,5 +79,6 @@ nav:
     - DataFrame Utils: api-reference/dataframe-utils.md
     - Utilities: api-reference/utils.md
     - Experimental Data: api-reference/experimental-data.md
+  - Development: development.md
   - Contributing: contributing.md
   - Changelog: changelog.md

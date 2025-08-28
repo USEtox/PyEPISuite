@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyepisuite"
-version = "0.1.0"
-description = "A Python client for the EPISuite API."
+version = "1.0.0"
+description = "A comprehensive Python client for EPA's EPISuite API with DataFrame utilities for environmental chemistry research."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
@@ -15,8 +15,16 @@ authors = [
 ]
 
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Information Analysis",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -29,7 +37,10 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/simulkade/pyepisuite"
+"Homepage" = "https://github.com/USEtox/PyEPISuite"
+"Documentation" = "https://usetox.github.io/PyEPISuite/"
+"Repository" = "https://github.com/USEtox/PyEPISuite"
+"Bug Tracker" = "https://github.com/USEtox/PyEPISuite/issues"
 
 [project.optional-dependencies]
 docs = [

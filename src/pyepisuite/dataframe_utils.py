@@ -83,8 +83,18 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         row['atmospheric_half_life_estimated'] = _safe_get_estimated_value(result.atmosphericHalfLife)
         row['atmospheric_half_life_units'] = _safe_get_estimated_units(result.atmosphericHalfLife)
         
+        # Additional atmospheric half-life properties
+        if hasattr(result.atmosphericHalfLife, 'estimatedHydroxylRadicalReactionRateConstant'):
+            row['hydroxyl_radical_rate_constant'] = _safe_get_value_direct(result.atmosphericHalfLife.estimatedHydroxylRadicalReactionRateConstant)
+            row['hydroxyl_radical_rate_constant_units'] = _safe_get_units_direct(result.atmosphericHalfLife.estimatedHydroxylRadicalReactionRateConstant)
+        
+        if hasattr(result.atmosphericHalfLife, 'estimatedOzoneReactionRateConstant'):
+            row['ozone_reaction_rate_constant'] = _safe_get_value_direct(result.atmosphericHalfLife.estimatedOzoneReactionRateConstant)
+            row['ozone_reaction_rate_constant_units'] = _safe_get_units_direct(result.atmosphericHalfLife.estimatedOzoneReactionRateConstant)
+        
         row['aerosol_adsorption_fraction_estimated'] = _safe_get_estimated_value(result.aerosolAdsorptionFraction)
         row['aerosol_adsorption_fraction_units'] = _safe_get_estimated_units(result.aerosolAdsorptionFraction)
+        row['aerosol_adsorption_fraction_selected'] = _safe_get_selected_value(result.aerosolAdsorptionFraction)
         
         row['hydrocarbon_biodegradation_rate_estimated'] = _safe_get_estimated_value(result.hydrocarbonBiodegradationRate)
         row['hydrocarbon_biodegradation_rate_units'] = _safe_get_estimated_units(result.hydrocarbonBiodegradationRate)
@@ -96,21 +106,98 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             row['bioaccumulation_factor'] = result.bioconcentration.bioaccumulationFactor
             row['log_bioaccumulation_factor'] = result.bioconcentration.logBioaccumulationFactor
             row['biotransformation_half_life'] = result.bioconcentration.biotransformationHalfLife
+            row['experimental_biotransformation_rate'] = result.bioconcentration.experimentalBioTransformationRate
+            
+            # Get first trophic level data if available
+            if hasattr(result.bioconcentration, 'arnotGobasBcfBafEstimates') and result.bioconcentration.arnotGobasBcfBafEstimates:
+                first_trophic = result.bioconcentration.arnotGobasBcfBafEstimates[0]
+                row['trophic_level'] = first_trophic.trophicLevel
+                row['trophic_bioaccumulation_factor'] = first_trophic.bioaccumulationFactor
+                row['trophic_bioconcentration_factor'] = first_trophic.bioconcentrationFactor
+                row['trophic_unit'] = first_trophic.unit
+        
+        # Hydrolysis
+        if hasattr(result, 'hydrolysis'):
+            row['acid_catalyzed_rate_constant'] = result.hydrolysis.acidCatalyzedRateConstant
+            row['base_catalyzed_rate_constant'] = result.hydrolysis.baseCatalyzedRateConstant
+            row['neutral_rate_constant'] = result.hydrolysis.neutralRateConstant
+            row['acid_catalyzed_trans_isomer_rate'] = result.hydrolysis.acidCatalyzedRateConstantForTransIsomer
+        
+        # Biodegradation models - get summary of main models
+        if hasattr(result, 'biodegradationRate') and hasattr(result.biodegradationRate, 'models'):
+            for model in result.biodegradationRate.models:
+                if hasattr(model, 'name') and hasattr(model, 'value'):
+                    model_name = model.name.lower().replace(' ', '_').replace('-', '_')
+                    row[f'biodeg_{model_name}'] = model.value
         
         # Water volatilization
         if hasattr(result.waterVolatilization, 'riverHalfLifeHours'):
             row['river_half_life_hours'] = result.waterVolatilization.riverHalfLifeHours
             row['lake_half_life_hours'] = result.waterVolatilization.lakeHalfLifeHours
+            
+            # Water volatilization parameters
+            if hasattr(result.waterVolatilization, 'parameters'):
+                params = result.waterVolatilization.parameters
+                row['lake_current_velocity_ms'] = params.lakeCurrentVelocityMetersPerSecond
+                row['lake_water_depth_m'] = params.lakeWaterDepthMeters
+                row['lake_wind_velocity_ms'] = params.lakeWindVelocityMetersPerSecond
+                row['river_current_velocity_ms'] = params.riverCurrentVelocityMetersPerSecond
+                row['river_water_depth_m'] = params.riverWaterDepthMeters
+                row['river_wind_velocity_ms'] = params.riverWindVelocityMetersPerSecond
+        
+        # Sewage treatment model - get key removal percentages
+        if hasattr(result, 'sewageTreatmentModel') and hasattr(result.sewageTreatmentModel, 'model'):
+            stm = result.sewageTreatmentModel.model
+            if hasattr(stm, 'TotalRemoval'):
+                row['sewage_total_removal_percent'] = stm.TotalRemoval.Percent
+            if hasattr(stm, 'TotalSludge'):
+                row['sewage_sludge_percent'] = stm.TotalSludge.Percent
+            if hasattr(stm, 'TotalAir'):
+                row['sewage_air_percent'] = stm.TotalAir.Percent
+            if hasattr(stm, 'TotalBiodeg'):
+                row['sewage_biodeg_percent'] = stm.TotalBiodeg.Percent
+            if hasattr(stm, 'FinalEffluent'):
+                row['sewage_effluent_percent'] = stm.FinalEffluent.Percent
         
         # Dermal permeability
         if hasattr(result.dermalPermeability, 'dermalPermeabilityCoefficient'):
             row['dermal_permeability_coefficient'] = result.dermalPermeability.dermalPermeabilityCoefficient
             row['dermal_absorbed_dose'] = result.dermalPermeability.dermalAbsorbedDose
+            row['dermal_absorbed_dose_per_event'] = result.dermalPermeability.dermalAbsorbedDosePerEvent
             row['lag_time_hours'] = result.dermalPermeability.lagTimePerEventHours
+            row['time_to_steady_state_hours'] = result.dermalPermeability.timeToReachSteadyStateHours
         
-        # Fugacity model persistence
-        if hasattr(result.fugacityModel, 'model') and hasattr(result.fugacityModel.model, 'Persistence'):
-            row['fugacity_persistence'] = result.fugacityModel.model.Persistence
+        # Fugacity model - half-lives and persistence
+        if hasattr(result.fugacityModel, 'model'):
+            if hasattr(result.fugacityModel.model, 'Persistence'):
+                row['fugacity_persistence'] = result.fugacityModel.model.Persistence
+            
+            # Get individual compartment half-lives
+            if hasattr(result.fugacityModel.model, 'HalfLifeArray'):
+                half_lives = result.fugacityModel.model.HalfLifeArray
+                if len(half_lives) >= 4:
+                    row['fugacity_air_half_life'] = half_lives[0]
+                    row['fugacity_water_half_life'] = half_lives[1]
+                    row['fugacity_soil_half_life'] = half_lives[2]
+                    row['fugacity_sediment_half_life'] = half_lives[3]
+            
+            # Alternative method to get compartment half-lives (dynamic attributes)
+            # Note: These attributes are accessed dynamically and may not be type-checked properly
+            try:
+                if hasattr(result.fugacityModel.model, 'Sediment') and result.fugacityModel.model.Sediment and len(result.fugacityModel.model.Sediment) > 0:
+                    sediment_obj = result.fugacityModel.model.Sediment[0]
+                    if hasattr(sediment_obj, 'HalfLife'):
+                        row['fugacity_sediment_half_life_alt'] = getattr(sediment_obj, 'HalfLife', None)
+                if hasattr(result.fugacityModel.model, 'Soil') and result.fugacityModel.model.Soil and len(result.fugacityModel.model.Soil) > 0:
+                    soil_obj = result.fugacityModel.model.Soil[0]
+                    if hasattr(soil_obj, 'HalfLife'):
+                        row['fugacity_soil_half_life_alt'] = getattr(soil_obj, 'HalfLife', None)
+                if hasattr(result.fugacityModel.model, 'Water') and result.fugacityModel.model.Water and len(result.fugacityModel.model.Water) > 0:
+                    water_obj = result.fugacityModel.model.Water[0]
+                    if hasattr(water_obj, 'HalfLife'):
+                        row['fugacity_water_half_life_alt'] = getattr(water_obj, 'HalfLife', None)
+            except (AttributeError, IndexError, TypeError):
+                pass
         
         data.append(row)
     
@@ -278,6 +365,26 @@ def _safe_get_selected_value(response_obj) -> Optional[float]:
     try:
         if hasattr(response_obj, 'selectedValue') and hasattr(response_obj.selectedValue, 'value'):
             return response_obj.selectedValue.value
+        return None
+    except (AttributeError, TypeError):
+        return None
+
+
+def _safe_get_value_direct(obj) -> Optional[float]:
+    """Safely extract value directly from an object."""
+    try:
+        if hasattr(obj, 'value'):
+            return obj.value
+        return None
+    except (AttributeError, TypeError):
+        return None
+
+
+def _safe_get_units_direct(obj) -> Optional[str]:
+    """Safely extract units directly from an object."""
+    try:
+        if hasattr(obj, 'units'):
+            return obj.units
         return None
     except (AttributeError, TypeError):
         return None

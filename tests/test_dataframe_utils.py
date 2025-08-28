@@ -71,11 +71,87 @@ def create_mock_episuite_result():
     for attr in ['meltingPoint', 'boilingPoint', 'vaporPressure', 'waterSolubilityFromLogKow',
                  'waterSolubilityFromWaterNt', 'henrysLawConstant', 'logKoa', 'logKoc',
                  'atmosphericHalfLife', 'aerosolAdsorptionFraction', 'hydrocarbonBiodegradationRate',
-                 'bioconcentration', 'waterVolatilization', 'dermalPermeability', 'fugacityModel']:
+                 'waterVolatilization', 'dermalPermeability', 'fugacityModel', 'hydrolysis', 'biodegradationRate',
+                 'sewageTreatmentModel']:
         mock_attr = Mock()
         mock_attr.estimatedValue.value = 1.0
         mock_attr.estimatedValue.units = "test_unit"
+        mock_attr.selectedValue.value = 1.0
+        mock_attr.selectedValue.units = "test_unit"
         setattr(result, attr, mock_attr)
+    
+    # Special handling for atmosphericHalfLife with additional attributes
+    result.atmosphericHalfLife.estimatedHydroxylRadicalReactionRateConstant = Mock()
+    result.atmosphericHalfLife.estimatedHydroxylRadicalReactionRateConstant.value = 1.5e-12
+    result.atmosphericHalfLife.estimatedHydroxylRadicalReactionRateConstant.units = "cm3/molecule-sec"
+    result.atmosphericHalfLife.estimatedOzoneReactionRateConstant = Mock()
+    result.atmosphericHalfLife.estimatedOzoneReactionRateConstant.value = 2.0e-18
+    result.atmosphericHalfLife.estimatedOzoneReactionRateConstant.units = "cm3/molecule-sec"
+    
+    # Special handling for bioconcentration
+    result.bioconcentration = Mock()
+    result.bioconcentration.bioconcentrationFactor = 10.5
+    result.bioconcentration.logBioconcentrationFactor = 1.02
+    result.bioconcentration.bioaccumulationFactor = 15.2
+    result.bioconcentration.logBioaccumulationFactor = 1.18
+    result.bioconcentration.biotransformationHalfLife = 24.0
+    result.bioconcentration.experimentalBioTransformationRate = 0.029
+    
+    # Mock trophic level data
+    trophic_mock = Mock()
+    trophic_mock.trophicLevel = 2
+    trophic_mock.bioaccumulationFactor = 15.2
+    trophic_mock.bioconcentrationFactor = 10.5
+    trophic_mock.unit = "L/kg"
+    result.bioconcentration.arnotGobasBcfBafEstimates = [trophic_mock]
+    
+    # Special handling for waterVolatilization parameters
+    result.waterVolatilization.riverHalfLifeHours = 12.5
+    result.waterVolatilization.lakeHalfLifeHours = 48.2
+    result.waterVolatilization.parameters = Mock()
+    result.waterVolatilization.parameters.lakeCurrentVelocityMetersPerSecond = 0.1
+    result.waterVolatilization.parameters.lakeWaterDepthMeters = 2.0
+    result.waterVolatilization.parameters.lakeWindVelocityMetersPerSecond = 3.0
+    result.waterVolatilization.parameters.riverCurrentVelocityMetersPerSecond = 0.5
+    result.waterVolatilization.parameters.riverWaterDepthMeters = 1.0
+    result.waterVolatilization.parameters.riverWindVelocityMetersPerSecond = 3.0
+    
+    # Special handling for hydrolysis
+    result.hydrolysis.acidCatalyzedRateConstant = 0.1
+    result.hydrolysis.baseCatalyzedRateConstant = 0.05
+    result.hydrolysis.neutralRateConstant = 0.01
+    result.hydrolysis.acidCatalyzedRateConstantForTransIsomer = 0.08
+    
+    # Special handling for biodegradation models
+    bio_model = Mock()
+    bio_model.name = "Linear Model Prediction"
+    bio_model.value = 0.75
+    result.biodegradationRate.models = [bio_model]
+    
+    # Special handling for dermal permeability
+    result.dermalPermeability.dermalPermeabilityCoefficient = 0.001
+    result.dermalPermeability.dermalAbsorbedDose = 0.5
+    result.dermalPermeability.dermalAbsorbedDosePerEvent = 0.1
+    result.dermalPermeability.lagTimePerEventHours = 2.0
+    result.dermalPermeability.timeToReachSteadyStateHours = 24.0
+    
+    # Special handling for fugacity model
+    result.fugacityModel.model = Mock()
+    result.fugacityModel.model.Persistence = 72.0
+    result.fugacityModel.model.HalfLifeArray = [12.0, 24.0, 168.0, 720.0]  # air, water, soil, sediment
+    
+    # Special handling for sewage treatment model
+    result.sewageTreatmentModel.model = Mock()
+    result.sewageTreatmentModel.model.TotalRemoval = Mock()
+    result.sewageTreatmentModel.model.TotalRemoval.Percent = 85.5
+    result.sewageTreatmentModel.model.TotalSludge = Mock()
+    result.sewageTreatmentModel.model.TotalSludge.Percent = 10.2
+    result.sewageTreatmentModel.model.TotalAir = Mock()
+    result.sewageTreatmentModel.model.TotalAir.Percent = 5.3
+    result.sewageTreatmentModel.model.TotalBiodeg = Mock()
+    result.sewageTreatmentModel.model.TotalBiodeg.Percent = 70.0
+    result.sewageTreatmentModel.model.FinalEffluent = Mock()
+    result.sewageTreatmentModel.model.FinalEffluent.Percent = 14.5
     
     return result
 

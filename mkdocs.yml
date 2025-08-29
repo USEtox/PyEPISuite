@@ -69,6 +69,7 @@ nav:
     - API Client: user-guide/api-client.md
     - DataFrame Utilities: user-guide/dataframe-utils.md
     - Experimental Data: user-guide/experimental-data.md
+    - USEtox Integration: user-guide/usetox-integration.md
   - Examples:
     - Basic Usage: examples/basic-usage.md
     - Data Analysis: examples/data-analysis.md
@@ -79,6 +80,7 @@ nav:
     - DataFrame Utils: api-reference/dataframe-utils.md
     - Utilities: api-reference/utils.md
     - Experimental Data: api-reference/experimental-data.md
+    - USEtox Input: api-reference/usetox-input.md
   - Development: development.md
   - Contributing: contributing.md
   - Changelog: changelog.md

@@ -18,6 +18,7 @@ from .utils import json_to_episuite, json_to_ecosar, search_episuite_by_cas, \
     search_episuite, submit_to_episuite, is_valid_cas
 from .expdata import HenryData, BoilingPointData, MeltingPointData, \
     VaporPressureData, SolubilityData
+from .usetox_input import USEtoxInput, create_usetox_input_from_episuite
 from .api_client import EpiSuiteAPIClient
 from .models import Identifiers, ResultEPISuite, ResultEcoSAR
 from .dataframe_utils import (

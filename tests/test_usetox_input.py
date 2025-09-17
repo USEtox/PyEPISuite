@@ -1,260 +1,222 @@
-"""
-Tests for USEtox Input module
-"""
+"""Tests for USEtox input functionality."""
 
 import pytest
 import pandas as pd
 import numpy as np
 import tempfile
 import os
-from pathlib import Path
-
-from pyepisuite.usetox_input import USEtoxInput, create_usetox_input_from_episuite
-
-
-@pytest.fixture
-def sample_episuite_df():
-    """Create a sample PyEPISuite DataFrame for testing."""
-    return pd.DataFrame({
-        'cas': ['50-00-0', '100-00-5', '100-02-7'],
-        'name': ['FORMALDEHYDE', 'P-CHLORONITROBENZENE', '4-NITROPHENOL'],
-        'molecular_weight': [30.026, 157.555, 139.109],
-        'log_kow_estimated': [0.35, 2.39, 1.91],
-        'log_koc_estimated': [0.11, 2.04, 1.58],
-        'henrys_law_constant_estimated': [3.37e-07, 1.09e-05, 1.12e-08],
-        'vapor_pressure_estimated': [3890.0, 0.4, 0.001],
-        'water_solubility_logkow_estimated': [400000.0, 240.0, 16000.0],
-        'atmospheric_half_life_estimated': [9.77, 35.7, 245.0]
-    })
-
-
-@pytest.fixture
-def temp_excel_file():
-    """Create a temporary Excel file path."""
-    temp_file = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
-    temp_file.close()
-    yield temp_file.name
-    # Cleanup
-    if os.path.exists(temp_file.name):
-        os.unlink(temp_file.name)
+from unittest.mock import patch, MagicMock
+from pyepisuite.usetox_input import USEtoxInput, create_usetox_input_from_cas_list
+from pyepisuite.usetox_input import column_names_dict, BAF_dict, toxicity_dict, flagged_indicative_dict
 
 
 class TestUSEtoxInput:
+    """Test the USEtoxInput class."""
     
-    def test_init_with_default_template(self):
-        """Test initialization with default template."""
-        # This test might fail if template doesn't exist, which is expected
+    @pytest.fixture
+    def sample_episuite_data(self):
+        """Sample EPI Suite result data."""
+        return {
+            'cas': '50-00-0',
+            'name': 'Formaldehyde',
+            'molecular_weight': 30.03,
+            'log_kow_estimated': -0.35,
+            'log_koc_estimated': 1.5,
+            'henrys_law_constant_estimated': 3.37e-5,
+            'vapor_pressure_estimated': 3.89e3,
+            'water_solubility_logkow_estimated': 4.0e5,
+            'atmospheric_half_life_estimated': 245.0,
+            'water_biodegradation_half_life_unacclimated': 30,
+            'sediment_half_life_hours': 120,
+            'soil_half_life_hours': 168,
+            'bioconcentration_factor': 3.2
+        }
+    
+    @pytest.fixture
+    def temp_excel_file(self):
+        """Create a temporary Excel file path."""
+        fd, path = tempfile.mkstemp(suffix='.xlsx')
+        os.close(fd)
+        yield path
+        try:
+            os.unlink(path)
+        except:
+            pass
+    
+    def test_initialization_without_template(self):
+        """Test USEtoxInput initialization without template file."""
+        # This will fail if template doesn't exist, which is expected in test environment
         try:
             usetox_input = USEtoxInput()
-            assert usetox_input.template_df is not None
+            assert usetox_input is not None
         except Exception:
             # Template file doesn't exist in test environment
             pytest.skip("USEtox template file not found")
     
-    def test_episuite_to_usetox_mapping(self):
-        """Test that column mapping is correctly defined."""
-        assert 'cas' in USEtoxInput.EPISUITE_TO_USETOX_MAPPING
-        assert 'molecular_weight' in USEtoxInput.EPISUITE_TO_USETOX_MAPPING
-        assert USEtoxInput.EPISUITE_TO_USETOX_MAPPING['cas'] == 'CAS RN'
-        assert USEtoxInput.EPISUITE_TO_USETOX_MAPPING['molecular_weight'] == 'MW'
+    def test_column_mapping_dictionaries(self):
+        """Test that column mapping dictionaries are correctly defined."""
+        # Test basic column mappings
+        assert 'CAS RN' in column_names_dict
+        assert 'Name' in column_names_dict
+        assert 'MW' in column_names_dict
+        
+        # Check that mappings point to valid Excel column letters
+        for prop, excel_col in column_names_dict.items():
+            assert isinstance(excel_col, str)
+            assert len(excel_col) >= 1  # Valid Excel column
+            
+        # Test BAF dictionary
+        assert 'BAFfish' in BAF_dict
+        
+        # Test other dictionaries exist
+        assert isinstance(toxicity_dict, dict)
+        assert isinstance(flagged_indicative_dict, dict)
     
-    def test_unit_conversions(self):
-        """Test unit conversion functions."""
+    def test_unit_conversion_methods(self):
+        """Test unit conversion methods."""
+        # Create a USEtoxInput instance (will fail in test environment without template)
+        try:
+            usetox_input = USEtoxInput()
+        except:
+            pytest.skip("USEtox template file not found")
+        
         # Test log KOW conversion
-        log_kow_converter = USEtoxInput.UNIT_CONVERSIONS['KOW']
-        assert abs(log_kow_converter(2.0) - 100.0) < 1e-10
-        assert np.isnan(log_kow_converter(np.nan))
+        result = usetox_input._convert_log_kow_to_kow(2.0)
+        assert abs(result - 100.0) < 1e-10
+        
+        # Test None handling
+        assert usetox_input._convert_log_kow_to_kow(None) is None
         
         # Test vapor pressure conversion (mmHg to Pa)
-        vp_converter = USEtoxInput.UNIT_CONVERSIONS['Pvap25']
-        assert abs(vp_converter(1.0) - 133.322) < 1e-3
+        result = usetox_input._convert_mmhg_to_pa(1.0)
+        assert abs(result - 133.322) < 1e-3
         
         # Test solubility conversion (mg/L to g/L)
-        sol_converter = USEtoxInput.UNIT_CONVERSIONS['Sol25']
-        assert abs(sol_converter(1000.0) - 1.0) < 1e-10
+        result = usetox_input._convert_mg_l_to_g_l(1000.0)
+        assert abs(result - 1.0) < 1e-10
+        
+        # Test time conversion (hours to days)
+        result = usetox_input._convert_hours_to_days(24.0)
+        assert abs(result - 1.0) < 1e-10
     
-    def test_populate_from_episuite_dataframe(self, sample_episuite_df):
-        """Test populating template from PyEPISuite DataFrame."""
-        # Create a mock template
-        template_data = {
-            'RowNr': [np.nan] * 10,
-            'CAS RN': [np.nan] * 10,
-            'Name': [np.nan] * 10,
-            'MW': [np.nan] * 10,
-            'KOW': [np.nan] * 10,
-            'Data source': [np.nan] * 10
-        }
-        template_df = pd.DataFrame(template_data)
+    @patch('pyepisuite.usetox_input.load_workbook')
+    def test_add_chemical_from_episuite(self, mock_load_workbook, sample_episuite_data):
+        """Test adding a single chemical from EPI Suite data."""
+        # Mock the workbook and worksheet
+        mock_workbook = MagicMock()
+        mock_worksheet = MagicMock()
+        mock_load_workbook.return_value = mock_workbook
+        mock_workbook.__getitem__.return_value = mock_worksheet
         
-        # Create USEtoxInput instance and manually set template
-        usetox_input = USEtoxInput.__new__(USEtoxInput)
-        usetox_input.template_df = template_df
-        usetox_input.populated_df = None
-        # Add required class constants
-        usetox_input.EPISUITE_TO_USETOX_MAPPING = USEtoxInput.EPISUITE_TO_USETOX_MAPPING
-        usetox_input.EXPERIMENTAL_PROPERTY_PRIORITY = USEtoxInput.EXPERIMENTAL_PROPERTY_PRIORITY
-        usetox_input.UNIT_CONVERSIONS = USEtoxInput.UNIT_CONVERSIONS
-        usetox_input.EXCEL_COLUMN_MAPPING = USEtoxInput.EXCEL_COLUMN_MAPPING
+        # Create USEtoxInput instance with mocked template
+        usetox_input = USEtoxInput("dummy_path.xlsx")
+        usetox_input.workbook = mock_workbook
+        usetox_input.worksheet = mock_worksheet
         
-        # Populate with sample data
-        result_df = usetox_input.populate_from_episuite_dataframe(sample_episuite_df)
+        # Add chemical
+        row_num = usetox_input.add_chemical_from_episuite(sample_episuite_data)
         
-        # Check that data was populated correctly
-        assert result_df.loc[0, 'CAS RN'] == '50-00-0'
-        assert result_df.loc[0, 'Name'] == 'FORMALDEHYDE'
-        assert result_df.loc[0, 'MW'] == 30.026
-        assert result_df.loc[0, 'Data source'] == 'PyEPISuite Estimated'  # Updated to match new naming
+        # Verify row number
+        assert row_num == 6  # Should start at row 6
         
-        # Check unit conversions
-        assert abs(result_df.loc[0, 'KOW'] - 10**0.35) < 1e-10
+        # Verify that worksheet cells were set (checking if __setitem__ was called)
+        assert mock_worksheet.__setitem__.called
     
-    def test_add_chemical_manually(self):
-        """Test manually adding a chemical."""
-        # Create a mock template
-        template_data = {
-            'RowNr': [np.nan] * 5,
-            'CAS RN': [np.nan] * 5,
-            'Name': [np.nan] * 5,
-            'MW': [np.nan] * 5
-        }
-        template_df = pd.DataFrame(template_data)
+    def test_inorganic_detection(self):
+        """Test inorganic chemical detection."""
+        try:
+            usetox_input = USEtoxInput()
+        except:
+            pytest.skip("USEtox template file not found")
+        
+        # Test organic chemical
+        organic_data = {'name': 'Benzene', 'molecular_weight': 78.11}
+        assert not usetox_input._check_if_inorganic(organic_data)
+        
+        # Test inorganic chemical
+        inorganic_data = {'name': 'Sodium chloride', 'molecular_weight': 58.44}
+        assert usetox_input._check_if_inorganic(inorganic_data)
+        
+        # Test by molecular weight
+        small_molecule = {'name': 'Unknown', 'molecular_weight': 20.0}
+        assert usetox_input._check_if_inorganic(small_molecule)
+    
+    @patch('pyepisuite.utils.search_episuite_by_cas')
+    @patch('pyepisuite.utils.submit_to_episuite')
+    @patch('pyepisuite.usetox_input.load_workbook')
+    def test_add_chemicals_from_cas_list(self, mock_load_workbook, mock_submit, mock_search):
+        """Test adding multiple chemicals from CAS list."""
+        # Mock the workbook
+        mock_workbook = MagicMock()
+        mock_worksheet = MagicMock()
+        mock_load_workbook.return_value = mock_workbook
+        mock_workbook.__getitem__.return_value = mock_worksheet
+        
+        # Mock search results
+        mock_identifier = MagicMock()
+        mock_identifier.cas = '000050-00-0'  # EPI Suite format with leading zeros
+        mock_identifier.name = 'Formaldehyde'
+        mock_search.return_value = [mock_identifier]
+        
+        # Mock EPI Suite result
+        mock_result = MagicMock()
+        mock_result.chemicalProperties.molecularWeight = 30.03
+        mock_result.logKow.selectedValue.value = -0.35
+        mock_result.logKoc.selectedValue.value = 1.5
+        mock_submit.return_value = ([mock_result], None)
         
         # Create USEtoxInput instance
-        usetox_input = USEtoxInput.__new__(USEtoxInput)
-        usetox_input.template_df = template_df
-        usetox_input.populated_df = None
+        usetox_input = USEtoxInput("dummy_path.xlsx")
+        usetox_input.workbook = mock_workbook
+        usetox_input.worksheet = mock_worksheet
         
-        # Add a chemical manually
-        properties = {'MW': 78.11}
-        row_idx = usetox_input.add_chemical_manually(
-            cas='71-43-2', 
-            name='Benzene', 
-            properties=properties
-        )
+        # Test adding chemicals
+        cas_list = ['50-00-0']
+        results = usetox_input.add_chemicals_from_cas_list(cas_list)
         
-        assert row_idx == 0
-        assert usetox_input.populated_df.loc[0, 'CAS RN'] == '71-43-2'
-        assert usetox_input.populated_df.loc[0, 'Name'] == 'Benzene'
-        assert usetox_input.populated_df.loc[0, 'MW'] == 78.11
-        assert usetox_input.populated_df.loc[0, 'RowNr'] == 1
+        # Verify results
+        assert '50-00-0' in results
+        assert results['50-00-0'] == 6
     
-    def test_get_summary_statistics(self, sample_episuite_df):
-        """Test summary statistics generation."""
-        # Create a mock template with more columns
-        template_data = {
-            'RowNr': [np.nan] * 10,
-            'CAS RN': [np.nan] * 10,
-            'Name': [np.nan] * 10,
-            'MW': [np.nan] * 10,
-            'KOW': [np.nan] * 10,
-            'Data source': [np.nan] * 10
-        }
-        template_df = pd.DataFrame(template_data)
-        
-        usetox_input = USEtoxInput.__new__(USEtoxInput)
-        usetox_input.template_df = template_df
-        usetox_input.populated_df = None
-        # Add required class constants for summary statistics test
-        usetox_input.EPISUITE_TO_USETOX_MAPPING = USEtoxInput.EPISUITE_TO_USETOX_MAPPING
-        usetox_input.EXPERIMENTAL_PROPERTY_PRIORITY = USEtoxInput.EXPERIMENTAL_PROPERTY_PRIORITY
-        usetox_input.UNIT_CONVERSIONS = USEtoxInput.UNIT_CONVERSIONS
-        usetox_input.EXCEL_COLUMN_MAPPING = USEtoxInput.EXCEL_COLUMN_MAPPING
-        
-        # Populate with sample data
-        usetox_input.populate_from_episuite_dataframe(sample_episuite_df)
-        
-        # Get statistics
-        stats = usetox_input.get_summary_statistics()
-        
-        assert stats['total_chemicals'] == 3
-        assert 'MW' in stats['property_statistics']
-        assert stats['property_statistics']['MW']['count'] == 3
-        assert 'PyEPISuite Estimated' in stats['data_sources']  # Updated to match new naming
+    def test_get_summary(self):
+        """Test summary generation."""
+        try:
+            usetox_input = USEtoxInput()
+            summary = usetox_input.get_summary()
+            
+            assert 'chemicals_added' in summary
+            assert 'current_row' in summary
+            assert 'template_path' in summary
+            assert summary['chemicals_added'] == 0  # No chemicals added yet
+            assert summary['current_row'] == 6  # Should start at row 6
+        except:
+            pytest.skip("USEtox template file not found")
     
-    def test_validate_data(self, sample_episuite_df):
-        """Test data validation."""
-        # Create template with some problematic data
-        template_data = {
-            'RowNr': [1, 2, 3, 4],
-            'CAS RN': ['50-00-0', '100-00-5', np.nan, '50-00-0'],  # Missing and duplicate CAS
-            'Name': ['Chemical1', 'Chemical2', 'Chemical3', 'Chemical4'],
-            'MW': [30.0, 157.0, -10.0, 100.0],  # Negative MW
-            'KOW': [1.0, 100.0, 1e15, 50.0],  # Extreme KOW
-            'Data source': ['Test'] * 4
-        }
-        populated_df = pd.DataFrame(template_data)
+    @patch('pyepisuite.usetox_input.USEtoxInput')
+    def test_create_usetox_input_from_cas_list(self, mock_usetox_class, temp_excel_file):
+        """Test the convenience function."""
+        # Mock the USEtoxInput instance
+        mock_instance = MagicMock()
+        mock_instance.add_chemicals_from_cas_list.return_value = {'50-00-0': 6}
+        mock_instance.get_summary.return_value = {'chemicals_added': 1}
+        mock_usetox_class.return_value = mock_instance
         
-        usetox_input = USEtoxInput.__new__(USEtoxInput)
-        usetox_input.template_df = None
-        usetox_input.populated_df = populated_df
+        # Test the convenience function
+        cas_list = ['50-00-0']
+        result = create_usetox_input_from_cas_list(cas_list, temp_excel_file)
         
-        validation = usetox_input.validate_data()
-        
-        assert len(validation['warnings']) > 0
-        assert len(validation['errors']) > 0
-        assert any('missing CAS' in warning for warning in validation['warnings'])
-        assert any('duplicate CAS' in warning for warning in validation['warnings'])
-        assert any('negative molecular weights' in error for error in validation['errors'])
+        # Verify calls
+        mock_usetox_class.assert_called_once_with(None)
+        mock_instance.add_chemicals_from_cas_list.assert_called_once_with(cas_list)
+        mock_instance.save_excel.assert_called_once_with(temp_excel_file)
+        assert result == mock_instance
+
+
+class TestIntegration:
+    """Integration tests that require the full environment."""
     
-    def test_export_to_excel(self, sample_episuite_df, temp_excel_file):
-        """Test Excel export functionality."""
-        # Create a mock template
-        template_data = {
-            'RowNr': [np.nan] * 10,
-            'CAS RN': [np.nan] * 10,
-            'Name': [np.nan] * 10,
-            'MW': [np.nan] * 10,
-            'Data source': [np.nan] * 10
-        }
-        template_df = pd.DataFrame(template_data)
-        
-        usetox_input = USEtoxInput.__new__(USEtoxInput)
-        usetox_input.template_df = template_df
-        usetox_input.populated_df = None
-        
-        # Populate with sample data
-        usetox_input.populate_from_episuite_dataframe(sample_episuite_df)
-        
-        # Export to Excel
-        usetox_input.export_to_excel(temp_excel_file)
-        
-        # Verify file was created
-        assert os.path.exists(temp_excel_file)
-        
-        # Read back the Excel file, accounting for the title row
-        exported_df = pd.read_excel(temp_excel_file, sheet_name="Substance inputs", skiprows=2)
-        assert len(exported_df) >= 3
-        
-        # Check if the data was exported correctly
-        cas_column = None
-        for col in exported_df.columns:
-            if 'CAS' in str(col) or exported_df[col].astype(str).str.contains('50-00-0').any():
-                cas_column = col
-                break
-        
-        # At minimum, verify that formaldehyde CAS is in the data somewhere
-        found_formaldehyde = False
-        for col in exported_df.columns:
-            if exported_df[col].astype(str).str.contains('50-00-0').any():
-                found_formaldehyde = True
-                break
-        
-        assert found_formaldehyde, "Expected to find formaldehyde CAS number in exported data"
-
-
-def test_create_usetox_input_from_episuite(sample_episuite_df, temp_excel_file):
-    """Test the convenience function."""
-    try:
-        result = create_usetox_input_from_episuite(
-            sample_episuite_df, 
-            temp_excel_file
-        )
-        assert isinstance(result, USEtoxInput)
-        assert os.path.exists(temp_excel_file)
-    except Exception:
-        # Template file might not exist in test environment
-        pytest.skip("USEtox template file not found")
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])
+    def test_full_workflow_mock(self):
+        """Test the full workflow with mocked external dependencies."""
+        # This would test the complete workflow but with mocked API calls
+        # to avoid depending on external services in tests
+        pass

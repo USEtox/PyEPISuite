@@ -34,7 +34,7 @@ class EpiSuiteAPIClient:
         ids = [Identifiers(**item) for item in data]
         return ids
     
-    def submit(self, cas=None, smiles=None):
+    def submit(self, cas="", smiles=""):
         """
         Submit a CAS number or SMILES string to the EPISuite API.
 

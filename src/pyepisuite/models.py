@@ -2,6 +2,57 @@
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Any
 
+def ensure_flags(value: Any) -> Optional[Dict[str, bool]]:
+    """Normalize flags input to Optional[Dict[str,bool]].
+
+    Accepts dict, iterable of (key, val) pairs, iterable of keys, generator, and some string forms.
+    Returns None when no usable value.
+    """
+    if value is None:
+        return None
+
+    # Already a dict -> coerce values to bool
+    if isinstance(value, dict):
+        return {str(k): bool(v) for k, v in value.items()}
+
+    # Strings handled below
+    if isinstance(value, str):
+        s = value.strip()
+        # reject python repr of generator like "<generator object ...>"
+        if s.startswith("<") and "generator" in s:
+            return None
+        # parse "a:True,b:False"
+        if ":" in s and "," in s:
+            out = {}
+            for part in s.split(","):
+                if ":" in part:
+                    k, v = part.split(":", 1)
+                    out[k.strip()] = v.strip().lower() in ("1", "true", "yes")
+            return out or None
+        # comma-separated keys -> True
+        if "," in s:
+            return {p.strip(): True for p in s.split(",") if p.strip()} or None
+        # single token -> treat as key True
+        return {s: True}
+
+    # Iterable (list/tuple/generator) of pairs or keys
+    try:
+        it = iter(value)
+    except TypeError:
+        return None
+
+    out: Dict[str, bool] = {}
+    for item in it:
+        if isinstance(item, (list, tuple)) and len(item) >= 2:
+            k, v = item[0], item[1]
+            out[str(k)] = bool(v)
+        else:
+            # single item -> key True
+            out[str(item)] = True
+
+    return out or None
+
+
 # Base Classes
 @dataclass
 class Identifiers:

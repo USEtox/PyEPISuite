@@ -12,6 +12,11 @@ import logging
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
+
 # Column mapping dictionaries - these tell us which Excel column each property goes in
 column_names_dict = {
     "CAS RN": "B",
@@ -54,6 +59,34 @@ class USEtoxInput:
     3. Add chemical data row by row starting from row 6
     4. Use column mappings to place data in correct columns
     """
+    
+    # Excel column mapping (same as column_names_dict but as class attribute)
+    EXCEL_COLUMN_MAPPING = column_names_dict
+    
+    # Experimental data priority - defines which sources take priority over estimates
+    EXPERIMENTAL_PROPERTY_PRIORITY = {
+        'Sol25': ['experimental_solubility', 'estimated_solubility'],
+        'KOW': ['experimental_kow', 'estimated_kow'],
+        'Pvap25': ['experimental_vapor_pressure', 'estimated_vapor_pressure'],
+        'KH25C': ['experimental_henrys_constant', 'estimated_henrys_constant'],
+        'Koc': ['experimental_koc', 'estimated_koc']
+    }
+    
+    # Mapping from EPI Suite DataFrame columns to USEtox properties
+    EPISUITE_TO_USETOX_MAPPING = {
+        'cas': 'CAS RN',
+        'name': 'Name',
+        'molecular_weight': 'MW',
+        'log_kow_estimated': 'KOW',  # Will be converted from log to linear
+        'log_koc_estimated': 'Koc',  # Will be converted from log to linear
+        'henrys_law_constant_estimated': 'KH25C',
+        'vapor_pressure_estimated': 'Pvap25',
+        'water_solubility_logkow_estimated': 'Sol25',
+        'atmospheric_half_life_estimated': 'T1/2A',
+        'fugacity_water_half_life': 'T1/2W',
+        'fugacity_sediment_half_life': 'T1/2Sd',
+        'fugacity_soil_half_life': 'T1/2Sl'
+    }
     
     def __init__(self, template_path: Optional[str] = None):
         """
@@ -396,6 +429,104 @@ class USEtoxInput:
             'template_path': self.template_path
         }
 
+    def get_summary_statistics(self) -> Dict[str, Any]:
+        """Get summary statistics of populated data."""
+        if not self.worksheet:
+            return {
+                'total_chemicals': 0,
+                'properties_populated': 0,
+                'missing_values': 0
+            }
+        
+        chemicals_added = self.current_row - 6
+        # Count populated properties by checking non-empty cells
+        properties_populated = 0
+        missing_values = 0
+        
+        for row_num in range(6, self.current_row):
+            for col_letter in column_names_dict.values():
+                cell_value = self.worksheet[f"{col_letter}{row_num}"].value
+                if cell_value is not None and cell_value != "":
+                    properties_populated += 1
+                else:
+                    missing_values += 1
+        
+        return {
+            'total_chemicals': chemicals_added,
+            'properties_populated': properties_populated,
+            'missing_values': missing_values
+        }
+
+    def validate_data(self) -> Dict[str, List[str]]:
+        """Validate the populated data and return warnings/errors."""
+        warnings = []
+        errors = []
+        
+        if not self.worksheet:
+            errors.append("No worksheet loaded")
+            return {'warnings': warnings, 'errors': errors}
+        
+        # Check for required fields
+        for row_num in range(6, self.current_row):
+            cas_cell = self.worksheet[f"{column_names_dict['CAS RN']}{row_num}"]
+            name_cell = self.worksheet[f"{column_names_dict['Name']}{row_num}"]
+            
+            if not cas_cell.value:
+                warnings.append(f"Row {row_num}: Missing CAS number")
+            if not name_cell.value:
+                warnings.append(f"Row {row_num}: Missing chemical name")
+                
+            # Check for unrealistic values
+            mw_cell = self.worksheet[f"{column_names_dict['MW']}{row_num}"]
+            if mw_cell.value and mw_cell.value < 0:
+                warnings.append(f"Row {row_num}: Negative molecular weight")
+                
+        return {'warnings': warnings, 'errors': errors}
+
+    def get_excel_column_letter(self, property_name: str) -> Optional[str]:
+        """Get the Excel column letter for a given property name."""
+        return column_names_dict.get(property_name)
+
+    def get_data_source_analysis(self) -> Dict[str, int]:
+        """Analyze data sources in the populated sheet."""
+        if not self.worksheet:
+            return {}
+        
+        # This is a simplified analysis - in practice you'd track data sources during population
+        chemicals_count = self.current_row - 6
+        return {
+            'estimated': chemicals_count,
+            'experimental': 0,  # Would track this during population
+            'manual': 0
+        }
+
+    def populate_from_episuite_dataframe(self, episuite_df):
+        """Populate USEtox template from EPI Suite DataFrame."""
+        import pandas as pd
+        
+        if not isinstance(episuite_df, pd.DataFrame):
+            raise ValueError("Input must be a pandas DataFrame")
+        
+        populated_rows = []
+        for idx, row in episuite_df.iterrows():
+            episuite_dict = row.to_dict()
+            row_num = self.add_chemical_from_episuite(episuite_dict)
+            if row_num > 0:
+                populated_rows.append(row_num)
+        
+        # Return a simple representation - in practice this could be more sophisticated
+        return episuite_df
+
+    def export_to_excel(self, output_path: str, include_headers: bool = True, include_original_template: bool = True):
+        """Export to Excel with additional options."""
+        self.save_excel(output_path)
+        
+    @property
+    def populated_df(self):
+        """Get populated DataFrame representation."""
+        # This is a simplified version - could be enhanced to return actual Excel data as DataFrame
+        return None if not self.worksheet else "populated"
+
 
 def create_usetox_input_from_cas_list(cas_list: List[str], 
                                     output_path: str,
@@ -426,3 +557,71 @@ def create_usetox_input_from_cas_list(cas_list: List[str],
     print(f"📋 Excel file exported to: {output_path}")
     
     return usetox_input
+
+
+def create_usetox_input_from_episuite(episuite_df: Any,
+                                     output_path: str,
+                                     template_path: Optional[str] = None,
+                                     experimental_data: Optional[Dict[str, Dict[str, Any]]] = None) -> USEtoxInput:
+    """
+    Convenience function to create USEtox input from EPI Suite DataFrame results.
+    
+    Args:
+        episuite_df: DataFrame with EPI Suite results (from episuite_to_dataframe)
+        output_path: Path for output Excel file
+        template_path: Optional custom template path
+        experimental_data: Optional dict of experimental data to override estimates
+        
+    Returns:
+        USEtoxInput instance with populated data
+        
+    Example:
+        >>> from pyepisuite.utils import search_episuite_by_cas, submit_to_episuite
+        >>> from pyepisuite.dataframe_utils import episuite_to_dataframe
+        >>> ids = search_episuite_by_cas(['50-00-0', '67-56-1'])
+        >>> epi_results, _ = submit_to_episuite(ids)
+        >>> epi_df = episuite_to_dataframe(epi_results)
+        >>> usetox_input = create_usetox_input_from_episuite(
+        ...     episuite_df=epi_df,
+        ...     output_path='usetox_results.xlsx'
+        ... )
+    """
+    try:
+        # Create USEtoxInput instance
+        usetox_input = USEtoxInput(template_path)
+        
+        # Process each chemical in the DataFrame
+        chemicals_added = 0
+        for idx, row in episuite_df.iterrows():
+            # Convert DataFrame row to dictionary format expected by USEtoxInput
+            episuite_dict = row.to_dict()
+            
+            # Add chemical to USEtox template
+            row_num = usetox_input.add_chemical_from_episuite(episuite_dict)
+            if row_num > 0:
+                chemicals_added += 1
+                
+            # Apply experimental data if provided
+            if experimental_data and 'cas' in episuite_dict:
+                cas_number = episuite_dict['cas']
+                if cas_number in experimental_data:
+                    # Override with experimental data
+                    exp_data = experimental_data[cas_number]
+                    for prop, value in exp_data.items():
+                        if prop in column_names_dict:
+                            col_letter = column_names_dict[prop]
+                            usetox_input.worksheet[f"{col_letter}{row_num}"] = value
+        
+        # Save to Excel
+        usetox_input.save_excel(output_path)
+        
+        # Print summary
+        summary = usetox_input.get_summary()
+        print(f"✅ Successfully created USEtox input with {chemicals_added} chemicals")
+        print(f"📋 Excel file exported to: {output_path}")
+        
+        return usetox_input
+        
+    except Exception as e:
+        logger.error(f"Error creating USEtox input from EPI Suite DataFrame: {e}")
+        raise

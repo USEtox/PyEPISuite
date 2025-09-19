@@ -52,6 +52,8 @@ jobs:
         
     - name: Build documentation
       run: mkdocs build --verbose --clean
+      
+    - name: Upload artifact
       uses: actions/upload-pages-artifact@v4
       with:
         path: ./site

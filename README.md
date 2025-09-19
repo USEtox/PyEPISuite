@@ -1,10 +1,11 @@
 # PyEPISuite
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-green.svg)](https://usetox.github.io/PyEPISuite/)
-[![CI Tests](https://github.com/usetox/PyEPISuite/workflows/Tests/badge.svg)](https://github.com/your-username/PyEPISuite/actions)
-[![Code Quality](https://github.com/usetox/PyEPISuite/workflows/Code%20Quality/badge.svg)](https://github.com/usetox/PyEPISuite/actions)
+[![CI Tests](https://github.com/usetox/PyEPISuite/workflows/Tests/badge.svg)](https://github.com/usetox/PyEPISuite/actions)
+[![Code Quality](https://github.com/usetox/PyEPISuite/workflows/Tests/badge.svg)](https://github.com/usetox/PyEPISuite/actions)
+[![codecov](https://codecov.io/gh/usetox/PyEPISuite/branch/main/graph/badge.svg)](https://codecov.io/gh/usetox/PyEPISuite)
 
 A comprehensive Python client for the EPISuite API with advanced DataFrame utilities for environmental chemistry and toxicology research.
 

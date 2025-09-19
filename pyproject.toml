@@ -7,7 +7,7 @@ name = "pyepisuite"
 version = "1.0.0"
 description = "A comprehensive Python client for EPA's EPISuite API with DataFrame utilities for environmental chemistry research."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 
 authors = [
@@ -21,7 +21,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

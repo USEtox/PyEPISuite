@@ -103,6 +103,7 @@ jobs:
         packages-dir: dist/
         verify-metadata: true
         verbose: true
+        print-hash: true
 
   publish-to-github:
     name: Upload to GitHub Release

@@ -4,6 +4,9 @@ Example of using PyEPISuite with caching functionality.
 This example demonstrates how the caching system works:
 1. First call makes API request and saves to cache
 2. Subsequent calls load from cache (much faster)
+
+For a more comprehensive caching demo including search functions,
+see comprehensive_cache_example.py
 """
 
 from pyepisuite.utils import search_episuite_by_cas, submit_to_episuite, clear_cache, get_cache_dir

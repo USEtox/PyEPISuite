@@ -25,6 +25,63 @@ def get_cache_dir() -> Path:
     cache_dir.mkdir(exist_ok=True)
     return cache_dir
 
+def get_search_cache_key(query_terms: List[str], search_type: str = "general") -> str:
+    """Generate a unique cache key for search queries."""
+    # Sort terms for consistent cache keys regardless of order
+    sorted_terms = sorted(query_terms)
+    key_data = f"search_{search_type}:{','.join(sorted_terms)}"
+    return hashlib.md5(key_data.encode()).hexdigest()
+
+def save_search_to_cache(cache_key: str, identifiers: List[Identifiers]):
+    """Save search results to cache."""
+    try:
+        cache_dir = get_cache_dir()
+        cache_file = cache_dir / f"search_{cache_key}.json"
+        
+        # Convert identifiers to dict for JSON serialization
+        cache_data = {
+            "identifiers": [asdict(identifier) for identifier in identifiers],
+            "cached_at": datetime.now().isoformat(),
+            "count": len(identifiers)
+        }
+        
+        with open(cache_file, 'w') as f:
+            json.dump(cache_data, f, indent=2)
+            
+        logging.debug(f"Cached search results for key: {cache_key}")
+        
+    except Exception as e:
+        logging.warning(f"Failed to save search results to cache: {e}")
+
+def load_search_from_cache(cache_key: str) -> List[Identifiers] | None:
+    """Load search results from cache if available."""
+    try:
+        cache_dir = get_cache_dir()
+        cache_file = cache_dir / f"search_{cache_key}.json"
+        
+        if not cache_file.exists():
+            return None
+            
+        with open(cache_file, 'r') as f:
+            cache_data = json.load(f)
+            
+        # Convert dict back to Identifiers instances
+        identifiers = []
+        for identifier_data in cache_data["identifiers"]:
+            identifier = dacite.from_dict(
+                data_class=Identifiers,
+                data=identifier_data,
+                config=get_dacite_config()
+            )
+            identifiers.append(identifier)
+        
+        logging.debug(f"Loaded search results from cache: {cache_key} ({len(identifiers)} identifiers)")
+        return identifiers
+        
+    except Exception as e:
+        logging.warning(f"Failed to load search results from cache: {e}")
+        return None
+
 def get_cache_key(identifier: Identifiers) -> str:
     """Generate a unique cache key for an identifier."""
     if identifier.cas:
@@ -124,16 +181,25 @@ def json_to_ecosar(json_data):
     """
     return dacite.from_dict(data_class=ResultEcoSAR, data=json_data, config=get_dacite_config())
 
-def search_episuite_by_cas(CASRN: List[str]) -> List[Identifiers]:
+def search_episuite_by_cas(CASRN: List[str], use_cache: bool = True) -> List[Identifiers]:
     """
     Search the EPISuite API with a CAS number.
 
     Parameters:
         CASRN (List[str]): The CAS numbers to search for.
+        use_cache (bool): Whether to use caching for the search results. Defaults to True.
 
     Returns:
         List[Identifiers]: A list of Identifiers instances.
     """
+    # Check cache first if enabled
+    if use_cache:
+        cache_key = get_search_cache_key(CASRN)
+        cached_result = load_search_from_cache(cache_key)
+        if cached_result is not None:
+            logging.info(f"Search results for CAS numbers {CASRN} loaded from cache")
+            return cached_result
+    
     client = EpiSuiteAPIClient()
     identifiers = []
     for term in CASRN:
@@ -142,22 +208,43 @@ def search_episuite_by_cas(CASRN: List[str]) -> List[Identifiers]:
             identifiers += client.search(term)
         else:
             logging.warning(f"Query term '{term}' is not a valid CAS number.")
+    
+    # Save to cache if enabled
+    if use_cache and identifiers:
+        save_search_to_cache(cache_key, identifiers)
+        logging.info(f"Search results for CAS numbers {CASRN} saved to cache")
+    
     return identifiers
 
-def search_episuite(query_terms: List[str]) -> List[Identifiers]:
+def search_episuite(query_terms: List[str], use_cache: bool = True) -> List[Identifiers]:
     """
     Search the EPISuite API with a query term (SMILES, CAS, or chemical name).
 
     Parameters:
-        query_term (str): The term to search for.
+        query_terms (List[str]): The terms to search for.
+        use_cache (bool): Whether to use caching for the search results. Defaults to True.
 
     Returns:
         List[Identifiers]: A list of Identifiers instances.
     """
+    # Check cache first if enabled
+    if use_cache:
+        cache_key = get_search_cache_key(query_terms)
+        cached_result = load_search_from_cache(cache_key)
+        if cached_result is not None:
+            logging.info(f"Search results for query terms {query_terms} loaded from cache")
+            return cached_result
+    
     client = EpiSuiteAPIClient()
     identifiers = []
     for term in query_terms:
         identifiers += client.search(term)
+    
+    # Save to cache if enabled
+    if use_cache and identifiers:
+        save_search_to_cache(cache_key, identifiers)
+        logging.info(f"Search results for query terms {query_terms} saved to cache")
+    
     return identifiers
 
 def submit_to_episuite(identifiers: List[Identifiers], use_cache: bool = True) -> tuple[List[ResultEPISuite], List[ResultEcoSAR]]:

@@ -7,7 +7,9 @@ from pathlib import Path
 from unittest.mock import patch
 
 from pyepisuite.utils import (
-    get_cache_dir, get_cache_key, save_to_cache, load_from_cache, clear_cache
+    get_cache_dir, get_cache_key, save_to_cache, load_from_cache, clear_cache,
+    get_search_cache_key, save_search_to_cache, load_search_from_cache,
+    submit_to_episuite, search_episuite_by_cas, search_episuite
 )
 from pyepisuite.models import Identifiers
 
@@ -150,3 +152,95 @@ class TestCaching:
         result3 = submit_to_episuite(identifiers)
         assert isinstance(result3, tuple)
         assert len(result3) == 2
+
+    def test_search_cache_key_generation(self):
+        """Test search cache key generation."""
+        query_terms = ["123-45-6", "benzene", "C=O"]
+        cache_key = get_search_cache_key(query_terms)
+        assert isinstance(cache_key, str)
+        assert len(cache_key) == 32  # MD5 hash length
+        
+        # Same query terms should produce same key
+        cache_key2 = get_search_cache_key(query_terms)
+        assert cache_key == cache_key2
+        
+        # Different order should produce same key (sorted internally)
+        different_order = ["benzene", "123-45-6", "C=O"]
+        cache_key3 = get_search_cache_key(different_order)
+        assert cache_key == cache_key3  # Should be same due to sorting
+        
+        # Different terms should produce different key
+        different_terms = ["456-78-9", "toluene"]
+        cache_key4 = get_search_cache_key(different_terms)
+        assert cache_key != cache_key4
+
+    @patch('pyepisuite.utils.get_cache_dir')
+    def test_search_cache_save_load_cycle(self, mock_cache_dir):
+        """Test saving and loading search results from cache."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            mock_cache_dir.return_value = Path(temp_dir)
+            
+            cache_key = "test_search_key"
+            cache_file = Path(temp_dir) / f"search_{cache_key}.json"
+            
+            # Mock asdict for search results
+            with patch('pyepisuite.utils.asdict') as mock_asdict:
+                mock_asdict.return_value = {
+                    "dtxsid": "DTXSID123",
+                    "casrn": "123-45-6",
+                    "name": "Test Chemical"
+                }
+                
+                from unittest.mock import MagicMock
+                mock_identifiers = [MagicMock()]
+                
+                # Save to cache
+                save_search_to_cache(cache_key, mock_identifiers)
+                
+                # Check that file was created
+                assert cache_file.exists()
+                
+                # Check file contents
+                with open(cache_file) as f:
+                    data = json.load(f)
+                
+                assert "identifiers" in data
+                assert "cached_at" in data
+                assert len(data["identifiers"]) == 1
+
+    def test_search_episuite_functions_with_cache_parameter(self):
+        """Test that search functions accept use_cache parameter."""
+        # Test search_episuite_by_cas
+        with patch('pyepisuite.utils.EpiSuiteAPIClient') as mock_client:
+            with patch('pyepisuite.utils.is_valid_cas', return_value=True):
+                mock_client_instance = mock_client.return_value
+                mock_client_instance.search.return_value = []
+                
+                # Test with cache enabled
+                result1 = search_episuite_by_cas(["123-45-6"], use_cache=True)
+                assert isinstance(result1, list)
+                
+                # Test with cache disabled
+                result2 = search_episuite_by_cas(["123-45-6"], use_cache=False)
+                assert isinstance(result2, list)
+                
+                # Test default (should be cache enabled)
+                result3 = search_episuite_by_cas(["123-45-6"])
+                assert isinstance(result3, list)
+        
+        # Test search_episuite
+        with patch('pyepisuite.utils.EpiSuiteAPIClient') as mock_client:
+            mock_client_instance = mock_client.return_value
+            mock_client_instance.search.return_value = []
+            
+            # Test with cache enabled
+            result1 = search_episuite(["benzene"], use_cache=True)
+            assert isinstance(result1, list)
+            
+            # Test with cache disabled
+            result2 = search_episuite(["benzene"], use_cache=False)
+            assert isinstance(result2, list)
+            
+            # Test default (should be cache enabled)
+            result3 = search_episuite(["benzene"])
+            assert isinstance(result3, list)

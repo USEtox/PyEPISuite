@@ -31,7 +31,41 @@ python examples/simple_usetox_export.py
 - Ethylbenzene (CAS: 100-41-4) 
 - Toluene (CAS: 108-88-3)
 
-### 2. `usetox_excel_example.py`
+### 2. `cache_example.py`
+
+Demonstrates the caching functionality for improved performance:
+
+- 💾 Shows how caching works for submit_to_episuite
+- ⚡ Compares cached vs non-cached performance
+- 🗂️ Basic cache management operations
+
+**Usage:**
+```bash
+python examples/cache_example.py
+```
+
+### 3. `comprehensive_cache_example.py` ⭐ **New**
+
+A comprehensive demonstration of the full caching system:
+
+- 💾 **Submit function caching** - Cache EPI Suite and EcoSAR results
+- 🔍 **Search function caching** - Cache search results for CAS and general queries
+- ⚡ **Performance comparisons** - Shows dramatic speedup from caching
+- 🗂️ **Cache management** - Clear cache, view cache directory, count files
+- 📊 **Logging output** - See exactly when cache is used
+
+**Usage:**
+```bash
+python examples/comprehensive_cache_example.py
+```
+
+**Benefits demonstrated:**
+- Drastically faster repeated operations
+- Reduced API calls and network usage
+- Persistent cache across Python sessions
+- Automatic cache key generation
+
+### 4. `usetox_excel_example.py`
 
 A more comprehensive example that demonstrates advanced USEtox integration:
 

@@ -12,7 +12,7 @@ on:
       upload_to_pypi:
         description: 'Upload to PyPI (only for testing)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 permissions:

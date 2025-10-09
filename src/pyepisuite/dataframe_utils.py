@@ -61,6 +61,21 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         row['boiling_point_estimated'] = _safe_get_estimated_value(result.boilingPoint)
         row['boiling_point_units'] = _safe_get_estimated_units(result.boilingPoint)
         
+        # Safely extract vapor pressure model data
+        if (hasattr(result, 'vaporPressure') and result.vaporPressure and 
+            hasattr(result.vaporPressure, 'estimatedValue') and result.vaporPressure.estimatedValue and
+            hasattr(result.vaporPressure.estimatedValue, 'model') and result.vaporPressure.estimatedValue.model):
+            for vp in result.vaporPressure.estimatedValue.model:
+                if hasattr(vp, 'type') and vp.type == 'Selected':
+                    continue
+                if hasattr(vp, 'type') and hasattr(vp, 'mmHg'):
+                    row[f'vapor_pressure_{vp.type}_estimated'] = vp.mmHg
+        types = ['Antoine', 'Grain', 'Mackay', 'SubCooled']
+        for t in types:
+            key = f'vapor_pressure_{t}_estimated'
+            if key not in row.keys():
+                row[key] = None
+        
         row['vapor_pressure_estimated'] = _safe_get_estimated_value(result.vaporPressure)
         row['vapor_pressure_units'] = _safe_get_estimated_units(result.vaporPressure)
         
@@ -70,6 +85,19 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         row['water_solubility_waternt_estimated'] = _safe_get_estimated_value(result.waterSolubilityFromWaterNt)
         row['water_solubility_waternt_units'] = _safe_get_estimated_units(result.waterSolubilityFromWaterNt)
         
+        # Henry's law constant from different models
+        if (hasattr(result, 'henrysLawConstant') and result.henrysLawConstant and 
+            hasattr(result.henrysLawConstant, 'estimatedValue') and result.henrysLawConstant.estimatedValue and
+            hasattr(result.henrysLawConstant.estimatedValue, 'model') and result.henrysLawConstant.estimatedValue.model):
+            for hlc in result.henrysLawConstant.estimatedValue.model:
+                if hasattr(hlc, 'name') and hasattr(hlc, 'hlcAtm'):
+                    row[f'henrys_law_constant_{hlc.name}_estimated'] = hlc.hlcAtm
+        types = ['VP/WSOL', 'Bond', 'Group']
+        for t in types:
+            key = f'henrys_law_constant_{t}_estimated'
+            if key not in row.keys():
+                row[key] = None
+
         row['henrys_law_constant_estimated'] = _safe_get_estimated_value(result.henrysLawConstant)
         row['henrys_law_constant_units'] = _safe_get_estimated_units(result.henrysLawConstant)
         

@@ -53,6 +53,38 @@ print(f"Retrieved data for {len(epi_df)} chemicals")
 print(f"Properties available: {list(epi_df.columns)}")
 ```
 
+## 🖥️ Local Runtime (Windows and Linux)
+
+PyEPISuite now supports local-first operation with `data/local/EpiSuiteCLI.jar`.
+
+- Default mode: `auto` (prefer local runtime when JAR is available)
+- Force local: `PYEPISUITE_MODE=local`
+- Force remote: `PYEPISUITE_MODE=remote`
+
+Linux/macOS:
+
+```bash
+export PYEPISUITE_MODE=local
+```
+
+Windows PowerShell:
+
+```powershell
+$env:PYEPISUITE_MODE = "local"
+```
+
+Python:
+
+```python
+from pyepisuite import EpiSuiteAPIClient
+
+client = EpiSuiteAPIClient()
+hits = client.search("formaldehyde")
+result = client.submit(cas="000050-00-0")
+```
+
+Detailed guide: `docs/user-guide/local-mode.md`
+
 ## 🧮 DataFrame Features
 
 PyEPISuite provides powerful DataFrame utilities for data analysis:
@@ -128,6 +160,7 @@ PyEPISuite provides access to 40+ environmental and physical-chemical properties
 
 - **[Installation Guide](https://pyepisuite.readthedocs.io/getting-started/installation/)**
 - **[Quick Start Tutorial](https://pyepisuite.readthedocs.io/getting-started/quickstart/)**
+- **[Local Runtime Guide](https://pyepisuite.readthedocs.io/user-guide/local-mode/)**
 - **[DataFrame Utilities Guide](https://pyepisuite.readthedocs.io/user-guide/dataframe-utils/)**
 - **[Data Analysis Examples](https://pyepisuite.readthedocs.io/examples/data-analysis/)**
 - **[API Reference](https://pyepisuite.readthedocs.io/api-reference/)**

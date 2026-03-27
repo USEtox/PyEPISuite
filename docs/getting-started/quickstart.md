@@ -2,6 +2,29 @@
 
 This guide will get you up and running with PyEPISuite in just a few minutes.
 
+## Runtime Mode
+
+PyEPISuite runs in `auto` mode by default:
+
+- If `data/local/EpiSuiteCLI.jar` is available, it uses local runtime.
+- Otherwise, it uses the hosted EPISuite API.
+
+You can force mode selection:
+
+Linux/macOS:
+
+```bash
+export PYEPISUITE_MODE=local   # or remote
+```
+
+Windows PowerShell:
+
+```powershell
+$env:PYEPISUITE_MODE = "local"  # or "remote"
+```
+
+For full local setup details, see [Local Runtime Mode](../user-guide/local-mode.md).
+
 ## Basic Workflow
 
 The typical PyEPISuite workflow involves three main steps:

@@ -2,6 +2,9 @@
 
 The `EpiSuiteAPIClient` class provides the core interface for interacting with the EPISuite API.
 
+By default, the client now prefers a local runtime when `data/local/EpiSuiteCLI.jar` is available.
+Set `PYEPISUITE_MODE=remote` to force the hosted API.
+
 ## Overview
 
 ::: pyepisuite.api_client.EpiSuiteAPIClient
@@ -17,7 +20,8 @@ The `EpiSuiteAPIClient` class provides the core interface for interacting with t
 ```python
 from pyepisuite import EpiSuiteAPIClient
 
-# Create client with default settings
+# Create client with default settings.
+# If a local JAR is present, this starts local mode automatically.
 client = EpiSuiteAPIClient()
 
 # Or with custom base URL
@@ -26,6 +30,35 @@ client = EpiSuiteAPIClient(base_url='https://episuite.dev/EpiWebSuite/api')
 # With API key (if required)
 client = EpiSuiteAPIClient(api_key='your-api-key')
 ```
+
+### Explicit Local Client
+
+```python
+from pyepisuite import LocalEpiSuiteAPIClient, stop_local_episuite_server
+
+# Always target local runtime.
+client = LocalEpiSuiteAPIClient()
+
+ids = client.search('formaldehyde')
+result = client.submit(cas='000050-00-0')
+
+# Stop managed local process when needed.
+stop_local_episuite_server()
+```
+
+### Mode Selection
+
+Use `PYEPISUITE_MODE` to control behavior:
+
+- `auto` (default): prefer local runtime if JAR exists, otherwise use remote API
+- `local`: require local runtime and fail fast if startup fails
+- `remote`: always use hosted API
+
+Optional local environment variables:
+
+- `PYEPISUITE_LOCAL_JAR_PATH`: absolute/relative path to `EpiSuiteCLI.jar`
+- `PYEPISUITE_LOCAL_BASE_URL`: connect-only mode, e.g. `http://127.0.0.1:45511`
+- `PYEPISUITE_LOCAL_STARTUP_TIMEOUT`: startup timeout in seconds (default `60`)
 
 ### Searching for Chemicals
 

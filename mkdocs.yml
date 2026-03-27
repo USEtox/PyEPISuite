@@ -67,6 +67,7 @@ nav:
     - Quick Start: getting-started/quickstart.md
   - User Guide:
     - API Client: user-guide/api-client.md
+    - Local Runtime Mode: user-guide/local-mode.md
     - DataFrame Utilities: user-guide/dataframe-utils.md
     - Experimental Data: user-guide/experimental-data.md
     - USEtox Integration: user-guide/usetox-integration.md

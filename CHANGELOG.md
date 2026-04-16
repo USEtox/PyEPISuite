@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-04-16
+
+### Added
+- **Local mode support** via embedded Java executable (EpiSuiteCLI.jar) for offline EPISuite calculations
+- Local API client that starts and communicates with the local Java server
+
+### Changed
+- Switched project tooling to `uv` for faster dependency management
+- Updated DataFrame utilities with additional properties
+- Dropped Python 3.10 support; minimum version is now Python 3.11
+
+### Fixed
+- Type issue and typo fixes
+
 ## [1.0.0] - 2025-08-29
 
 ### Added

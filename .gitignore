@@ -12,7 +12,10 @@ site/
 PyFVTool.egg-info/
 pyfvtool.egg-info/
 
-local/
+local/database/
+*.sqlite
+*.*Identifier
+*.jar
 /pyepisuite.egg-info
 /src/pyepisuite.egg-info
 

@@ -9,12 +9,14 @@ from pathlib import Path
 from typing import Optional
 
 import requests
+from tqdm import tqdm
 
 from .models import Identifiers
 
 
 DEFAULT_REMOTE_BASE_URL = 'https://episuite.dev/EpiWebSuite/api'
 DEFAULT_LOCAL_STARTUP_TIMEOUT = 60
+DEFAULT_JAR_DOWNLOAD_URL = 'https://episuite.dev/api/download'
 
 
 def _is_cas_formatted(cas: str) -> bool:
@@ -88,6 +90,33 @@ class _LocalRuntimeManager:
         return None
 
     @classmethod
+    def _download_jar(cls) -> Path:
+        dest = Path(__file__).resolve().parents[2] / 'data' / 'local' / 'EpiSuiteCLI.jar'
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        url = os.getenv('PYEPISUITE_JAR_DOWNLOAD_URL', DEFAULT_JAR_DOWNLOAD_URL)
+        response = requests.get(url, stream=True, timeout=300)
+        response.raise_for_status()
+        total_size = int(response.headers.get('content-length', 0)) or None
+        tmp = dest.with_suffix('.jar.tmp')
+        try:
+            with tmp.open('wb') as fh, tqdm(
+                total=total_size,
+                unit='B',
+                unit_scale=True,
+                unit_divisor=1024,
+                desc='Downloading EpiSuiteCLI.jar',
+            ) as progress:
+                for chunk in response.iter_content(chunk_size=4 * 1024 * 1024):
+                    if chunk:
+                        fh.write(chunk)
+                        progress.update(len(chunk))
+            tmp.replace(dest)
+        except Exception:
+            tmp.unlink(missing_ok=True)
+            raise
+        return dest
+
+    @classmethod
     def has_local_assets(cls) -> bool:
         return cls._resolve_jar_path() is not None
 
@@ -99,11 +128,7 @@ class _LocalRuntimeManager:
 
             jar_path = cls._resolve_jar_path()
             if jar_path is None:
-                raise RuntimeError(
-                    'Local mode requested but EpiSuiteCLI.jar was not found. '
-                    'Set PYEPISUITE_MODE=remote to force remote mode or set '
-                    'PYEPISUITE_LOCAL_JAR_PATH to the JAR location.'
-                )
+                jar_path = cls._download_jar()
 
             timeout_seconds = int(os.getenv('PYEPISUITE_LOCAL_STARTUP_TIMEOUT', DEFAULT_LOCAL_STARTUP_TIMEOUT))
             cmd = ['java', '-jar', str(jar_path)]

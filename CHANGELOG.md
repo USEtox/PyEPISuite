@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-04-23
+
+### Added
+- **Automatic JAR download** — `_LocalRuntimeManager` now automatically downloads `EpiSuiteCLI.jar`
+  from `https://episuite.dev/api/download` when the file is not present locally, eliminating the
+  need for manual installation. The download URL can be overridden via the
+  `PYEPISUITE_JAR_DOWNLOAD_URL` environment variable.
+- **Download progress bar** — a `tqdm`-based progress bar is shown during the JAR download,
+  displaying transferred size, speed, and estimated time remaining.
+- **`tqdm>=4.0.0`** added as a runtime dependency.
+
 ## [1.1.0] - 2026-04-16
 
 ### Added

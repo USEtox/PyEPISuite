@@ -7,7 +7,11 @@
 [![Code Quality](https://github.com/usetox/PyEPISuite/workflows/Tests/badge.svg)](https://github.com/usetox/PyEPISuite/actions)
 [![codecov](https://codecov.io/gh/usetox/PyEPISuite/branch/main/graph/badge.svg)](https://codecov.io/gh/usetox/PyEPISuite)
 
-A comprehensive Python client for the EPISuite API with advanced DataFrame utilities for environmental chemistry and toxicology research.
+An "UNOFFICIAL" comprehensive Python client for the EPISuite API with advanced DataFrame utilities for environmental chemistry and toxicology research.
+
+## Disclaimer
+
+EPI Suite™ is a trademark of the U.S. Environmental Protection Agency. This project, i.e. PyEPISuite is an independent, unofficial interface and is not affiliated with or endorsed by the U.S. EPA. PyEPISuite is not created, endorsed, or sponsored by the U.S. EPA.
 
 ## 🚀 Key Features
 

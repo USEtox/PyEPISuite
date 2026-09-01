@@ -2,7 +2,7 @@ import dacite
 from dacite import Config
 from .models import ResultEcoSAR, ResultEPISuite, Identifiers, ensure_flags
 from .api_client import EpiSuiteAPIClient
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import re
 import logging
 import os
@@ -15,9 +15,20 @@ from dataclasses import asdict
 def _flags_hook(v: Any) -> Dict[str, bool] | None:
     return ensure_flags(v)
 
+def _optional_str_hook(v: Any) -> Optional[str]:
+    # The API sometimes returns an empty list (e.g. []) instead of null for
+    # optional string fields such as "notes". Coerce lists into a plain string
+    # (or None when empty) so dacite doesn't reject the value with a type error.
+    if isinstance(v, list):
+        return "; ".join(str(item) for item in v) if v else None
+    return v
+
 def get_dacite_config() -> Config:
     # Hook Dict[str, bool] so any field annotated as that will be normalized during from_dict
-    return Config(type_hooks={Dict[str, bool]: _flags_hook})
+    return Config(type_hooks={
+        Dict[str, bool]: _flags_hook,
+        Optional[str]: _optional_str_hook,
+    })
 
 def get_cache_dir() -> Path:
     """Get or create the cache directory."""

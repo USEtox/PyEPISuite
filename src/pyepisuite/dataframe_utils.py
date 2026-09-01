@@ -154,7 +154,7 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         # Biodegradation models - get summary of main models
         if hasattr(result, 'biodegradationRate') and hasattr(result.biodegradationRate, 'models'):
             for model in result.biodegradationRate.models:
-                if hasattr(model, 'name') and hasattr(model, 'value'):
+                if getattr(model, 'name', None) is not None:
                     model_name = model.name.lower().replace(' ', '_').replace('-', '_')
                     row[f'biodeg_{model_name}'] = model.value
         
@@ -166,25 +166,25 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             # Water volatilization parameters
             if hasattr(result.waterVolatilization, 'parameters'):
                 params = result.waterVolatilization.parameters
-                row['lake_current_velocity_ms'] = params.lakeCurrentVelocityMetersPerSecond
-                row['lake_water_depth_m'] = params.lakeWaterDepthMeters
-                row['lake_wind_velocity_ms'] = params.lakeWindVelocityMetersPerSecond
-                row['river_current_velocity_ms'] = params.riverCurrentVelocityMetersPerSecond
-                row['river_water_depth_m'] = params.riverWaterDepthMeters
-                row['river_wind_velocity_ms'] = params.riverWindVelocityMetersPerSecond
+                row['lake_current_velocity_ms'] = _safe_get_parameter_value(params.lakeCurrentVelocityMetersPerSecond)
+                row['lake_water_depth_m'] = _safe_get_parameter_value(params.lakeWaterDepthMeters)
+                row['lake_wind_velocity_ms'] = _safe_get_parameter_value(params.lakeWindVelocityMetersPerSecond)
+                row['river_current_velocity_ms'] = _safe_get_parameter_value(params.riverCurrentVelocityMetersPerSecond)
+                row['river_water_depth_m'] = _safe_get_parameter_value(params.riverWaterDepthMeters)
+                row['river_wind_velocity_ms'] = _safe_get_parameter_value(params.riverWindVelocityMetersPerSecond)
         
         # Sewage treatment model - get key removal percentages
-        if hasattr(result, 'sewageTreatmentModel') and hasattr(result.sewageTreatmentModel, 'model'):
-            stm = result.sewageTreatmentModel.model
-            if hasattr(stm, 'TotalRemoval'):
+        stm = getattr(getattr(result, 'sewageTreatmentModel', None), 'model', None)
+        if stm is not None:
+            if getattr(stm, 'TotalRemoval', None) is not None:
                 row['sewage_total_removal_percent'] = stm.TotalRemoval.Percent
-            if hasattr(stm, 'TotalSludge'):
+            if getattr(stm, 'TotalSludge', None) is not None:
                 row['sewage_sludge_percent'] = stm.TotalSludge.Percent
-            if hasattr(stm, 'TotalAir'):
+            if getattr(stm, 'TotalAir', None) is not None:
                 row['sewage_air_percent'] = stm.TotalAir.Percent
-            if hasattr(stm, 'TotalBiodeg'):
+            if getattr(stm, 'TotalBiodeg', None) is not None:
                 row['sewage_biodeg_percent'] = stm.TotalBiodeg.Percent
-            if hasattr(stm, 'FinalEffluent'):
+            if getattr(stm, 'FinalEffluent', None) is not None:
                 row['sewage_effluent_percent'] = stm.FinalEffluent.Percent
         
         # Dermal permeability
@@ -196,34 +196,30 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             row['time_to_steady_state_hours'] = result.dermalPermeability.timeToReachSteadyStateHours
         
         # Fugacity model - half-lives and persistence
-        if hasattr(result.fugacityModel, 'model'):
-            if hasattr(result.fugacityModel.model, 'Persistence'):
-                row['fugacity_persistence'] = result.fugacityModel.model.Persistence
+        fugacity_model = getattr(getattr(result, 'fugacityModel', None), 'model', None)
+        if fugacity_model is not None:
+            if getattr(fugacity_model, 'Persistence', None) is not None:
+                row['fugacity_persistence'] = fugacity_model.Persistence
             
             # Get individual compartment half-lives
-            if hasattr(result.fugacityModel.model, 'HalfLifeArray'):
-                half_lives = result.fugacityModel.model.HalfLifeArray
-                if len(half_lives) >= 4:
-                    row['fugacity_air_half_life'] = half_lives[0]
-                    row['fugacity_water_half_life'] = half_lives[1]
-                    row['fugacity_soil_half_life'] = half_lives[2]
-                    row['fugacity_sediment_half_life'] = half_lives[3]
+            half_lives = getattr(fugacity_model, 'HalfLifeArray', None)
+            if half_lives is not None and len(half_lives) >= 4:
+                row['fugacity_air_half_life'] = half_lives[0]
+                row['fugacity_water_half_life'] = half_lives[1]
+                row['fugacity_soil_half_life'] = half_lives[2]
+                row['fugacity_sediment_half_life'] = half_lives[3]
             
             # Alternative method to get compartment half-lives (dynamic attributes)
-            # Note: These attributes are accessed dynamically and may not be type-checked properly
             try:
-                if hasattr(result.fugacityModel.model, 'Sediment') and result.fugacityModel.model.Sediment and len(result.fugacityModel.model.Sediment) > 0:
-                    sediment_obj = result.fugacityModel.model.Sediment[0]
-                    if hasattr(sediment_obj, 'HalfLife'):
-                        row['fugacity_sediment_half_life_alt'] = getattr(sediment_obj, 'HalfLife', None)
-                if hasattr(result.fugacityModel.model, 'Soil') and result.fugacityModel.model.Soil and len(result.fugacityModel.model.Soil) > 0:
-                    soil_obj = result.fugacityModel.model.Soil[0]
-                    if hasattr(soil_obj, 'HalfLife'):
-                        row['fugacity_soil_half_life_alt'] = getattr(soil_obj, 'HalfLife', None)
-                if hasattr(result.fugacityModel.model, 'Water') and result.fugacityModel.model.Water and len(result.fugacityModel.model.Water) > 0:
-                    water_obj = result.fugacityModel.model.Water[0]
-                    if hasattr(water_obj, 'HalfLife'):
-                        row['fugacity_water_half_life_alt'] = getattr(water_obj, 'HalfLife', None)
+                sediment = getattr(fugacity_model, 'Sediment', None)
+                if sediment and sediment[0] is not None:
+                    row['fugacity_sediment_half_life_alt'] = getattr(sediment[0], 'HalfLife', None)
+                soil = getattr(fugacity_model, 'Soil', None)
+                if soil and soil[0] is not None:
+                    row['fugacity_soil_half_life_alt'] = getattr(soil[0], 'HalfLife', None)
+                water = getattr(fugacity_model, 'Water', None)
+                if water and water[0] is not None:
+                    row['fugacity_water_half_life_alt'] = getattr(water[0], 'HalfLife', None)
             except (AttributeError, IndexError, TypeError):
                 pass
         
@@ -393,6 +389,16 @@ def _safe_get_selected_value(response_obj) -> Optional[float]:
     try:
         if hasattr(response_obj, 'selectedValue') and hasattr(response_obj.selectedValue, 'value'):
             return response_obj.selectedValue.value
+        return None
+    except (AttributeError, TypeError):
+        return None
+
+
+def _safe_get_parameter_value(param_obj) -> Optional[float]:
+    """Safely extract the numeric value from a Parameter-like object."""
+    try:
+        if hasattr(param_obj, 'value'):
+            return param_obj.value
         return None
     except (AttributeError, TypeError):
         return None

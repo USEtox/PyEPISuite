@@ -14,7 +14,7 @@ from tqdm import tqdm
 from .models import Identifiers
 
 
-DEFAULT_REMOTE_BASE_URL = 'https://episuite.dev/EpiWebSuite/api'
+DEFAULT_REMOTE_BASE_URL = 'https://episuite.dev/api'
 DEFAULT_LOCAL_STARTUP_TIMEOUT = 60
 DEFAULT_JAR_DOWNLOAD_URL = 'https://episuite.dev/api/download'
 
@@ -62,7 +62,7 @@ class _LocalRuntimeManager:
 
     @classmethod
     def _extract_base_url(cls, line: str) -> Optional[str]:
-        match = re.search(r'EPISuite started on (https?://[^\s]+)', line)
+        match = re.search(r'Listening at (https?://[^\s]+)', line)
         if not match:
             return None
         return match.group(1).rstrip('/')
@@ -131,11 +131,14 @@ class _LocalRuntimeManager:
                 jar_path = cls._download_jar()
 
             timeout_seconds = int(os.getenv('PYEPISUITE_LOCAL_STARTUP_TIMEOUT', DEFAULT_LOCAL_STARTUP_TIMEOUT))
-            cmd = ['java', '-jar', str(jar_path)]
+            host = os.getenv('PYEPISUITE_LOCAL_HOST', '127.0.0.1')
+            port = os.getenv('PYEPISUITE_LOCAL_PORT', '0')
+            cmd = ['java', '-jar', str(jar_path), '--serve', '--host', host, '--port', port]
 
             try:
                 process = subprocess.Popen(
                     cmd,
+                    stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,

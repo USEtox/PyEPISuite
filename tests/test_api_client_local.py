@@ -25,7 +25,7 @@ def test_mode_remote_uses_hosted_api():
     with patch.dict(os.environ, {'PYEPISUITE_MODE': 'remote'}):
         client = EpiSuiteAPIClient()
 
-    assert client.base_url == 'https://episuite.dev/EpiWebSuite/api'
+    assert client.base_url == 'https://episuite.dev/api'
     assert client.local_mode is False
 
 

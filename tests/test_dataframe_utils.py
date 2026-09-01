@@ -76,6 +76,7 @@ def create_mock_episuite_result():
         mock_attr = Mock()
         mock_attr.estimatedValue.value = 1.0
         mock_attr.estimatedValue.units = "test_unit"
+        mock_attr.estimatedValue.model = []
         mock_attr.selectedValue.value = 1.0
         mock_attr.selectedValue.units = "test_unit"
         setattr(result, attr, mock_attr)
@@ -109,12 +110,12 @@ def create_mock_episuite_result():
     result.waterVolatilization.riverHalfLifeHours = 12.5
     result.waterVolatilization.lakeHalfLifeHours = 48.2
     result.waterVolatilization.parameters = Mock()
-    result.waterVolatilization.parameters.lakeCurrentVelocityMetersPerSecond = 0.1
-    result.waterVolatilization.parameters.lakeWaterDepthMeters = 2.0
-    result.waterVolatilization.parameters.lakeWindVelocityMetersPerSecond = 3.0
-    result.waterVolatilization.parameters.riverCurrentVelocityMetersPerSecond = 0.5
-    result.waterVolatilization.parameters.riverWaterDepthMeters = 1.0
-    result.waterVolatilization.parameters.riverWindVelocityMetersPerSecond = 3.0
+    result.waterVolatilization.parameters.lakeCurrentVelocityMetersPerSecond = Mock(value=0.1)
+    result.waterVolatilization.parameters.lakeWaterDepthMeters = Mock(value=2.0)
+    result.waterVolatilization.parameters.lakeWindVelocityMetersPerSecond = Mock(value=3.0)
+    result.waterVolatilization.parameters.riverCurrentVelocityMetersPerSecond = Mock(value=0.5)
+    result.waterVolatilization.parameters.riverWaterDepthMeters = Mock(value=1.0)
+    result.waterVolatilization.parameters.riverWindVelocityMetersPerSecond = Mock(value=3.0)
     
     # Special handling for hydrolysis
     result.hydrolysis.acidCatalyzedRateConstant = 0.1

@@ -2,7 +2,11 @@
 EPISuite API Package
 """
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
+
+# The EPI Suite API version this release targets. The package version is
+# independent of it: see episuite_version.py.
+from .episuite_version import EPISUITE_VERSION as __episuite_version__
 
 __author__ = [
     "Ali A. Eftekhari",
@@ -18,7 +22,6 @@ from .utils import json_to_episuite, json_to_ecosar, search_episuite_by_cas, \
     search_episuite, submit_to_episuite, is_valid_cas
 from .expdata import HenryData, BoilingPointData, MeltingPointData, \
     VaporPressureData, SolubilityData
-from .usetox_input import USEtoxInput, create_usetox_input_from_cas_list
 from .api_client import EpiSuiteAPIClient, LocalEpiSuiteAPIClient, stop_local_episuite_server
 from .models import Identifiers, ResultEPISuite, ResultEcoSAR
 from .dataframe_utils import (

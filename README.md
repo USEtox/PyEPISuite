@@ -131,14 +131,16 @@ from pyepisuite.expdata import HenryData, SolubilityData
 henry_data = HenryData()
 solubility_data = SolubilityData()
 
-# Get experimental values
+# Get experimental values (the curated datasets use unpadded CAS)
 cas = "50-00-0"
 experimental_hlc = henry_data.HLC(cas)
 experimental_solubility = solubility_data.solubility(cas)
 
-# Compare with predictions
-predicted_hlc = epi_df[epi_df['cas'] == cas]['henrys_law_constant_estimated'].iloc[0]
-print(f"Predicted: {predicted_hlc}, Experimental: {experimental_hlc}")
+# Compare with predictions. EPI Suite returns zero-padded CAS numbers
+# ("000050-00-0"), so strip the padding before matching.
+match = epi_df[epi_df['cas'].str.lstrip('0') == cas]
+predicted_hlc = match['henrys_law_constant_estimated'].iloc[0]
+print(f"Predicted: {predicted_hlc}, Experimental: {experimental_hlc['value']}")
 ```
 
 ## 📊 Available Properties

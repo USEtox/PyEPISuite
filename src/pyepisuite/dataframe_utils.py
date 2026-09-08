@@ -5,9 +5,10 @@ This module provides functions to convert EPI Suite and EcoSAR results
 to pandas DataFrames for easier data analysis and manipulation.
 """
 
+import re
 import pandas as pd
 from typing import List, Dict, Any, Optional, Union
-from .models import ResultEPISuite, ResultEcoSAR, ExperimentalValue, Parameter
+from .models import ResultEPISuite, ResultEcoSAR, ExperimentalValue, Parameter, ModuleError
 
 
 def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
@@ -52,6 +53,12 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         row['is_amino_acid'] = getattr(chem_props, 'aminoAcid', None)
         row['is_non_standard_metal'] = getattr(chem_props, 'nonStandardMetal', None)
 
+        # Modules the API could not estimate. Without this the failures are
+        # invisible: the module's columns are simply absent or empty.
+        failed = [e.module for e in (getattr(result, 'errors', None) or [])
+                  if getattr(e, 'module', None)]
+        row['failed_modules'] = ', '.join(sorted(failed)) if failed else None
+
         # Physical and chemical properties - estimated values
         row['log_kow_estimated'] = _safe_get_estimated_value(result.logKow)
         row['log_kow_units'] = _safe_get_estimated_units(result.logKow)
@@ -91,8 +98,8 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             hasattr(result.henrysLawConstant, 'estimatedValue') and result.henrysLawConstant.estimatedValue and
             hasattr(result.henrysLawConstant.estimatedValue, 'model') and result.henrysLawConstant.estimatedValue.model):
             for hlc in result.henrysLawConstant.estimatedValue.model:
-                if hasattr(hlc, 'name') and hasattr(hlc, 'hlcAtm'):
-                    row[f'henrys_law_constant_{hlc.name}_estimated'] = hlc.hlcAtm
+                if getattr(hlc, 'name', None) is not None:
+                    row[f'henrys_law_constant_{hlc.name}_estimated'] = hlc.hlcAtmM3PerMol
         types = ['VP/WSOL', 'Bond', 'Group']
         for t in types:
             key = f'henrys_law_constant_{t}_estimated'
@@ -137,28 +144,47 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             row['biotransformation_half_life'] = result.bioconcentration.biotransformationHalfLife
             row['experimental_biotransformation_rate'] = result.bioconcentration.experimentalBioTransformationRate
             
-            # Get first trophic level data if available
-            if hasattr(result.bioconcentration, 'arnotGobasBcfBafEstimates') and result.bioconcentration.arnotGobasBcfBafEstimates:
-                first_trophic = result.bioconcentration.arnotGobasBcfBafEstimates[0]
-                row['trophic_level'] = first_trophic.trophicLevel
-                row['trophic_bioaccumulation_factor'] = first_trophic.bioaccumulationFactor
-                row['trophic_bioconcentration_factor'] = first_trophic.bioconcentrationFactor
-                row['trophic_unit'] = first_trophic.unit
-        
-        # Hydrolysis
+            # Arnot-Gobas estimates are reported as titled rows, one column each
+            for estimate in getattr(result.bioconcentration, 'arnotGobasBcfBafEstimates', None) or []:
+                title = getattr(estimate, 'title', None)
+                if not title:
+                    continue
+                key = _column_name(title)
+                row[f'arnot_gobas_{key}'] = estimate.value
+                row[f'arnot_gobas_{key}_log'] = estimate.logValue
+                row[f'arnot_gobas_{key}_unit'] = estimate.unit
+
+        # Hydrolysis - the flat rate constants are nested under `rates` in v1.1.0.
+        # `disposition` says whether the compound has hydrolyzable functions at
+        # all, which distinguishes "no estimate" from "estimated as zero".
         hydrolysis = getattr(result, 'hydrolysis', None)
-        if hydrolysis is not None:
-            row['acid_catalyzed_rate_constant'] = hydrolysis.acidCatalyzedRateConstant
-            row['base_catalyzed_rate_constant'] = hydrolysis.baseCatalyzedRateConstant
-            row['neutral_rate_constant'] = hydrolysis.neutralRateConstant
-            row['acid_catalyzed_trans_isomer_rate'] = hydrolysis.acidCatalyzedRateConstantForTransIsomer
-        
+        row['hydrolysis_disposition'] = getattr(hydrolysis, 'disposition', None)
+        hydrolysis_rates = getattr(hydrolysis, 'rates', None)
+        if hydrolysis_rates is not None:
+            row['acid_catalyzed_rate_constant'] = _safe_get_value_direct(hydrolysis_rates.acidCatalyzedPrimary)
+            row['base_catalyzed_rate_constant'] = _safe_get_value_direct(hydrolysis_rates.baseCatalyzed)
+            row['neutral_rate_constant'] = _safe_get_value_direct(hydrolysis_rates.neutral)
+            row['acid_catalyzed_trans_isomer_rate'] = _safe_get_value_direct(hydrolysis_rates.acidCatalyzedTrans)
+
+        # Half-lives are reported per mechanism and pH
+        for half_life in getattr(hydrolysis, 'halfLives', None) or []:
+            mechanism = getattr(half_life, 'mechanism', None)
+            if mechanism is None:
+                continue
+            suffix = _column_name(mechanism)
+            if getattr(half_life, 'pH', None) is not None:
+                suffix = f'{suffix}_ph{half_life.pH}'
+            row[f'hydrolysis_half_life_{suffix}'] = half_life.value
+            row[f'hydrolysis_half_life_{suffix}_unit'] = half_life.unit
+
         # Biodegradation models - get summary of main models
         biodeg_models = getattr(getattr(result, 'biodegradationRate', None), 'models', None) or []
         for model in biodeg_models:
-            if getattr(model, 'name', None) is not None:
-                model_name = model.name.lower().replace(' ', '_').replace('-', '_')
-                row[f'biodeg_{model_name}'] = model.value
+            # Prefer the BIOWIN short name ("biowin1"); fall back to the long name.
+            label = getattr(model, 'shortName', None) or getattr(model, 'name', None)
+            if label is None:
+                continue
+            row[f'biodeg_{_column_name(label)}'] = model.calculatedValue
         
         # Water volatilization
         if hasattr(result.waterVolatilization, 'riverHalfLifeHours'):
@@ -177,17 +203,13 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         
         # Sewage treatment model - get key removal percentages
         stm = getattr(getattr(result, 'sewageTreatmentModel', None), 'model', None)
-        if stm is not None:
-            if getattr(stm, 'TotalRemoval', None) is not None:
-                row['sewage_total_removal_percent'] = stm.TotalRemoval.Percent
-            if getattr(stm, 'TotalSludge', None) is not None:
-                row['sewage_sludge_percent'] = stm.TotalSludge.Percent
-            if getattr(stm, 'TotalAir', None) is not None:
-                row['sewage_air_percent'] = stm.TotalAir.Percent
-            if getattr(stm, 'TotalBiodeg', None) is not None:
-                row['sewage_biodeg_percent'] = stm.TotalBiodeg.Percent
-            if getattr(stm, 'FinalEffluent', None) is not None:
-                row['sewage_effluent_percent'] = stm.FinalEffluent.Percent
+        stm_estimates = getattr(stm, 'estimates', None)
+        if stm_estimates is not None:
+            row['sewage_total_removal_percent'] = stm_estimates.totalRemovalPercent
+            row['sewage_sludge_percent'] = stm_estimates.totalSludgeAdsorptionPercent
+            row['sewage_air_percent'] = stm_estimates.totalAirPercent
+            row['sewage_biodeg_percent'] = stm_estimates.totalBiodegradationPercent
+            row['sewage_effluent_percent'] = stm_estimates.finalEffluentPercent
         
         # Dermal permeability
         if hasattr(result.dermalPermeability, 'dermalPermeabilityCoefficient'):
@@ -200,31 +222,24 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         # Fugacity model - half-lives and persistence
         fugacity_model = getattr(getattr(result, 'fugacityModel', None), 'model', None)
         if fugacity_model is not None:
-            if getattr(fugacity_model, 'Persistence', None) is not None:
-                row['fugacity_persistence'] = fugacity_model.Persistence
-            
-            # Get individual compartment half-lives
-            half_lives = getattr(fugacity_model, 'HalfLifeArray', None)
-            if half_lives is not None and len(half_lives) >= 4:
-                row['fugacity_air_half_life'] = half_lives[0]
-                row['fugacity_water_half_life'] = half_lives[1]
-                row['fugacity_soil_half_life'] = half_lives[2]
-                row['fugacity_sediment_half_life'] = half_lives[3]
-            
-            # Alternative method to get compartment half-lives (dynamic attributes)
-            try:
-                sediment = getattr(fugacity_model, 'Sediment', None)
-                if sediment and sediment[0] is not None:
-                    row['fugacity_sediment_half_life_alt'] = getattr(sediment[0], 'HalfLife', None)
-                soil = getattr(fugacity_model, 'Soil', None)
-                if soil and soil[0] is not None:
-                    row['fugacity_soil_half_life_alt'] = getattr(soil[0], 'HalfLife', None)
-                water = getattr(fugacity_model, 'Water', None)
-                if water and water[0] is not None:
-                    row['fugacity_water_half_life_alt'] = getattr(water[0], 'HalfLife', None)
-            except (AttributeError, IndexError, TypeError):
-                pass
-        
+            fugacity_estimates = getattr(fugacity_model, 'estimates', None)
+            if fugacity_estimates is not None:
+                row['fugacity_persistence'] = fugacity_estimates.persistenceHours
+                row['fugacity_air_percent'] = fugacity_estimates.airPercent
+                row['fugacity_water_percent'] = fugacity_estimates.waterPercent
+                row['fugacity_soil_percent'] = fugacity_estimates.soilPercent
+                row['fugacity_sediment_percent'] = fugacity_estimates.sedimentPercent
+                row['fugacity_selected_koc'] = fugacity_estimates.selectedKoc
+
+            # Compartments are a named list, no longer fixed-order arrays
+            for compartment in getattr(fugacity_model, 'compartments', None) or []:
+                name = getattr(compartment, 'name', None)
+                if not name:
+                    continue
+                key = _column_name(name)
+                row[f'fugacity_{key}_half_life'] = compartment.halfLifeHours
+                row[f'fugacity_{key}_mass_percent'] = compartment.massPercent
+
         data.append(row)
     
     return pd.DataFrame(data)
@@ -245,39 +260,48 @@ def episuite_experimental_to_dataframe(results: List[ResultEPISuite]) -> pd.Data
     """
     data = []
     
+    _PROPERTIES = (
+        'logKow', 'meltingPoint', 'boilingPoint', 'vaporPressure',
+        'waterSolubilityFromLogKow', 'waterSolubilityFromWaterNt',
+        'henrysLawConstant', 'logKoa', 'logKoc',
+    )
+    _COLUMN_NAMES = {
+        'logKow': 'log_kow',
+        'meltingPoint': 'melting_point',
+        'boilingPoint': 'boiling_point',
+        'vaporPressure': 'vapor_pressure',
+        'waterSolubilityFromLogKow': 'water_solubility_logkow',
+        'waterSolubilityFromWaterNt': 'water_solubility_waternt',
+        'henrysLawConstant': 'henrys_law_constant',
+        'logKoa': 'log_koa',
+        'logKoc': 'log_koc',
+    }
+
     for result in results:
-        cas = result.chemicalProperties.cas
-        name = result.chemicalProperties.name
-        
-        # Extract experimental values for each property
-        properties = [
-            ('log_kow', result.logKow.experimentalValues if hasattr(result.logKow, 'experimentalValues') else []),
-            ('melting_point', result.meltingPoint.experimentalValues if hasattr(result.meltingPoint, 'experimentalValues') else []),
-            ('boiling_point', result.boilingPoint.experimentalValues if hasattr(result.boilingPoint, 'experimentalValues') else []),
-            ('vapor_pressure', result.vaporPressure.experimentalValues if hasattr(result.vaporPressure, 'experimentalValues') else []),
-            ('water_solubility_logkow', result.waterSolubilityFromLogKow.experimentalValues if hasattr(result.waterSolubilityFromLogKow, 'experimentalValues') else []),
-            ('water_solubility_waternt', result.waterSolubilityFromWaterNt.experimentalValues if hasattr(result.waterSolubilityFromWaterNt, 'experimentalValues') else []),
-            ('henrys_law_constant', result.henrysLawConstant.experimentalValues if hasattr(result.henrysLawConstant, 'experimentalValues') else []),
-            ('log_koa', result.logKoa.experimentalValues if hasattr(result.logKoa, 'experimentalValues') else []),
-            ('log_koc', result.logKoc.experimentalValues if hasattr(result.logKoc, 'experimentalValues') else []),
-        ]
-        
-        for prop_name, exp_values in properties:
-            for exp_val in exp_values:
-                if hasattr(exp_val, 'value'):
-                    row = {
-                        'cas': cas,
-                        'name': name,
-                        'property': prop_name,
-                        'value': exp_val.value,
-                        'units': exp_val.units if hasattr(exp_val, 'units') else None,
-                        'author': exp_val.author if hasattr(exp_val, 'author') else None,
-                        'year': exp_val.year if hasattr(exp_val, 'year') else None,
-                        'order': exp_val.order if hasattr(exp_val, 'order') else None,
-                        'value_type': exp_val.valueType if hasattr(exp_val, 'valueType') else None
-                    }
-                    data.append(row)
-    
+        chem_props = getattr(result, 'chemicalProperties', None)
+        cas = getattr(chem_props, 'cas', None)
+        name = getattr(chem_props, 'name', None)
+
+        for attr in _PROPERTIES:
+            module = getattr(result, attr, None)
+            # `module` is None when absent and a ModuleError when the module
+            # failed; neither carries experimental values.
+            for exp_val in getattr(module, 'experimentalValues', None) or []:
+                data.append({
+                    'cas': cas,
+                    'name': name,
+                    'property': _COLUMN_NAMES[attr],
+                    'value': getattr(exp_val, 'value', None),
+                    'units': getattr(exp_val, 'units', None),
+                    'author': getattr(exp_val, 'author', None),
+                    'year': getattr(exp_val, 'year', None),
+                    'order': getattr(exp_val, 'order', None),
+                    'value_type': getattr(exp_val, 'valueType', None),
+                    'source': getattr(exp_val, 'source', None),
+                    'source_database': getattr(exp_val, 'sourceDatabase', None),
+                    'temperature_c': getattr(exp_val, 'temperatureC', None),
+                })
+
     return pd.DataFrame(data)
 
 
@@ -336,6 +360,16 @@ def ecosar_to_dataframe(results: List[ResultEcoSAR]) -> pd.DataFrame:
     return pd.DataFrame(data)
 
 
+def _join_unique(values) -> str:
+    """Join a group's distinct non-missing values into one comma-separated string.
+
+    Columns such as `flags` are None for most rows, which pandas stores as NaN;
+    a plain `is not None` check lets those floats through and breaks the join.
+    """
+    seen = pd.unique(values.dropna())
+    return ', '.join(str(v) for v in seen)
+
+
 def combine_episuite_ecosar_dataframes(epi_df: pd.DataFrame, ecosar_df: pd.DataFrame) -> pd.DataFrame:
     """
     Combine EPI Suite and EcoSAR DataFrames on CAS number.
@@ -349,11 +383,11 @@ def combine_episuite_ecosar_dataframes(epi_df: pd.DataFrame, ecosar_df: pd.DataF
     """
     # Group EcoSAR results by CAS to handle multiple model results
     ecosar_summary = ecosar_df.groupby('cas').agg({
-        'qsar_class': lambda x: ', '.join(x.unique()),
-        'organism': lambda x: ', '.join(x.unique()),
-        'endpoint': lambda x: ', '.join(x.unique()),
+        'qsar_class': _join_unique,
+        'organism': _join_unique,
+        'endpoint': _join_unique,
         'concentration': ['min', 'max', 'mean'],
-        'flags': lambda x: ', '.join([f for f in x.unique() if f is not None])
+        'flags': _join_unique
     }).round(3)
     
     # Flatten column names
@@ -394,6 +428,12 @@ def _safe_get_selected_value(response_obj) -> Optional[float]:
         return None
     except (AttributeError, TypeError):
         return None
+
+
+def _column_name(label: str) -> str:
+    """Turn an API label ("Estimated Log BCF (upper trophic)") into a column suffix."""
+    slug = re.sub(r'[^0-9a-z]+', '_', str(label).lower())
+    return slug.strip('_')
 
 
 def _safe_get_parameter_value(param_obj) -> Optional[float]:

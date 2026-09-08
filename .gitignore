@@ -16,6 +16,7 @@ local/database/
 *.sqlite
 *.*Identifier
 *.jar
+*.jar.bak-*
 /pyepisuite.egg-info
 /src/pyepisuite.egg-info
 

@@ -1,6 +1,7 @@
 import dacite
 from dacite import Config
-from .models import ResultEcoSAR, ResultEPISuite, Identifiers, ensure_flags
+from .episuite_version import EPISUITE_VERSION
+from .models import ResultEcoSAR, ResultEPISuite, Identifiers, ModuleError, ensure_flags
 from .api_client import EpiSuiteAPIClient
 from typing import Dict, List, Any, Optional
 import re
@@ -12,23 +13,37 @@ from pathlib import Path
 from datetime import datetime
 from dataclasses import asdict
 
+# Cache entries are namespaced by the EPI Suite version they were parsed
+# against, so entries written under an older response shape are ignored
+# instead of being loaded into the current models.
+RESPONSE_SCHEMA_VERSION = f"v{EPISUITE_VERSION}"
+
+# The API returns the typed ECOSAR submodels under dotted, hyphenated keys
+# ("ecosar.nonionic-surfactant") which are not valid Python identifiers.
+_DOTTED_KEY_PREFIX = "ecosar."
+
 def _flags_hook(v: Any) -> Dict[str, bool] | None:
     return ensure_flags(v)
 
-def _optional_str_hook(v: Any) -> Optional[str]:
-    # The API sometimes returns an empty list (e.g. []) instead of null for
-    # optional string fields such as "notes". Coerce lists into a plain string
-    # (or None when empty) so dacite doesn't reject the value with a type error.
-    if isinstance(v, list):
-        return "; ".join(str(item) for item in v) if v else None
-    return v
-
 def get_dacite_config() -> Config:
     # Hook Dict[str, bool] so any field annotated as that will be normalized during from_dict
-    return Config(type_hooks={
-        Dict[str, bool]: _flags_hook,
-        Optional[str]: _optional_str_hook,
-    })
+    return Config(type_hooks={Dict[str, bool]: _flags_hook})
+
+def normalize_response_keys(json_data: Any) -> Any:
+    """Rewrite the API's dotted ECOSAR keys to valid Python identifiers.
+
+    ``"ecosar.nonionic-surfactant"`` becomes ``ecosar_nonionic_surfactant``,
+    matching the field names on :class:`ResultEPISuite`. Any other key is left
+    untouched, and non-dict input is returned as-is.
+    """
+    if not isinstance(json_data, dict):
+        return json_data
+    normalized = {}
+    for key, value in json_data.items():
+        if isinstance(key, str) and key.startswith(_DOTTED_KEY_PREFIX):
+            key = key.replace(".", "_").replace("-", "_")
+        normalized[key] = value
+    return normalized
 
 def get_cache_dir() -> Path:
     """Get or create the cache directory."""
@@ -101,7 +116,11 @@ def get_cache_key(identifier: Identifiers) -> str:
         key_data = f"smiles:{identifier.smiles}"
     else:
         key_data = f"name:{identifier.name}"
-    
+
+    # Namespace by schema version so entries written by an older response
+    # shape are never loaded into the current models.
+    key_data = f"{RESPONSE_SCHEMA_VERSION}:{key_data}"
+
     # Create hash for filename safety
     return hashlib.md5(key_data.encode()).hexdigest()
 
@@ -177,7 +196,11 @@ def json_to_episuite(json_data):
     Returns:
         ResultEPISuite: A ResultEPISuite instance.
     """
-    return dacite.from_dict(data_class=ResultEPISuite, data=json_data, config=get_dacite_config())
+    return dacite.from_dict(
+        data_class=ResultEPISuite,
+        data=normalize_response_keys(json_data),
+        config=get_dacite_config(),
+    )
 
 def json_to_ecosar(json_data):
     """
@@ -190,6 +213,11 @@ def json_to_ecosar(json_data):
     Returns:
         ResultEcoSAR: A ResultEcoSAR instance.
     """
+    if not isinstance(json_data, dict):
+        return None
+    # The module may come back as a {module, code, message} error instead.
+    if {"module", "code", "message"} <= set(json_data):
+        return dacite.from_dict(data_class=ModuleError, data=json_data, config=get_dacite_config())
     return dacite.from_dict(data_class=ResultEcoSAR, data=json_data, config=get_dacite_config())
 
 def search_episuite_by_cas(CASRN: List[str], use_cache: bool = True) -> List[Identifiers]:
@@ -293,7 +321,7 @@ def submit_to_episuite(identifiers: List[Identifiers], use_cache: bool = True) -
             if id.cas:
                 res = client.submit(cas=id.cas)
                 epi_result = json_to_episuite(res)
-                ecosar_result = json_to_ecosar(res['ecosar'])
+                ecosar_result = json_to_ecosar(res.get('ecosar'))
                 
                 # Save to cache
                 if use_cache and cache_key:
@@ -306,7 +334,7 @@ def submit_to_episuite(identifiers: List[Identifiers], use_cache: bool = True) -
             elif id.smiles:
                 res = client.submit(smiles=id.smiles)
                 epi_result = json_to_episuite(res)
-                ecosar_result = json_to_ecosar(res['ecosar'])
+                ecosar_result = json_to_ecosar(res.get('ecosar'))
                 
                 # Save to cache
                 if use_cache and cache_key:

@@ -1,22 +1,69 @@
 import atexit
+import logging
 import os
 import queue
 import re
 import subprocess
 import threading
 import time
+import zipfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 import requests
 from tqdm import tqdm
 
+from .episuite_version import MINIMUM_EPISUITE_VERSION, MINIMUM_EPISUITE_VERSION_INFO
 from .models import Identifiers
 
 
 DEFAULT_REMOTE_BASE_URL = 'https://episuite.dev/api'
 DEFAULT_LOCAL_STARTUP_TIMEOUT = 60
 DEFAULT_JAR_DOWNLOAD_URL = 'https://episuite.dev/api/download'
+
+# The local runtime must be the `epi` CLI that serves the HTTP API these models
+# were generated against. Older EpiSuiteCLI builds (the ~331 MB
+# com.srcinc.episuite.EpiSuite jar) carry no Implementation-Version in their
+# manifest, take single-dash options and have no `--serve` mode, so they cannot
+# back this client at all.
+MINIMUM_LOCAL_JAR_VERSION = MINIMUM_EPISUITE_VERSION_INFO
+
+
+def _parse_version(text: Optional[str]) -> Optional[Tuple[int, ...]]:
+    """Parse a dotted numeric version into a comparable tuple.
+
+    Returns None when `text` carries no leading numeric component.
+    """
+    if not text:
+        return None
+    match = re.match(r'(\d+(?:\.\d+)*)', text.strip())
+    if not match:
+        return None
+    return tuple(int(part) for part in match.group(1).split('.'))
+
+
+def read_jar_version(jar_path) -> Optional[str]:
+    """Read Implementation-Version from a jar's manifest.
+
+    Cheap by design: it reads the zip entry rather than starting a JVM. Returns
+    None for a jar that declares no version, which is how the legacy
+    EpiSuiteCLI builds present themselves.
+    """
+    try:
+        with zipfile.ZipFile(jar_path) as archive:
+            manifest = archive.read('META-INF/MANIFEST.MF').decode('utf-8', 'replace')
+    except (OSError, KeyError, zipfile.BadZipFile):
+        return None
+    # Manifest lines may be wrapped by a leading space; unwrap before matching.
+    manifest = manifest.replace('\r\n', '\n').replace('\r', '\n').replace('\n ', '')
+    match = re.search(r'^Implementation-Version:\s*(.+)$', manifest, re.M)
+    return match.group(1).strip() if match else None
+
+
+def jar_is_supported(jar_path) -> bool:
+    """Whether this jar is new enough to serve the HTTP API this client speaks."""
+    version = _parse_version(read_jar_version(jar_path))
+    return version is not None and version >= MINIMUM_LOCAL_JAR_VERSION
 
 
 def _is_cas_formatted(cas: str) -> bool:
@@ -118,7 +165,49 @@ class _LocalRuntimeManager:
 
     @classmethod
     def has_local_assets(cls) -> bool:
-        return cls._resolve_jar_path() is not None
+        jar_path = cls._resolve_jar_path()
+        return jar_path is not None and jar_is_supported(jar_path)
+
+    @classmethod
+    def _acquire_jar(cls) -> Path:
+        """Return a jar new enough to serve the API, downloading one if needed.
+
+        A jar found on disk is version-checked first: an older EpiSuiteCLI build
+        cannot serve the HTTP API at all, so leaving it in place would only fail
+        later with the jar's own usage text.
+        """
+        minimum = MINIMUM_EPISUITE_VERSION
+        jar_path = cls._resolve_jar_path()
+
+        if jar_path is not None and not jar_is_supported(jar_path):
+            found = read_jar_version(jar_path) or 'unknown (no Implementation-Version)'
+            if os.getenv('PYEPISUITE_LOCAL_JAR_PATH'):
+                # An explicitly chosen jar is never replaced behind the user's
+                # back; tell them instead.
+                raise RuntimeError(
+                    f'The jar at {jar_path} reports version {found}, but local mode needs '
+                    f'EPI Suite {minimum} or newer (the "epi" CLI that supports --serve). '
+                    'Point PYEPISUITE_LOCAL_JAR_PATH at a current jar, download one from '
+                    f'{DEFAULT_JAR_DOWNLOAD_URL}, or unset the variable to let PyEPISuite '
+                    'manage the jar itself.'
+                )
+            logging.warning(
+                'Replacing unsupported EpiSuite jar at %s (version %s; need %s or newer). '
+                'Downloading the current runtime.', jar_path, found, minimum,
+            )
+            jar_path = None
+
+        if jar_path is None:
+            jar_path = cls._download_jar()
+
+        if not jar_is_supported(jar_path):
+            found = read_jar_version(jar_path) or 'unknown'
+            raise RuntimeError(
+                f'The EpiSuite jar at {jar_path} reports version {found}, but local mode '
+                f'needs EPI Suite {minimum} or newer. Use PYEPISUITE_MODE=remote, or set '
+                'PYEPISUITE_JAR_DOWNLOAD_URL to a compatible build.'
+            )
+        return jar_path
 
     @classmethod
     def ensure_started(cls) -> str:
@@ -126,9 +215,7 @@ class _LocalRuntimeManager:
             if cls._is_alive():
                 return cls._base_url
 
-            jar_path = cls._resolve_jar_path()
-            if jar_path is None:
-                jar_path = cls._download_jar()
+            jar_path = cls._acquire_jar()
 
             timeout_seconds = int(os.getenv('PYEPISUITE_LOCAL_STARTUP_TIMEOUT', DEFAULT_LOCAL_STARTUP_TIMEOUT))
             host = os.getenv('PYEPISUITE_LOCAL_HOST', '127.0.0.1')

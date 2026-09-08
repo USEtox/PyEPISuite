@@ -40,16 +40,17 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         row = {}
         
         # Chemical identification
-        row['cas'] = result.chemicalProperties.cas
-        row['name'] = result.chemicalProperties.name
-        row['systematic_name'] = result.chemicalProperties.systematicName
-        row['smiles'] = result.chemicalProperties.smiles
-        row['molecular_weight'] = result.chemicalProperties.molecularWeight
-        row['molecular_formula'] = result.chemicalProperties.molecularFormula
-        row['is_organic'] = result.chemicalProperties.organic
-        row['is_organic_acid'] = result.chemicalProperties.organicAcid
-        row['is_amino_acid'] = result.chemicalProperties.aminoAcid
-        row['is_non_standard_metal'] = result.chemicalProperties.nonStandardMetal
+        chem_props = getattr(result, 'chemicalProperties', None)
+        row['cas'] = getattr(chem_props, 'cas', None)
+        row['name'] = getattr(chem_props, 'name', None)
+        row['systematic_name'] = getattr(chem_props, 'systematicName', None)
+        row['smiles'] = getattr(chem_props, 'smiles', None)
+        row['molecular_weight'] = getattr(chem_props, 'molecularWeight', None)
+        row['molecular_formula'] = getattr(chem_props, 'molecularFormula', None)
+        row['is_organic'] = getattr(chem_props, 'organic', None)
+        row['is_organic_acid'] = getattr(chem_props, 'organicAcid', None)
+        row['is_amino_acid'] = getattr(chem_props, 'aminoAcid', None)
+        row['is_non_standard_metal'] = getattr(chem_props, 'nonStandardMetal', None)
 
         # Physical and chemical properties - estimated values
         row['log_kow_estimated'] = _safe_get_estimated_value(result.logKow)
@@ -145,18 +146,19 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
                 row['trophic_unit'] = first_trophic.unit
         
         # Hydrolysis
-        if hasattr(result, 'hydrolysis'):
-            row['acid_catalyzed_rate_constant'] = result.hydrolysis.acidCatalyzedRateConstant
-            row['base_catalyzed_rate_constant'] = result.hydrolysis.baseCatalyzedRateConstant
-            row['neutral_rate_constant'] = result.hydrolysis.neutralRateConstant
-            row['acid_catalyzed_trans_isomer_rate'] = result.hydrolysis.acidCatalyzedRateConstantForTransIsomer
+        hydrolysis = getattr(result, 'hydrolysis', None)
+        if hydrolysis is not None:
+            row['acid_catalyzed_rate_constant'] = hydrolysis.acidCatalyzedRateConstant
+            row['base_catalyzed_rate_constant'] = hydrolysis.baseCatalyzedRateConstant
+            row['neutral_rate_constant'] = hydrolysis.neutralRateConstant
+            row['acid_catalyzed_trans_isomer_rate'] = hydrolysis.acidCatalyzedRateConstantForTransIsomer
         
         # Biodegradation models - get summary of main models
-        if hasattr(result, 'biodegradationRate') and hasattr(result.biodegradationRate, 'models'):
-            for model in result.biodegradationRate.models:
-                if getattr(model, 'name', None) is not None:
-                    model_name = model.name.lower().replace(' ', '_').replace('-', '_')
-                    row[f'biodeg_{model_name}'] = model.value
+        biodeg_models = getattr(getattr(result, 'biodegradationRate', None), 'models', None) or []
+        for model in biodeg_models:
+            if getattr(model, 'name', None) is not None:
+                model_name = model.name.lower().replace(' ', '_').replace('-', '_')
+                row[f'biodeg_{model_name}'] = model.value
         
         # Water volatilization
         if hasattr(result.waterVolatilization, 'riverHalfLifeHours'):
@@ -164,8 +166,8 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             row['lake_half_life_hours'] = result.waterVolatilization.lakeHalfLifeHours
             
             # Water volatilization parameters
-            if hasattr(result.waterVolatilization, 'parameters'):
-                params = result.waterVolatilization.parameters
+            params = getattr(result.waterVolatilization, 'parameters', None)
+            if params is not None:
                 row['lake_current_velocity_ms'] = _safe_get_parameter_value(params.lakeCurrentVelocityMetersPerSecond)
                 row['lake_water_depth_m'] = _safe_get_parameter_value(params.lakeWaterDepthMeters)
                 row['lake_wind_velocity_ms'] = _safe_get_parameter_value(params.lakeWindVelocityMetersPerSecond)
@@ -395,13 +397,12 @@ def _safe_get_selected_value(response_obj) -> Optional[float]:
 
 
 def _safe_get_parameter_value(param_obj) -> Optional[float]:
-    """Safely extract the numeric value from a Parameter-like object."""
-    try:
-        if hasattr(param_obj, 'value'):
-            return param_obj.value
+    """Extract the numeric value from a bare scalar or a Parameter-like object."""
+    if param_obj is None:
         return None
-    except (AttributeError, TypeError):
-        return None
+    if isinstance(param_obj, (int, float)):
+        return param_obj
+    return getattr(param_obj, 'value', None)
 
 
 def _safe_get_value_direct(obj) -> Optional[float]:

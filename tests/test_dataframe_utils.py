@@ -12,6 +12,7 @@ from pyepisuite.dataframe_utils import (
     create_summary_statistics,
     _safe_get_estimated_value,
     _safe_get_estimated_units,
+    _safe_get_parameter_value,
 )
 from pyepisuite.models import (
     ResultEPISuite, 
@@ -26,6 +27,8 @@ from pyepisuite.models import (
     ModelResult,
     Parameter
 )
+from pyepisuite.utils import get_dacite_config
+import dacite
 
 
 def create_mock_episuite_result():
@@ -316,6 +319,38 @@ class TestDataFrameUtils:
         del mock_obj_invalid.estimatedValue
         assert _safe_get_estimated_units(mock_obj_invalid) is None
     
+    def test_safe_get_parameter_value(self):
+        """Test safe extraction of numeric values from bare scalars and Parameter objects."""
+        # Bare scalar shape (the common case returned by the API)
+        assert _safe_get_parameter_value(1.0) == 1.0
+        assert _safe_get_parameter_value(0) == 0
+
+        # Structured Parameter object shape
+        param_obj = Mock()
+        param_obj.value = 2.5
+        assert _safe_get_parameter_value(param_obj) == 2.5
+
+        # None
+        assert _safe_get_parameter_value(None) is None
+
+    def test_episuite_to_dataframe_handles_missing_nested_fields(self):
+        """Result objects with null nested sections should not crash the conversion."""
+        result = dacite.from_dict(
+            ResultEPISuite,
+            {
+                "chemicalProperties": {"cas": "1"},
+                "biodegradationRate": {"unit": "d"},
+                "waterVolatilization": {"riverHalfLifeHours": 1.0},
+            },
+            config=get_dacite_config(),
+        )
+        df = episuite_to_dataframe([result])
+        assert df.loc[0, 'cas'] == "1"
+
+        result_empty = dacite.from_dict(ResultEPISuite, {}, config=get_dacite_config())
+        df_empty = episuite_to_dataframe([result_empty])
+        assert df_empty.loc[0, 'cas'] is None
+
     def test_export_to_excel(self):
         """Test Excel export functionality."""
         from pyepisuite.dataframe_utils import export_to_excel

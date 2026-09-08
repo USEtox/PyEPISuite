@@ -89,6 +89,12 @@ semver track; the EPI Suite version it speaks to is declared in metadata.
   compensating for `notes` being modelled as a string; those fields are `List[str]` in the
   API and are now typed that way, so the text is preserved instead of being flattened.
 
+### Changed
+- **Raised the minimum Python to 3.12** (`requires-python = ">=3.12"`, was `>=3.11`), and the
+  CI test matrix now runs 3.12 only instead of 3.10/3.11/3.12 — the older interpreters were
+  failing constantly. The `docs` and `release` workflows moved from 3.11 to 3.12 as well, since
+  a 3.11 runner can no longer `pip install -e .`.
+
 ### Removed
 - **The USEtox integration**, to keep the package a clean EPI Suite interface. This drops
   `pyepisuite.usetox_input` (the `USEtoxInput` class and the `create_usetox_input_from_*`

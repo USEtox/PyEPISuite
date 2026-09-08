@@ -2,7 +2,7 @@
 
 ## Requirements
 
-PyEPISuite requires Python 3.7 or higher and the following dependencies:
+PyEPISuite requires Python 3.12 or higher and the following dependencies:
 
 - `requests` - For API communication
 - `dacite` - For data class conversion

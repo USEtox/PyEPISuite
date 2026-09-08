@@ -121,7 +121,7 @@ When you push a tag or create a release:
 
 ### `.github/workflows/test.yml`
 - Runs on: push, PR, releases
-- Tests multiple Python versions (3.9-3.12)
+- Tests on Python 3.12
 - Tests multiple OS (Ubuntu, Windows, macOS)
 - Includes linting and type checking
 
@@ -149,7 +149,7 @@ When you push a tag or create a release:
 ### Tests Fail
 
 1. **Check test dependencies**: Ensure all test dependencies are in `pyproject.toml`
-2. **Check Python versions**: Tests run on 3.9-3.12
+2. **Check Python versions**: Tests run on 3.12
 3. **Check OS compatibility**: Tests run on Ubuntu, Windows, macOS
 
 ### Release Not Created

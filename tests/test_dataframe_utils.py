@@ -13,6 +13,7 @@ from pyepisuite.dataframe_utils import (
     _safe_get_estimated_value,
     _safe_get_estimated_units,
     _safe_get_parameter_value,
+    episuite_experimental_to_dataframe,
 )
 from pyepisuite.models import (
     ResultEPISuite, 
@@ -25,7 +26,8 @@ from pyepisuite.models import (
     SelectedValue,
     EcosarParameters,
     ModelResult,
-    Parameter
+    Parameter,
+    ModuleError,
 )
 from pyepisuite.utils import get_dacite_config
 import dacite
@@ -101,35 +103,46 @@ def create_mock_episuite_result():
     result.bioconcentration.biotransformationHalfLife = 24.0
     result.bioconcentration.experimentalBioTransformationRate = 0.029
     
-    # Mock trophic level data
-    trophic_mock = Mock()
-    trophic_mock.trophicLevel = 2
-    trophic_mock.bioaccumulationFactor = 15.2
-    trophic_mock.bioconcentrationFactor = 10.5
-    trophic_mock.unit = "L/kg"
-    result.bioconcentration.arnotGobasBcfBafEstimates = [trophic_mock]
+    # Arnot-Gobas estimates are titled rows in v1.1.0
+    arnot_mock = Mock()
+    arnot_mock.title = "Estimated Log BCF (upper trophic)"
+    arnot_mock.value = 10.5
+    arnot_mock.logValue = 1.02
+    arnot_mock.unit = "L/kg wet-wt"
+    result.bioconcentration.arnotGobasBcfBafEstimates = [arnot_mock]
     
     # Special handling for waterVolatilization parameters
     result.waterVolatilization.riverHalfLifeHours = 12.5
     result.waterVolatilization.lakeHalfLifeHours = 48.2
     result.waterVolatilization.parameters = Mock()
+    # The API returns these either as a Value object or as a bare scalar,
+    # so cover both shapes here.
     result.waterVolatilization.parameters.lakeCurrentVelocityMetersPerSecond = Mock(value=0.1)
     result.waterVolatilization.parameters.lakeWaterDepthMeters = Mock(value=2.0)
     result.waterVolatilization.parameters.lakeWindVelocityMetersPerSecond = Mock(value=3.0)
-    result.waterVolatilization.parameters.riverCurrentVelocityMetersPerSecond = Mock(value=0.5)
-    result.waterVolatilization.parameters.riverWaterDepthMeters = Mock(value=1.0)
-    result.waterVolatilization.parameters.riverWindVelocityMetersPerSecond = Mock(value=3.0)
+    result.waterVolatilization.parameters.riverCurrentVelocityMetersPerSecond = 0.5
+    result.waterVolatilization.parameters.riverWaterDepthMeters = 1.0
+    result.waterVolatilization.parameters.riverWindVelocityMetersPerSecond = 3.0
     
-    # Special handling for hydrolysis
-    result.hydrolysis.acidCatalyzedRateConstant = 0.1
-    result.hydrolysis.baseCatalyzedRateConstant = 0.05
-    result.hydrolysis.neutralRateConstant = 0.01
-    result.hydrolysis.acidCatalyzedRateConstantForTransIsomer = 0.08
-    
-    # Special handling for biodegradation models
+    # Hydrolysis rate constants live under `rates` in v1.1.0
+    result.hydrolysis.disposition = "estimated"
+    result.hydrolysis.rates = Mock()
+    result.hydrolysis.rates.acidCatalyzedPrimary = Mock(value=0.1)
+    result.hydrolysis.rates.baseCatalyzed = Mock(value=0.05)
+    result.hydrolysis.rates.neutral = Mock(value=0.01)
+    result.hydrolysis.rates.acidCatalyzedTrans = Mock(value=0.08)
+    half_life_mock = Mock()
+    half_life_mock.mechanism = "base-catalyzed"
+    half_life_mock.pH = 7
+    half_life_mock.value = 663.4
+    half_life_mock.unit = "days"
+    result.hydrolysis.halfLives = [half_life_mock]
+
+    # BIOWIN reports calculatedValue, keyed by short name
     bio_model = Mock()
     bio_model.name = "Linear Model Prediction"
-    bio_model.value = 0.75
+    bio_model.shortName = "biowin1"
+    bio_model.calculatedValue = 0.75
     result.biodegradationRate.models = [bio_model]
     
     # Special handling for dermal permeability
@@ -139,24 +152,35 @@ def create_mock_episuite_result():
     result.dermalPermeability.lagTimePerEventHours = 2.0
     result.dermalPermeability.timeToReachSteadyStateHours = 24.0
     
-    # Special handling for fugacity model
+    # Fugacity: named compartments plus an estimates block
     result.fugacityModel.model = Mock()
-    result.fugacityModel.model.Persistence = 72.0
-    result.fugacityModel.model.HalfLifeArray = [12.0, 24.0, 168.0, 720.0]  # air, water, soil, sediment
-    
-    # Special handling for sewage treatment model
+    result.fugacityModel.model.estimates = Mock(
+        persistenceHours=72.0, airPercent=40.0, waterPercent=35.0,
+        soilPercent=20.0, sedimentPercent=5.0, selectedKoc=56.2,
+    )
+    result.fugacityModel.model.compartments = [
+        Mock(name_=n, massPercent=p, halfLifeHours=h)
+        for n, p, h in [('air', 40.0, 12.0), ('water', 35.0, 24.0),
+                        ('soil', 20.0, 168.0), ('sediment', 5.0, 720.0)]
+    ]
+    # `name` is reserved by Mock(), so assign it after construction
+    for compartment, name in zip(result.fugacityModel.model.compartments,
+                                 ['air', 'water', 'soil', 'sediment']):
+        compartment.name = name
+
+    # Sewage treatment: a single estimates block of percentages
     result.sewageTreatmentModel.model = Mock()
-    result.sewageTreatmentModel.model.TotalRemoval = Mock()
-    result.sewageTreatmentModel.model.TotalRemoval.Percent = 85.5
-    result.sewageTreatmentModel.model.TotalSludge = Mock()
-    result.sewageTreatmentModel.model.TotalSludge.Percent = 10.2
-    result.sewageTreatmentModel.model.TotalAir = Mock()
-    result.sewageTreatmentModel.model.TotalAir.Percent = 5.3
-    result.sewageTreatmentModel.model.TotalBiodeg = Mock()
-    result.sewageTreatmentModel.model.TotalBiodeg.Percent = 70.0
-    result.sewageTreatmentModel.model.FinalEffluent = Mock()
-    result.sewageTreatmentModel.model.FinalEffluent.Percent = 14.5
-    
+    result.sewageTreatmentModel.model.estimates = Mock(
+        totalRemovalPercent=85.5,
+        totalSludgeAdsorptionPercent=10.2,
+        totalAirPercent=5.3,
+        totalBiodegradationPercent=70.0,
+        finalEffluentPercent=14.5,
+    )
+
+    # No failed modules in the happy-path fixture
+    result.errors = []
+
     return result
 
 
@@ -395,3 +419,97 @@ class TestDataFrameUtils:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+
+class TestVersion110Schema:
+    """Parse a real captured v1.1.0 response and check the migrated shapes.
+
+    `data/sample/result.json` is an unmodified `/api/submit` response, so these
+    tests fail if the models drift from what the API actually returns.
+    """
+
+    @staticmethod
+    def _load():
+        import json
+        from pathlib import Path
+        import dacite
+        from pyepisuite.utils import get_dacite_config, normalize_response_keys
+
+        path = Path(__file__).resolve().parents[1] / 'data' / 'sample' / 'result.json'
+        with path.open() as fh:
+            raw = json.load(fh)
+        raw = raw[0] if isinstance(raw, list) else raw
+        return raw, dacite.from_dict(
+            data_class=ResultEPISuite,
+            data=normalize_response_keys(raw),
+            config=get_dacite_config(),
+        )
+
+    def test_parses_without_loss(self):
+        """Every key in the response must map onto a declared field."""
+        import dataclasses
+
+        raw, result = self._load()
+        from pyepisuite.utils import normalize_response_keys
+
+        declared = {f.name for f in dataclasses.fields(ResultEPISuite)}
+        unmapped = set(normalize_response_keys(raw)) - declared
+        assert not unmapped, f"unmapped response keys: {sorted(unmapped)}"
+        assert result.chemicalProperties.cas is not None
+        assert result.chemicalProperties.name == "FORMALDEHYDE"
+
+    def test_dotted_ecosar_keys_are_normalized(self):
+        from pyepisuite.utils import normalize_response_keys
+
+        raw, result = self._load()
+        assert "ecosar.nonionic-surfactant" in raw
+        assert "ecosar_nonionic_surfactant" in normalize_response_keys(raw)
+        # Typed submodels do not run for a plain organic, so they are errors
+        assert isinstance(result.ecosar_nonionic_surfactant, ModuleError)
+        assert result.ecosar_nonionic_surfactant.code == "estimation_failed"
+
+    def test_module_errors_are_discriminated_from_results(self):
+        _, result = self._load()
+        # A module that ran is its result type, never a ModuleError
+        assert not isinstance(result.logKow, ModuleError)
+        assert result.logKow.estimatedValue.value is not None
+        # and the top-level list mirrors the per-module errors
+        assert result.errors
+        assert all(isinstance(e, ModuleError) for e in result.errors)
+
+    def test_sewage_and_fugacity_estimates(self):
+        _, result = self._load()
+        sewage = result.sewageTreatmentModel.model.estimates
+        assert sewage.totalRemovalPercent is not None
+        assert sewage.finalEffluentPercent is not None
+
+        fugacity = result.fugacityModel.model
+        assert fugacity.estimates.persistenceHours is not None
+        names = {c.name for c in fugacity.compartments}
+        assert {'air', 'water', 'soil', 'sediment'} <= names
+
+    def test_biowin_models_expose_calculated_value(self):
+        _, result = self._load()
+        models = result.biodegradationRate.models
+        assert models
+        assert all(m.calculatedValue is not None for m in models)
+        assert any(m.shortName == 'biowin1' for m in models)
+
+    def test_dataframe_columns_are_populated(self):
+        _, result = self._load()
+        df = episuite_to_dataframe([result])
+
+        assert df.loc[0, 'sewage_total_removal_percent'] is not None
+        assert df.loc[0, 'fugacity_persistence'] is not None
+        assert df.loc[0, 'fugacity_air_half_life'] is not None
+        assert df.loc[0, 'biodeg_biowin1'] is not None
+        # Scalar-valued parameters must survive (see _safe_get_parameter_value)
+        assert df.loc[0, 'lake_water_depth_m'] is not None
+        # Failed modules are reported rather than silently dropped
+        assert 'ecosar.nonionic-surfactant' in df.loc[0, 'failed_modules']
+
+    def test_experimental_values_carry_provenance(self):
+        _, result = self._load()
+        df = episuite_experimental_to_dataframe([result])
+        assert not df.empty
+        assert {'source', 'source_database', 'temperature_c'} <= set(df.columns)

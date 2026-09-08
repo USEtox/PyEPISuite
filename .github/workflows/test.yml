@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.10', '3.11', '3.12']    
+        python-version: ['3.12']
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -60,7 +60,7 @@ jobs:
         pytest tests/ -v --tb=short --cov=src/pyepisuite --cov-report=xml --cov-report=term-missing
         
     - name: Upload coverage to Codecov
-      if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+      if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
@@ -69,7 +69,7 @@ jobs:
         fail_ci_if_error: false
         
     - name: Test documentation build
-      if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+      if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
       run: |
         pip install mkdocs mkdocs-material mkdocstrings[python]
         mkdocs build --verbose

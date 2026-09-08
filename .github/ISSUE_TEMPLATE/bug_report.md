@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
 
 ## Environment Information
 - OS: [e.g. Windows 10, macOS 12.0, Ubuntu 20.04]
-- Python version: [e.g. 3.9.7]
+- Python version: [e.g. 3.12.1]
 - PyEPISuite version: [e.g. 1.0.0]
 - Installation method: [e.g. pip, conda, from source]
 

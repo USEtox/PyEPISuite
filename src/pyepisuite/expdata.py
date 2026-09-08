@@ -3,6 +3,17 @@ import os
 
 
 def data_folder():
+    """Locate the experimental CSV datasets.
+
+    Installed distributions carry the CSVs inside the package at
+    `pyepisuite/data/`, put there by the force-include mapping in
+    pyproject.toml. A source checkout keeps the full `data/` tree at the repo
+    root instead, two levels up from this file, so fall back to that when the
+    packaged copy is absent.
+    """
+    packaged = os.path.join(os.path.dirname(__file__), 'data')
+    if os.path.isdir(packaged):
+        return packaged
     return os.path.join(os.path.dirname(__file__), '..', '..', 'data')
 
 def henry_data_file():

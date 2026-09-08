@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Widespread `dacite` parsing failures** (`missing value for field ...` / `wrong value type
+  for field ...`) when submitting compounds to the EPI Suite API. Nearly every field in
+  `models.py` lacked a default value, so any compound for which the API omitted a key or
+  returned `null` (very common — modules can partially fail or skip compartments) crashed
+  parsing instead of degrading gracefully. All ~530 dataclass fields are now `Optional` with a
+  `None` default.
+- **`fugacityModel.model.Air`/`Water`/`Soil`/`Sediment`** are now `Optional[List[...]]` instead
+  of required lists, since these compartments can be entirely absent from the response for some
+  compounds.
+- **`AtmosphericHalfLifeParameters.hydroxylRadicalConcentration` / `.ozoneConcentration`** and
+  every numeric/boolean field on `*Parameters` dataclasses (`WaterVolatilizationParameters`,
+  `SewageTreatmentModelParameters`, `FugacityModelParameters`, `DermalPermeabilityParameters`,
+  `HenrysLawConstantParameters`, `LogKoaParameters`, `LogKocParameters`,
+  `BioconcentrationParameters`, `AerosolAdsorptionFractionParameters`,
+  `WaterSolubilityFromLogKowParameters`, `EcosarParameters`, and the top-level `Parameters`)
+  now accept either a raw scalar or a full `Parameter` object (`{value, units, source,
+  valueType}`), matching the API's actual behavior of echoing user-supplied inputs as plain
+  values but defaulted/derived inputs as provenance-carrying objects.
+- **`LogKocEstimatedValue.model` / `waterVolatilization.parameters` mismatches** where the API's
+  internal shape didn't match the previous rigid dataclasses (e.g. `logKoc` model returned as a
+  list instead of an object for some compounds).
+- Internal, non-contractual `model` breakdown fields on estimated values (`logKow`,
+  `meltingPoint`, `boilingPoint`, `vaporPressure`, `waterSolubility*`, `logKoa`, `logKoc`,
+  `hydrocarbonBiodegradationRate`, `aerosolAdsorptionFraction`, `atmosphericHalfLife`) are no
+  longer part of the API's documented contract (per the OpenAPI spec at
+  https://episuite.dev/api, only `HenryEstimatedValue.model` is contractually defined) and vary
+  in shape across compounds. These fields now use a typed-first, raw-fallback `Union` so
+  existing attribute-based access keeps working for the common case while no longer crashing
+  when the API returns an unexpected shape.
+- Added a `source` field to `Parameter` so provenance metadata from the API is no longer
+  silently dropped.
+- `dataframe_utils.py`: fixed `AttributeError`/`TypeError` crashes (e.g.
+  `'NoneType' object has no attribute 'Percent'`) caused by `hasattr(dataclass_instance, attr)`
+  checks that are always `True` regardless of whether the field's value is `None`. Replaced the
+  risky chained-attribute accesses (sewage treatment removal percentages, fugacity persistence
+  and half-life arrays, biodegradation model names) with proper `None` checks.
+
 ## [1.2.0] - 2026-04-23
 
 ### Added

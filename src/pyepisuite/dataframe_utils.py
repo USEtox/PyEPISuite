@@ -40,16 +40,17 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
         row = {}
         
         # Chemical identification
-        row['cas'] = result.chemicalProperties.cas
-        row['name'] = result.chemicalProperties.name
-        row['systematic_name'] = result.chemicalProperties.systematicName
-        row['smiles'] = result.chemicalProperties.smiles
-        row['molecular_weight'] = result.chemicalProperties.molecularWeight
-        row['molecular_formula'] = result.chemicalProperties.molecularFormula
-        row['is_organic'] = result.chemicalProperties.organic
-        row['is_organic_acid'] = result.chemicalProperties.organicAcid
-        row['is_amino_acid'] = result.chemicalProperties.aminoAcid
-        row['is_non_standard_metal'] = result.chemicalProperties.nonStandardMetal
+        chem_props = getattr(result, 'chemicalProperties', None)
+        row['cas'] = getattr(chem_props, 'cas', None)
+        row['name'] = getattr(chem_props, 'name', None)
+        row['systematic_name'] = getattr(chem_props, 'systematicName', None)
+        row['smiles'] = getattr(chem_props, 'smiles', None)
+        row['molecular_weight'] = getattr(chem_props, 'molecularWeight', None)
+        row['molecular_formula'] = getattr(chem_props, 'molecularFormula', None)
+        row['is_organic'] = getattr(chem_props, 'organic', None)
+        row['is_organic_acid'] = getattr(chem_props, 'organicAcid', None)
+        row['is_amino_acid'] = getattr(chem_props, 'aminoAcid', None)
+        row['is_non_standard_metal'] = getattr(chem_props, 'nonStandardMetal', None)
 
         # Physical and chemical properties - estimated values
         row['log_kow_estimated'] = _safe_get_estimated_value(result.logKow)
@@ -145,18 +146,19 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
                 row['trophic_unit'] = first_trophic.unit
         
         # Hydrolysis
-        if hasattr(result, 'hydrolysis'):
-            row['acid_catalyzed_rate_constant'] = result.hydrolysis.acidCatalyzedRateConstant
-            row['base_catalyzed_rate_constant'] = result.hydrolysis.baseCatalyzedRateConstant
-            row['neutral_rate_constant'] = result.hydrolysis.neutralRateConstant
-            row['acid_catalyzed_trans_isomer_rate'] = result.hydrolysis.acidCatalyzedRateConstantForTransIsomer
+        hydrolysis = getattr(result, 'hydrolysis', None)
+        if hydrolysis is not None:
+            row['acid_catalyzed_rate_constant'] = hydrolysis.acidCatalyzedRateConstant
+            row['base_catalyzed_rate_constant'] = hydrolysis.baseCatalyzedRateConstant
+            row['neutral_rate_constant'] = hydrolysis.neutralRateConstant
+            row['acid_catalyzed_trans_isomer_rate'] = hydrolysis.acidCatalyzedRateConstantForTransIsomer
         
         # Biodegradation models - get summary of main models
-        if hasattr(result, 'biodegradationRate') and hasattr(result.biodegradationRate, 'models'):
-            for model in result.biodegradationRate.models:
-                if hasattr(model, 'name') and hasattr(model, 'value'):
-                    model_name = model.name.lower().replace(' ', '_').replace('-', '_')
-                    row[f'biodeg_{model_name}'] = model.value
+        biodeg_models = getattr(getattr(result, 'biodegradationRate', None), 'models', None) or []
+        for model in biodeg_models:
+            if getattr(model, 'name', None) is not None:
+                model_name = model.name.lower().replace(' ', '_').replace('-', '_')
+                row[f'biodeg_{model_name}'] = model.value
         
         # Water volatilization
         if hasattr(result.waterVolatilization, 'riverHalfLifeHours'):
@@ -164,27 +166,27 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             row['lake_half_life_hours'] = result.waterVolatilization.lakeHalfLifeHours
             
             # Water volatilization parameters
-            if hasattr(result.waterVolatilization, 'parameters'):
-                params = result.waterVolatilization.parameters
-                row['lake_current_velocity_ms'] = params.lakeCurrentVelocityMetersPerSecond
-                row['lake_water_depth_m'] = params.lakeWaterDepthMeters
-                row['lake_wind_velocity_ms'] = params.lakeWindVelocityMetersPerSecond
-                row['river_current_velocity_ms'] = params.riverCurrentVelocityMetersPerSecond
-                row['river_water_depth_m'] = params.riverWaterDepthMeters
-                row['river_wind_velocity_ms'] = params.riverWindVelocityMetersPerSecond
+            params = getattr(result.waterVolatilization, 'parameters', None)
+            if params is not None:
+                row['lake_current_velocity_ms'] = _safe_get_parameter_value(params.lakeCurrentVelocityMetersPerSecond)
+                row['lake_water_depth_m'] = _safe_get_parameter_value(params.lakeWaterDepthMeters)
+                row['lake_wind_velocity_ms'] = _safe_get_parameter_value(params.lakeWindVelocityMetersPerSecond)
+                row['river_current_velocity_ms'] = _safe_get_parameter_value(params.riverCurrentVelocityMetersPerSecond)
+                row['river_water_depth_m'] = _safe_get_parameter_value(params.riverWaterDepthMeters)
+                row['river_wind_velocity_ms'] = _safe_get_parameter_value(params.riverWindVelocityMetersPerSecond)
         
         # Sewage treatment model - get key removal percentages
-        if hasattr(result, 'sewageTreatmentModel') and hasattr(result.sewageTreatmentModel, 'model'):
-            stm = result.sewageTreatmentModel.model
-            if hasattr(stm, 'TotalRemoval'):
+        stm = getattr(getattr(result, 'sewageTreatmentModel', None), 'model', None)
+        if stm is not None:
+            if getattr(stm, 'TotalRemoval', None) is not None:
                 row['sewage_total_removal_percent'] = stm.TotalRemoval.Percent
-            if hasattr(stm, 'TotalSludge'):
+            if getattr(stm, 'TotalSludge', None) is not None:
                 row['sewage_sludge_percent'] = stm.TotalSludge.Percent
-            if hasattr(stm, 'TotalAir'):
+            if getattr(stm, 'TotalAir', None) is not None:
                 row['sewage_air_percent'] = stm.TotalAir.Percent
-            if hasattr(stm, 'TotalBiodeg'):
+            if getattr(stm, 'TotalBiodeg', None) is not None:
                 row['sewage_biodeg_percent'] = stm.TotalBiodeg.Percent
-            if hasattr(stm, 'FinalEffluent'):
+            if getattr(stm, 'FinalEffluent', None) is not None:
                 row['sewage_effluent_percent'] = stm.FinalEffluent.Percent
         
         # Dermal permeability
@@ -196,34 +198,30 @@ def episuite_to_dataframe(results: List[ResultEPISuite]) -> pd.DataFrame:
             row['time_to_steady_state_hours'] = result.dermalPermeability.timeToReachSteadyStateHours
         
         # Fugacity model - half-lives and persistence
-        if hasattr(result.fugacityModel, 'model'):
-            if hasattr(result.fugacityModel.model, 'Persistence'):
-                row['fugacity_persistence'] = result.fugacityModel.model.Persistence
+        fugacity_model = getattr(getattr(result, 'fugacityModel', None), 'model', None)
+        if fugacity_model is not None:
+            if getattr(fugacity_model, 'Persistence', None) is not None:
+                row['fugacity_persistence'] = fugacity_model.Persistence
             
             # Get individual compartment half-lives
-            if hasattr(result.fugacityModel.model, 'HalfLifeArray'):
-                half_lives = result.fugacityModel.model.HalfLifeArray
-                if len(half_lives) >= 4:
-                    row['fugacity_air_half_life'] = half_lives[0]
-                    row['fugacity_water_half_life'] = half_lives[1]
-                    row['fugacity_soil_half_life'] = half_lives[2]
-                    row['fugacity_sediment_half_life'] = half_lives[3]
+            half_lives = getattr(fugacity_model, 'HalfLifeArray', None)
+            if half_lives is not None and len(half_lives) >= 4:
+                row['fugacity_air_half_life'] = half_lives[0]
+                row['fugacity_water_half_life'] = half_lives[1]
+                row['fugacity_soil_half_life'] = half_lives[2]
+                row['fugacity_sediment_half_life'] = half_lives[3]
             
             # Alternative method to get compartment half-lives (dynamic attributes)
-            # Note: These attributes are accessed dynamically and may not be type-checked properly
             try:
-                if hasattr(result.fugacityModel.model, 'Sediment') and result.fugacityModel.model.Sediment and len(result.fugacityModel.model.Sediment) > 0:
-                    sediment_obj = result.fugacityModel.model.Sediment[0]
-                    if hasattr(sediment_obj, 'HalfLife'):
-                        row['fugacity_sediment_half_life_alt'] = getattr(sediment_obj, 'HalfLife', None)
-                if hasattr(result.fugacityModel.model, 'Soil') and result.fugacityModel.model.Soil and len(result.fugacityModel.model.Soil) > 0:
-                    soil_obj = result.fugacityModel.model.Soil[0]
-                    if hasattr(soil_obj, 'HalfLife'):
-                        row['fugacity_soil_half_life_alt'] = getattr(soil_obj, 'HalfLife', None)
-                if hasattr(result.fugacityModel.model, 'Water') and result.fugacityModel.model.Water and len(result.fugacityModel.model.Water) > 0:
-                    water_obj = result.fugacityModel.model.Water[0]
-                    if hasattr(water_obj, 'HalfLife'):
-                        row['fugacity_water_half_life_alt'] = getattr(water_obj, 'HalfLife', None)
+                sediment = getattr(fugacity_model, 'Sediment', None)
+                if sediment and sediment[0] is not None:
+                    row['fugacity_sediment_half_life_alt'] = getattr(sediment[0], 'HalfLife', None)
+                soil = getattr(fugacity_model, 'Soil', None)
+                if soil and soil[0] is not None:
+                    row['fugacity_soil_half_life_alt'] = getattr(soil[0], 'HalfLife', None)
+                water = getattr(fugacity_model, 'Water', None)
+                if water and water[0] is not None:
+                    row['fugacity_water_half_life_alt'] = getattr(water[0], 'HalfLife', None)
             except (AttributeError, IndexError, TypeError):
                 pass
         
@@ -396,6 +394,15 @@ def _safe_get_selected_value(response_obj) -> Optional[float]:
         return None
     except (AttributeError, TypeError):
         return None
+
+
+def _safe_get_parameter_value(param_obj) -> Optional[float]:
+    """Extract the numeric value from a bare scalar or a Parameter-like object."""
+    if param_obj is None:
+        return None
+    if isinstance(param_obj, (int, float)):
+        return param_obj
+    return getattr(param_obj, 'value', None)
 
 
 def _safe_get_value_direct(obj) -> Optional[float]:

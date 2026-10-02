@@ -1,6 +1,6 @@
 [project]
 name = "pyepisuite"
-version = "1.3.0"
+version = "1.3.1"
 description = "A comprehensive Python client for EPA's EPISuite API with DataFrame utilities for environmental chemistry research."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -64,6 +64,43 @@ where = ["src"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+# The experimental datasets live at the repo root in `data/`, outside the
+# package tree. `expdata` needs eight CSVs from it at runtime, so map those into
+# the wheel at `pyepisuite/data/...`; `expdata.data_folder()` looks there first
+# and falls back to the repo-root copy for source checkouts.
+#
+# Only these eight are runtime data. The rest of `data/` (the .xls/.doc source
+# material, and the bcfbaf/waternt trees nothing reads) stays out of both
+# artifacts.
+[tool.hatch.build.targets.wheel.force-include]
+"data/henrywin/Henry_PhysProp_Data.csv" = "pyepisuite/data/henrywin/Henry_PhysProp_Data.csv"
+"data/mpbpvp/Boiling_Point_PhysChem.csv" = "pyepisuite/data/mpbpvp/Boiling_Point_PhysChem.csv"
+"data/mpbpvp/Melting_Point_PhysChem.csv" = "pyepisuite/data/mpbpvp/Melting_Point_PhysChem.csv"
+"data/mpbpvp/Vapor_Pressure_PhysChem.csv" = "pyepisuite/data/mpbpvp/Vapor_Pressure_PhysChem.csv"
+"data/wskowwin/solubility_data_clean.csv" = "pyepisuite/data/wskowwin/solubility_data_clean.csv"
+"data/kowwin/params.csv" = "pyepisuite/data/kowwin/params.csv"
+"data/kowwin/kow.csv" = "pyepisuite/data/kowwin/kow.csv"
+"data/kowwin/kow_zwitterionic.csv" = "pyepisuite/data/kowwin/kow_zwitterionic.csv"
+
+[tool.hatch.build.targets.sdist]
+# Keep the sdist buildable: the force-include above reads `data/<name>.csv`, so
+# those paths must survive here too. Everything heavy and unread is dropped.
+exclude = [
+  "/data/bcfbaf",
+  "/data/waternt",
+  "/data/local",
+  "/data/**/*.xls",
+  "/data/**/*.xlsx",
+  "/data/**/*.doc",
+  "/data/**/*.ipynb",
+  "/data/wskowwin/solubility_data.csv",
+  "/data/wskowwin/compound_classification.csv",
+  "/notebooks",
+  "/site",
+  "/docs",
+  "/examples",
+]
 
 [dependency-groups]
 dev = [

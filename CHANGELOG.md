@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-09-08
+
+### Fixed
+- **`expdata` raised `FileNotFoundError` on every installed copy of the package.**
+  `data_folder()` resolved the CSVs as `<package>/../../data`, which is
+  `site-packages/data` once installed and only ever existed in a source checkout.
+  The wheel shipped no data at all, and although the sdist carried `data/`, it
+  installed only `src/pyepisuite`, so it failed the same way. Every class in the
+  module was affected: `HenryData`, `BoilingPointData`, `MeltingPointData`,
+  `VaporPressureData`, `SolubilityData` and `logKowData`. This has been broken
+  since at least 1.1.0.
+
+  The eight runtime CSVs are now mapped into the wheel at `pyepisuite/data/`
+  (`[tool.hatch.build.targets.wheel.force-include]`), and `data_folder()` prefers
+  that packaged copy, falling back to the repo-root `data/` for source checkouts.
+  The wheel grows from 30 KB to ~955 KB.
+
+### Changed
+- The sdist no longer sweeps in the whole repository. It drops the `.xls`/`.doc`
+  source material, the `bcfbaf` and `waternt` trees that nothing reads, and the
+  `notebooks/`, `docs/` and `examples/` directories, going from 8.2 MB to ~1.1 MB.
+  The eight runtime CSVs stay, since the wheel build reads them.
+
+### Removed
+- `MANIFEST.in`. It is a setuptools file and this project builds with hatchling,
+  which never read it — the 1.3.0 sdist contained `notebooks/` and `docs/`, which
+  the file does not list, while its `recursive-include data *` had no effect on
+  the wheel. Keeping it only suggested the data question was already handled.
+
 ## [1.3.0] - 2026-09-08
 
 Targets **EPI Suite 1.1.0** (`pyepisuite.__episuite_version__`). The package version stays on its own

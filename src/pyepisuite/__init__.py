@@ -2,7 +2,7 @@
 EPISuite API Package
 """
 
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 # The EPI Suite API version this release targets. The package version is
 # independent of it: see episuite_version.py.
